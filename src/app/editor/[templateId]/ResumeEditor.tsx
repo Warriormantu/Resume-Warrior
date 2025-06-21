@@ -271,6 +271,48 @@ const SortablePublicationCard = ({
   );
 };
 
+const SortableSkillItem = ({
+  index,
+  fieldId,
+  onRemove,
+}: {
+  index: number;
+  fieldId: string;
+  onRemove: (index: number) => void;
+}) => {
+  const { control } = useFormContext<ResumeData>();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: fieldId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center gap-2 touch-none">
+      <Button type="button" variant="ghost" size="icon" className="cursor-grab" {...attributes} {...listeners}>
+        <GripVertical className="h-4 w-4" />
+      </Button>
+      <FormField
+        control={control}
+        name={`skills.${index}`}
+        render={({ field }) => (
+          <FormItem className="flex-grow">
+            <FormControl>
+              <Input {...field} placeholder={`Skill #${index + 1}`} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <Button type="button" variant="ghost" size="icon" onClick={() => onRemove(index)}>
+        <Trash2 className="h-4 w-4 text-destructive" />
+      </Button>
+    </div>
+  );
+};
 
 
 export function ResumeEditor({ template }: { template: Template }) {
@@ -321,6 +363,11 @@ export function ResumeEditor({ template }: { template: Template }) {
   const { fields: pubFields, append: appendPub, remove: removePub, move: movePub } = useFieldArray({
     control: form.control,
     name: "publications"
+  });
+
+  const { fields: skillFields, append: appendSkill, remove: removeSkill, move: moveSkill } = useFieldArray({
+    control: form.control,
+    name: "skills",
   });
 
 
@@ -563,14 +610,24 @@ export function ResumeEditor({ template }: { template: Template }) {
                 {/* Skills */}
                 <AccordionItem value="skills">
                     <AccordionTrigger><Wrench className="mr-2"/>Skills</AccordionTrigger>
-                    <AccordionContent className="p-1">
-                        <FormField name="skills" control={form.control} render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Skills (comma separated)</FormLabel>
-                                <FormControl><Input {...field} value={Array.isArray(field.value) ? field.value.join(', ') : ''} onChange={e => field.onChange(e.target.value.split(',').map(s => s.trim()))} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}/>
+                    <AccordionContent className="space-y-4 p-1">
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveSkill, skillFields)}>
+                            <SortableContext items={skillFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                                <div className="space-y-2">
+                                    {skillFields.map((field, index) => (
+                                        <SortableSkillItem
+                                            key={field.id}
+                                            fieldId={field.id}
+                                            index={index}
+                                            onRemove={removeSkill}
+                                        />
+                                    ))}
+                                </div>
+                            </SortableContext>
+                        </DndContext>
+                        <Button type="button" variant="outline" onClick={() => appendSkill('')}>
+                            <PlusCircle className="mr-2 h-4 w-4"/> Add Skill
+                        </Button>
                     </AccordionContent>
                 </AccordionItem>
               </Accordion>
