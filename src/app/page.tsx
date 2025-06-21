@@ -1,10 +1,51 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Palette, Sparkles, Download } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Palette, Sparkles, Download, Star } from "lucide-react";
 import Link from "next/link";
 import { ResumePreview } from "@/components/ResumePreview";
 import { sampleResumeData } from "@/lib/sampleData";
 import { templates } from "@/lib/templates";
+
+const testimonials = [
+  {
+    name: "Sarah L.",
+    role: "Marketing Manager",
+    quote: "Resume_Warrior's AI helped me rephrase my experience in a way I never could have on my own. I got three interviews within a week!",
+    avatar: "https://placehold.co/100x100.png",
+    aiHint: "woman portrait"
+  },
+  {
+    name: "Michael B.",
+    role: "Software Engineer",
+    quote: "The Sleek Tech template was perfect for my field. The editor is intuitive and the final PDF looked incredibly professional.",
+    avatar: "https://placehold.co/100x100.png",
+    aiHint: "man portrait"
+  },
+  {
+    name: "Jessica P.",
+    role: "Recent Graduate",
+    quote: "As a recent grad, I was lost. Resume_Warrior gave me the confidence and the tools to build a resume that landed me my first job.",
+    avatar: "https://placehold.co/100x100.png",
+    aiHint: "person smiling"
+  },
+   {
+    name: "David C.",
+    role: "Project Manager",
+    quote: "I switched careers and had to tailor my resume completely. This tool made it so easy. The AI suggestions were spot on.",
+    avatar: "https://placehold.co/100x100.png",
+    aiHint: "professional man"
+  }
+];
+
+const companyLogos = [
+  { name: "TechCorp", logo: "https://placehold.co/150x60.png", aiHint: "tech logo" },
+  { name: "Innovate Inc.", logo: "https://placehold.co/150x60.png", aiHint: "startup logo" },
+  { name: "Solutions Ltd.", logo: "https://placehold.co/150x60.png", aiHint: "corporate logo" },
+  { name: "QuantumLeap", logo: "https://placehold.co/150x60.png", aiHint: "modern logo" },
+  { name: "Apex Industries", logo: "https://placehold.co/150x60.png", aiHint: "industrial logo" },
+  { name: "NextGen", logo: "https://placehold.co/150x60.png", aiHint: "future logo" }
+];
 
 export default function Home() {
   const featuredTemplate = templates.find(t => t.id === 'modern-creative') || templates[0];
@@ -42,7 +83,7 @@ export default function Home() {
                 <CardTitle className="font-headline mt-4">1. Select a Template</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>
+                <p className="text-muted-foreground">
                   Browse our gallery of professionally designed resume templates.
                   Find the perfect look for your industry.
                 </p>
@@ -56,7 +97,7 @@ export default function Home() {
                 <CardTitle className="font-headline mt-4">2. AI-Powered Editing</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>
+                <p className="text-muted-foreground">
                   Fill in your details and use our AI to rephrase and enhance your
                   experience points for maximum impact.
                 </p>
@@ -70,7 +111,7 @@ export default function Home() {
                 <CardTitle className="font-headline mt-4">3. Download Your Resume</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>
+                <p className="text-muted-foreground">
                   Instantly download your finished resume as a high-quality PDF
                   or image file, ready to be sent to employers.
                 </p>
@@ -98,6 +139,52 @@ export default function Home() {
             </div>
         </div>
       </section>
+
+      <section className="w-full py-16 md:py-24">
+        <div className="container px-4 md:px-6">
+           <h2 className="text-3xl font-bold text-center font-headline mb-12">
+            Loved by Professionals Worldwide
+          </h2>
+          <div className="relative">
+            <div className="flex overflow-x-auto gap-8 pb-8 no-scrollbar">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="min-w-[320px] md:min-w-[380px] flex-shrink-0">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center mb-4">
+                      <Avatar className="h-12 w-12 mr-4">
+                        <AvatarImage src={testimonial.avatar} alt={testimonial.name} data-ai-hint={testimonial.aiHint}/>
+                        <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="font-bold">{testimonial.name}</h3>
+                        <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-0.5 mb-4">
+                        {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400"/>)}
+                    </div>
+                    <p className="text-muted-foreground">"{testimonial.quote}"</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="w-full py-16 md:py-24 bg-secondary">
+        <div className="container px-4 md:px-6">
+            <h2 className="text-center text-xl font-semibold text-muted-foreground mb-8">
+                Helping job seekers at top companies
+            </h2>
+            <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
+                {companyLogos.map((company, index) => (
+                    <img key={index} src={company.logo} alt={company.name} data-ai-hint={company.aiHint} className="h-8 object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all"/>
+                ))}
+            </div>
+        </div>
+      </section>
+
     </div>
   );
 }
