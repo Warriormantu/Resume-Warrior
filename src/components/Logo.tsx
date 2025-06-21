@@ -1,4 +1,8 @@
+import * as React from 'react';
+
 export function Logo() {
+  const gradientId = React.useId();
+
   return (
     <svg
       width="24"
@@ -10,13 +14,13 @@ export function Logo() {
       aria-label="Resume Warrior Logo"
     >
       <defs>
-        <linearGradient id="logo-gradient" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#007CF0" />
           <stop offset="100%" stopColor="#00DFD8" />
         </linearGradient>
       </defs>
       <g
-        stroke="url(#logo-gradient)"
+        stroke={`url(#${gradientId})`}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
