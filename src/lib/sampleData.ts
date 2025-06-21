@@ -37,6 +37,24 @@ export const sampleResumeData: ResumeData = {
       endDate: '2020-05',
     },
   ],
+  publications: [
+    {
+      id: '1',
+      title: 'The Study of Placeholders in UI Design',
+      authors: ['J. Doe'],
+      journal: 'Journal of Virtual Studies',
+      year: '2023',
+      url: 'https://example-journal.com/publication/123',
+    },
+    {
+      id: '2',
+      title: 'Advanced Pattern Recognition in Sample Data',
+      authors: ['J. Doe', 'A. Smith'],
+      journal: 'Proceedings of the International Conference on AI',
+      year: '2022',
+      url: 'https://example-conference.com/proceeding/456',
+    }
+  ],
   skills: ['Skill 1', 'Skill 2', 'Skill 3', 'Data Analysis', 'Project Management'],
   projects: [
     {

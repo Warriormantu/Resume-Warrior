@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export function AcademicResearcher({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, projects, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills, publications } = data;
     return (
         <div className="font-serif text-gray-800">
             <header className="text-center mb-6 pb-4 border-b border-gray-300">
@@ -72,14 +72,21 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                 </ul>
             </section>
 
-            {/* Dummy sections for Academic CV */}
-            <section className="mb-4">
-                <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Publications</h2>
-                <div className="text-sm text-gray-700 space-y-2">
-                    <p>Doe, J. (2023). The Study of Placeholders in UI Design. *Journal of Virtual Studies*, 15(2), 123-145.</p>
-                     <p>Doe, J. & Smith, A. (2022). Advanced Pattern Recognition in Sample Data. *Proceedings of the International Conference on AI*, 45-52.</p>
-                </div>
-            </section>
+            {publications && publications.length > 0 && (
+                <section className="mb-4">
+                    <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Publications</h2>
+                    <div className="text-sm text-gray-700 space-y-2">
+                        {publications.map(pub => (
+                            <div key={pub.id}>
+                                <p>
+                                    <span className="font-semibold">{pub.authors.join(', ')} ({pub.year}).</span> {pub.title}. <em>{pub.journal}</em>.
+                                    {pub.url && <a href={pub.url} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer"> Link</a>}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
         </div>
     );
 }

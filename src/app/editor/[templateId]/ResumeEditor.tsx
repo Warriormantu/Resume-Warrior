@@ -36,6 +36,7 @@ import {
   GraduationCap,
   Wrench,
   Rocket,
+  Library,
   GripVertical
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -214,6 +215,55 @@ const SortableProjectCard = ({
   );
 };
 
+const SortablePublicationCard = ({
+  index,
+  onRemove,
+}: {
+  index: number;
+  onRemove: (index: number) => void;
+}) => {
+  const { control, getValues } = useFormContext<ResumeData>();
+  const fieldId = getValues(`publications.${index}.id`);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: fieldId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="touch-none">
+       <Card className="p-4 bg-background">
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h4 className="font-semibold">Publication #{index + 1}</h4>
+                    <div className="flex items-center">
+                        <Button type="button" variant="ghost" size="icon" className="cursor-grab" {...attributes} {...listeners}>
+                            <GripVertical className="h-4 w-4" />
+                        </Button>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => onRemove(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                    </div>
+                </div>
+                <FormField name={`publications.${index}.title`} control={control} render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                <FormField name={`publications.${index}.authors`} control={control} render={({ field }) => (<FormItem><FormLabel>Authors (comma separated)</FormLabel><FormControl><Input {...field} value={Array.isArray(field.value) ? field.value.join(', ') : ''} onChange={e => field.onChange(e.target.value.split(',').map(s => s.trim()))} /></FormControl></FormItem>)}/>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField name={`publications.${index}.journal`} control={control} render={({ field }) => (<FormItem><FormLabel>Journal / Conference</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                  <FormField name={`publications.${index}.year`} control={control} render={({ field }) => (<FormItem><FormLabel>Year</FormLabel><FormControl><Input type="text" placeholder="YYYY" {...field} /></FormControl></FormItem>)}/>
+                </div>
+                <FormField name={`publications.${index}.url`} control={control} render={({ field }) => (<FormItem><FormLabel>URL</FormLabel><FormControl><Input {...field} placeholder="https://..."/></FormControl></FormItem>)}/>
+            </div>
+        </Card>
+    </div>
+  );
+};
+
+
 
 export function ResumeEditor({ template }: { template: Template }) {
   const { toast } = useToast();
@@ -258,6 +308,11 @@ export function ResumeEditor({ template }: { template: Template }) {
   const { fields: projFields, append: appendProj, remove: removeProj, move: moveProj } = useFieldArray({
     control: form.control,
     name: "projects"
+  });
+
+  const { fields: pubFields, append: appendPub, remove: removePub, move: movePub } = useFieldArray({
+    control: form.control,
+    name: "publications"
   });
 
 
@@ -353,7 +408,7 @@ export function ResumeEditor({ template }: { template: Template }) {
           
           <Form {...form}>
             <form className="space-y-4">
-              <Accordion type="multiple" defaultValue={['personal', 'summary', 'experience', 'education', 'projects', 'skills']} className="w-full">
+              <Accordion type="multiple" defaultValue={['personal', 'summary', 'experience', 'education', 'projects', 'publications', 'skills']} className="w-full">
                 {/* Personal Info */}
                 <AccordionItem value="personal">
                   <AccordionTrigger><User className="mr-2"/>Personal Information</AccordionTrigger>
@@ -456,6 +511,24 @@ export function ResumeEditor({ template }: { template: Template }) {
                         </DndContext>
                         <Button type="button" variant="outline" onClick={() => appendProj({ id: `${Date.now()}`, name: '', description: '', url: '', points: [] })}>
                             <PlusCircle className="mr-2 h-4 w-4"/> Add Project
+                        </Button>
+                    </AccordionContent>
+                </AccordionItem>
+                 {/* Publications */}
+                 <AccordionItem value="publications">
+                    <AccordionTrigger><Library className="mr-2"/>Publications</AccordionTrigger>
+                    <AccordionContent className="space-y-4 p-1">
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, movePub, pubFields)}>
+                            <SortableContext items={pubFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                                <div className="space-y-4">
+                                {pubFields.map((field, index) => (
+                                    <SortablePublicationCard key={field.id} index={index} onRemove={removePub} />
+                                ))}
+                                </div>
+                            </SortableContext>
+                        </DndContext>
+                        <Button type="button" variant="outline" onClick={() => appendPub({ id: `${Date.now()}`, title: '', authors:[], journal: '', year: '' })}>
+                            <PlusCircle className="mr-2 h-4 w-4"/> Add Publication
                         </Button>
                     </AccordionContent>
                 </AccordionItem>
