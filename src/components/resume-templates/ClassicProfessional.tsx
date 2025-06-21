@@ -6,6 +6,7 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
         <div className="font-sans text-slate-800">
             <header className="text-center mb-6">
                 <h1 className="text-4xl font-bold font-headline text-slate-800">{personalInfo.name}</h1>
+                {personalInfo.jobTitle && <p className="text-lg font-semibold text-slate-700 mt-1 mb-2">{personalInfo.jobTitle}</p>}
                 <p className="text-sm text-slate-600">
                     {personalInfo.address} | {personalInfo.phone} | {personalInfo.email}
                     {personalInfo.linkedin && ` | ${personalInfo.linkedin}`}

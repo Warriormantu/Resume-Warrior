@@ -8,6 +8,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
             <div className="w-1/3 bg-[#2a2a2a] p-6 flex flex-col">
                  <header className="text-center mb-8">
                     <h1 className="text-4xl font-bold font-headline text-cyan-400">{personalInfo.name}</h1>
+                    {personalInfo.jobTitle && <p className="text-lg text-cyan-300/90 mt-1">{personalInfo.jobTitle}</p>}
                 </header>
                 <div className="text-sm space-y-3 text-gray-300">
                     <div className="flex items-center gap-2"><Phone size={14} className="text-cyan-400"/><span>{personalInfo.phone}</span></div>

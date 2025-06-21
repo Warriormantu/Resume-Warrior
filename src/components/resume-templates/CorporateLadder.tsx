@@ -7,6 +7,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
             <div className="w-1/3 bg-gray-50 p-6 border-r border-gray-200">
                 <header className="mb-8">
                     <h1 className="text-4xl font-bold font-headline text-gray-800">{personalInfo.name}</h1>
+                    {personalInfo.jobTitle && <p className="text-lg text-gray-600 mt-1">{personalInfo.jobTitle}</p>}
                 </header>
 
                 <section className="mb-6">

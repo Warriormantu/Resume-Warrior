@@ -7,6 +7,7 @@ export function ModernCreative({ data }: { data: ResumeData }) {
             <div className="w-1/3 bg-slate-100 p-6 rounded-l-lg">
                  <header className="mb-6">
                     <h1 className="text-3xl font-bold font-headline text-primary">{personalInfo.name}</h1>
+                    {personalInfo.jobTitle && <p className="text-md text-slate-700 mt-1">{personalInfo.jobTitle}</p>}
                     <div className="text-xs text-slate-600 mt-2 space-y-1">
                         <p>{personalInfo.phone}</p>
                         <p>{personalInfo.email}</p>

@@ -34,6 +34,7 @@ export function GenerateResumeForm() {
         const fullResumeData: ResumeData = {
             personalInfo: {
                 name: result.personalInfo?.name || 'Your Name',
+                jobTitle: result.personalInfo?.jobTitle || '',
                 email: result.personalInfo?.email || '',
                 phone: result.personalInfo?.phone || '',
                 address: result.personalInfo?.address || '',

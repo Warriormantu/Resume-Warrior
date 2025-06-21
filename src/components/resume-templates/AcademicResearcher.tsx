@@ -6,6 +6,7 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
         <div className="font-serif text-gray-800">
             <header className="text-center mb-6 pb-4 border-b border-gray-300">
                 <h1 className="text-4xl font-bold text-gray-900">{personalInfo.name}</h1>
+                {personalInfo.jobTitle && <p className="text-xl font-semibold text-gray-700 mt-1">{personalInfo.jobTitle}</p>}
                 <p className="text-sm text-gray-600 mt-2">
                     {personalInfo.address} | {personalInfo.phone} | {personalInfo.email}
                 </p>

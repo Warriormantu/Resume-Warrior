@@ -361,6 +361,9 @@ export function ResumeEditor({ template }: { template: Template }) {
                     <FormField name="personalInfo.name" control={form.control} render={({ field }) => (
                         <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
+                    <FormField name="personalInfo.jobTitle" control={form.control} render={({ field }) => (
+                        <FormItem><FormLabel>Job Title / Headline</FormLabel><FormControl><Input placeholder="e.g. Senior Software Engineer" {...field} /></FormControl><FormMessage /></FormItem>
+                    )}/>
                     <div className="grid md:grid-cols-2 gap-4">
                         <FormField name="personalInfo.email" control={form.control} render={({ field }) => (
                             <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>

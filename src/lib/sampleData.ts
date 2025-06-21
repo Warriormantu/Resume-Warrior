@@ -3,6 +3,7 @@ import type { ResumeData } from '@/lib/types';
 export const sampleResumeData: ResumeData = {
   personalInfo: {
     name: 'Your Name',
+    jobTitle: 'Professional Title',
     email: 'your.email@example.com',
     phone: '123-456-7890',
     address: 'Your City, State',
