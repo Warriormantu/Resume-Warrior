@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import { Logo } from './Logo';
 
 const footerLinks = [
     { href: '/about', label: 'About' },
@@ -15,7 +15,7 @@ export function Footer() {
       <div className="container py-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
-                <FileText className="h-6 w-6 text-primary" />
+                <Logo />
                 <span className="font-bold font-headline text-lg">Resume Warrior</span>
             </div>
           <nav className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm font-medium mb-4 md:mb-0">

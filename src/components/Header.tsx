@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
+import { Logo } from './Logo';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -23,7 +23,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <FileText className="h-6 w-6 text-primary" />
+          <Logo />
           <span className="font-bold font-headline text-lg">Resume Warrior</span>
         </Link>
         <nav className="hidden flex-1 items-center space-x-6 text-sm font-medium md:flex">
