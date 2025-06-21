@@ -3,10 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Palette, Sparkles, Download, Star } from "lucide-react";
 import Link from "next/link";
-import { ResumePreview } from "@/components/ResumePreview";
-import { sampleResumeData } from "@/lib/sampleData";
 import { templates } from "@/lib/templates";
 import { GenerateResumeForm } from "@/components/GenerateResumeForm";
+import { TemplateCard } from "@/components/TemplateCard";
 
 const testimonials = [
   {
@@ -49,7 +48,7 @@ const companyLogos = [
 ];
 
 export default function Home() {
-  const featuredTemplate = templates.find(t => t.id === 'modern-creative') || templates[0];
+  const featuredTemplates = templates.slice(0, 3);
 
   return (
     <div className="flex flex-col items-center">
@@ -129,19 +128,21 @@ export default function Home() {
       </section>
       
       <section className="w-full py-16 md:py-24">
-        <div className="container px-4 md:px-6 grid md:grid-cols-2 gap-16 items-center">
-            <div className="animate-fade-in-up">
-              <div className="rounded-lg shadow-lg border overflow-hidden aspect-[8.5/11]">
-                <div className="w-[133.33%] h-[133.33%] origin-top-left scale-75">
-                    <ResumePreview data={sampleResumeData} template={featuredTemplate} />
-                </div>
-              </div>
+        <div className="container px-4 md:px-6">
+            <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold font-headline">Explore Our Featured Templates</h2>
+                <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">Get started with one of our popular designs. Find even more options on our templates page.</p>
             </div>
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <h2 className="text-3xl font-bold font-headline mb-4">AI That Works For You</h2>
-                <p className="text-muted-foreground mb-6">Our generative AI helps you overcome writer's block and fine-tune your resume content. Transform your bullet points from simple statements to compelling achievements that catch a recruiter's eye.</p>
-                <Button asChild variant="default">
-                    <Link href="/templates">Get Started Now</Link>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredTemplates.map((template, index) => (
+                    <div key={template.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <TemplateCard template={template} />
+                    </div>
+                ))}
+            </div>
+            <div className="text-center mt-12">
+                <Button asChild>
+                    <Link href="/templates">View All Templates</Link>
                 </Button>
             </div>
         </div>
