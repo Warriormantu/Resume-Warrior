@@ -37,7 +37,8 @@ import {
   Wrench,
   Rocket,
   Library,
-  GripVertical
+  GripVertical,
+  Paintbrush
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
@@ -62,6 +63,14 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+const hexToRgba = (hex: string, alpha: number) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 const SortableExperienceCard = ({
   index,
@@ -322,6 +331,9 @@ export function ResumeEditor({ template }: { template: Template }) {
     defaultValues: sampleResumeData,
   });
 
+  const [accentColor, setAccentColor] = useState('#009cff');
+  const [fontFamily, setFontFamily] = useState('Inter');
+
   useEffect(() => {
     const savedDraft = localStorage.getItem('resume-draft');
     if (savedDraft) {
@@ -467,6 +479,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
     setIsGeneratingSummary(false);
   };
+  
+  const accentColorBg = hexToRgba(accentColor, 0.1);
 
   return (
     <FormProvider {...form}>
@@ -477,7 +491,36 @@ export function ResumeEditor({ template }: { template: Template }) {
           
           <Form {...form}>
             <form className="space-y-4">
-              <Accordion type="multiple" defaultValue={['personal', 'summary', 'experience', 'education', 'projects', 'publications', 'skills']} className="w-full">
+              <Accordion type="multiple" defaultValue={['appearance', 'personal', 'summary', 'experience', 'education', 'projects', 'publications', 'skills']} className="w-full">
+                {/* Appearance */}
+                <AccordionItem value="appearance">
+                    <AccordionTrigger><Paintbrush className="mr-2"/>Appearance</AccordionTrigger>
+                    <AccordionContent className="space-y-4 p-1">
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormItem>
+                                <FormLabel>Accent Color</FormLabel>
+                                <FormControl>
+                                    <Input type="color" value={accentColor} onChange={e => setAccentColor(e.target.value)} className="p-1 h-10"/>
+                                </FormControl>
+                            </FormItem>
+                            <FormItem>
+                                <FormLabel>Font Family</FormLabel>
+                                 <Select value={fontFamily} onValueChange={setFontFamily}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a font" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Inter">Sans Serif (Inter)</SelectItem>
+                                        <SelectItem value="Lora">Serif (Lora)</SelectItem>
+                                        <SelectItem value="Space Grotesk">Modern (Space Grotesk)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
                 {/* Personal Info */}
                 <AccordionItem value="personal">
                   <AccordionTrigger><User className="mr-2"/>Personal Information</AccordionTrigger>
@@ -641,7 +684,14 @@ export function ResumeEditor({ template }: { template: Template }) {
             </div>
             <div className="flex justify-center">
                 <div className="origin-top transform scale-[0.75]">
-                    <ResumePreview data={watchedData} template={template} ref={previewRef} />
+                    <ResumePreview 
+                        data={watchedData} 
+                        template={template} 
+                        ref={previewRef}
+                        accentColor={accentColor}
+                        accentColorBg={accentColorBg}
+                        fontFamily={fontFamily}
+                     />
                 </div>
             </div>
         </div>

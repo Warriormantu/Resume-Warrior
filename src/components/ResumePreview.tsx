@@ -18,11 +18,31 @@ const templateComponents: Record<string, React.FC<{ data: ResumeData }>> = {
     'academic-researcher': AcademicResearcher,
 };
 
-export const ResumePreview = React.forwardRef<HTMLDivElement, { data: ResumeData; template: Template }>(({ data, template }, ref) => {
+type ResumePreviewProps = {
+    data: ResumeData;
+    template: Template;
+    accentColor: string;
+    accentColorBg: string;
+    fontFamily: string;
+};
+
+export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps>(
+    ({ data, template, accentColor, accentColorBg, fontFamily }, ref) => {
+    
     const TemplateComponent = templateComponents[template.id] || ClassicProfessional;
+
+    const previewStyle: React.CSSProperties = {
+        '--resume-accent-color': accentColor,
+        '--resume-accent-color-bg': accentColorBg,
+        '--resume-font-family': fontFamily,
+    };
     
     return (
-        <div ref={ref} className="bg-white text-black p-8 shadow-lg" style={{ width: '816px', minHeight: '1056px' }}>
+        <div 
+            ref={ref} 
+            className="bg-white text-black p-8 shadow-lg" 
+            style={{ width: '816px', minHeight: '1056px', ...previewStyle }}
+        >
             <TemplateComponent data={data} />
         </div>
     );

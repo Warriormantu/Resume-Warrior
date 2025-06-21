@@ -3,7 +3,7 @@ import type { ResumeData } from '@/lib/types';
 export function AcademicResearcher({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, publications } = data;
     return (
-        <div className="font-serif text-gray-800">
+        <div className="font-serif text-gray-800" style={{ fontFamily: 'var(--resume-font-family, "serif")' }}>
             <header className="text-center mb-6 pb-4 border-b border-gray-300">
                 <h1 className="text-4xl font-bold text-gray-900">{personalInfo.name}</h1>
                 {personalInfo.jobTitle && <p className="text-xl font-semibold text-gray-700 mt-1">{personalInfo.jobTitle}</p>}
@@ -80,7 +80,7 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                             <div key={pub.id}>
                                 <p>
                                     <span className="font-semibold">{pub.authors.join(', ')} ({pub.year}).</span> {pub.title}. <em>{pub.journal}</em>.
-                                    {pub.url && <a href={pub.url} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer"> Link</a>}
+                                    {pub.url && <a href={pub.url} style={{ color: 'var(--resume-accent-color)' }} className="hover:underline" target="_blank" rel="noopener noreferrer"> Link</a>}
                                 </p>
                             </div>
                         ))}

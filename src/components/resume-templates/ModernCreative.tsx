@@ -3,10 +3,10 @@ import type { ResumeData } from '@/lib/types';
 export function ModernCreative({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills } = data;
     return (
-        <div className="font-sans text-slate-800 flex gap-6">
+        <div className="font-sans text-slate-800 flex gap-6" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
             <div className="w-1/3 bg-slate-100 p-6 rounded-l-lg">
                  <header className="mb-6">
-                    <h1 className="text-3xl font-bold font-headline text-primary">{personalInfo.name}</h1>
+                    <h1 className="text-3xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>
                     {personalInfo.jobTitle && <p className="text-md text-slate-700 mt-1">{personalInfo.jobTitle}</p>}
                     <div className="text-xs text-slate-600 mt-2 space-y-1">
                         <p>{personalInfo.phone}</p>
@@ -17,19 +17,30 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                     </div>
                 </header>
                 <section>
-                     <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider">SKILLS</h2>
+                     <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>SKILLS</h2>
                      <div className="flex flex-wrap gap-2">
-                        {skills.map(skill => <span key={skill} className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded">{skill}</span>)}
+                        {skills.map(skill => (
+                            <span 
+                                key={skill} 
+                                className="text-xs font-medium px-2 py-1 rounded"
+                                style={{
+                                    backgroundColor: 'var(--resume-accent-color-bg)',
+                                    color: 'var(--resume-accent-color)'
+                                }}
+                            >
+                                {skill}
+                            </span>
+                        ))}
                      </div>
                 </section>
             </div>
             <div className="w-2/3 py-6 pr-6">
                 <section className="mb-6">
-                    <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider">SUMMARY</h2>
+                    <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>SUMMARY</h2>
                     <p className="text-sm text-slate-700">{summary}</p>
                 </section>
                 <section className="mb-6">
-                    <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider">EXPERIENCE</h2>
+                    <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>EXPERIENCE</h2>
                     {experience.map(exp => (
                         <div key={exp.id} className="mb-4">
                             <div className="flex justify-between items-baseline">
@@ -44,7 +55,7 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                     ))}
                 </section>
                 <section className="mb-6">
-                    <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider">EDUCATION</h2>
+                    <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>EDUCATION</h2>
                     {education.map(edu => (
                         <div key={edu.id} className="mb-3">
                             <div className="flex justify-between items-baseline">
@@ -57,7 +68,7 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                 </section>
                  {projects && projects.length > 0 && (
                     <section>
-                        <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider">PROJECTS</h2>
+                        <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>PROJECTS</h2>
                         {projects.map(proj => (
                             <div key={proj.id} className="mb-4">
                                 <h3 className="text-md font-bold text-slate-800">{proj.name}</h3>
