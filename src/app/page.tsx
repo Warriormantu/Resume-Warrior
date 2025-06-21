@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Palette, Sparkles, Download, Star } from "lucide-react";
+import { Palette, Sparkles, Download, Star, Move, LayoutTemplate, Eye, FileText } from "lucide-react";
 import Link from "next/link";
 import { templates } from "@/lib/templates";
 import { GenerateResumeForm } from "@/components/GenerateResumeForm";
@@ -45,6 +45,39 @@ const companyLogos = [
   { name: "QuantumLeap", logo: "https://placehold.co/150x60.png", aiHint: "modern logo" },
   { name: "Apex Industries", logo: "https://placehold.co/150x60.png", aiHint: "industrial logo" },
   { name: "NextGen", logo: "https://placehold.co/150x60.png", aiHint: "future logo" }
+];
+
+const features = [
+  {
+    icon: Sparkles,
+    title: "AI-Powered Content",
+    description: "Overcome writer's block with AI-generated summaries and rephrased bullet points for maximum impact.",
+  },
+  {
+    icon: LayoutTemplate,
+    title: "Professional Templates",
+    description: "Choose from a variety of free and premium, professionally designed templates to match your industry.",
+  },
+  {
+    icon: Eye,
+    title: "Live Preview",
+    description: "See your resume update in real-time as you type, ensuring it looks perfect before you download.",
+  },
+  {
+    icon: Move,
+    title: "Drag & Drop Editor",
+    description: "Easily reorder experience, education, and project sections to highlight your key strengths.",
+  },
+  {
+    icon: Download,
+    title: "Multiple Export Options",
+    description: "Download your finished resume as a high-quality, ATS-friendly PDF or a PNG image file.",
+  },
+  {
+    icon: FileText,
+    title: "CV & Resume Support",
+    description: "Create both concise resumes for job applications and detailed CVs for academic or research roles.",
+  },
 ];
 
 export default function Home() {
@@ -122,12 +155,38 @@ export default function Home() {
       </section>
 
       <section className="w-full py-16 md:py-24 bg-secondary">
+        <div className="container px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold font-headline">
+              Everything You Need to Succeed
+            </h2>
+            <p className="max-w-2xl mx-auto mt-2 text-lg text-muted-foreground">
+              Our features are designed to help you create a standout resume with ease.
+            </p>
+          </div>
+          <div className="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => (
+              <div key={feature.title} className="flex items-start gap-4 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="bg-primary/10 text-primary p-3 rounded-full mt-1 shrink-0">
+                  <feature.icon className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold font-headline mb-1">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="w-full py-16 md:py-24 bg-background">
          <div className="container px-4 md:px-6">
             <GenerateResumeForm />
          </div>
       </section>
       
-      <section className="w-full py-16 md:py-24">
+      <section className="w-full py-16 md:py-24 bg-secondary">
         <div className="container px-4 md:px-6">
             <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold font-headline">Explore Our Featured Templates</h2>
@@ -148,7 +207,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full py-16 md:py-24 bg-secondary">
+      <section className="w-full py-16 md:py-24 bg-background">
         <div className="container px-4 md:px-6">
            <h2 className="text-3xl font-bold text-center font-headline mb-12">
             Loved by Professionals Worldwide
@@ -180,7 +239,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full py-16 md:py-24 bg-background">
+      <section className="w-full py-16 md:py-24 bg-secondary">
         <div className="container px-4 md:px-6">
             <h2 className="text-center text-xl font-semibold text-muted-foreground mb-8">
                 Trusted by Professionals at Top Companies
