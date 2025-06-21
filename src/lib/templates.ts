@@ -13,7 +13,7 @@ export const templates: Template[] = [
   {
     id: 'modern-creative',
     name: 'Modern Creative',
-    price: 49,
+    price: 0,
   },
   {
     id: 'bold-minimalist',
@@ -23,12 +23,12 @@ export const templates: Template[] = [
   {
     id: 'corporate-ladder',
     name: 'Corporate Ladder',
-    price: 49,
+    price: 0,
   },
    {
     id: 'sleek-tech',
     name: 'Sleek Tech',
-    price: 49,
+    price: 0,
   },
   {
     id: 'academic-researcher',
