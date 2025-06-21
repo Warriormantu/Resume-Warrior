@@ -161,7 +161,7 @@ export function ResumeEditor({ template }: { template: Template }) {
           
           <Form {...form}>
             <form className="space-y-4">
-              <Accordion type="multiple" defaultValue={['personal', 'experience']} className="w-full">
+              <Accordion type="multiple" defaultValue={['personal', 'summary', 'experience', 'education', 'projects', 'skills']} className="w-full">
                 {/* Personal Info */}
                 <AccordionItem value="personal">
                   <AccordionTrigger><User className="mr-2"/>Personal Information</AccordionTrigger>
@@ -231,7 +231,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                                 </div>
                             </Card>
                         ))}
-                        <Button type="button" variant="outline" onClick={() => appendExp({ id: `${Date.now()}`, title: '', company: '', startDate: '', points: [] })}>
+                        <Button type="button" variant="outline" onClick={() => appendExp({ id: `${Date.now()}`, title: '', company: '', location: '', startDate: '', endDate: '', isCurrent: false, points: [] })}>
                             <PlusCircle className="mr-2 h-4 w-4"/> Add Experience
                         </Button>
                     </AccordionContent>
@@ -257,7 +257,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                                </div>
                            </Card>
                        ))}
-                       <Button type="button" variant="outline" onClick={() => appendEdu({ id: `${Date.now()}`, institution: '', degree: '', startDate: '' })}>
+                       <Button type="button" variant="outline" onClick={() => appendEdu({ id: `${Date.now()}`, institution: '', degree: '', startDate: '', fieldOfStudy: '', endDate: '' })}>
                            <PlusCircle className="mr-2 h-4 w-4"/> Add Education
                        </Button>
                     </AccordionContent>

@@ -18,7 +18,7 @@ export const sampleResumeData: ResumeData = {
       company: 'Company Name',
       location: 'City, State',
       startDate: '2020-01',
-      endDate: 'Present',
+      endDate: '',
       isCurrent: true,
       points: [
         'Accomplishment or responsibility 1',

@@ -41,12 +41,16 @@ export function GenerateResumeForm() {
                 portfolio: '',
             },
             summary: result.summary || '',
-            experience: result.experience?.map(exp => ({ 
-                ...exp,
-                location: '', 
-                isCurrent: !!exp.endDate?.toLowerCase().includes('present'), 
-                points: exp.points || []
-            })) || [],
+            experience: result.experience?.map(exp => {
+                const isCurrent = !!exp.endDate?.toLowerCase().includes('present');
+                return {
+                    ...exp,
+                    location: '', 
+                    isCurrent: isCurrent, 
+                    endDate: isCurrent ? '' : exp.endDate,
+                    points: exp.points || []
+                };
+            }) || [],
             education: result.education?.map(edu => ({
                 ...edu, 
                 fieldOfStudy: '',
