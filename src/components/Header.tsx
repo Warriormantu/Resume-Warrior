@@ -9,7 +9,7 @@ import { Button } from './ui/button';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/templates', label: 'Resume Templates' },
-  { href: '/cv-templates', label: 'CV Templates' },
+  { href: '/cv-templates', label: 'Cover Letter Generator' },
   { href: '/about', label: 'About' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/contact', label: 'Contact Us' },
