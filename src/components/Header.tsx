@@ -9,6 +9,7 @@ import { Button } from './ui/button';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/templates', label: 'Resume Templates' },
+  { href: '/resume-analyzer', label: 'Resume Analyzer' },
   { href: '/cv-templates', label: 'Cover Letter Generator' },
   { href: '/about', label: 'About' },
   { href: '/pricing', label: 'Pricing' },

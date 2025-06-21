@@ -4,6 +4,7 @@ import { generateResumeFromPrompt } from '@/ai/flows/generate-resume-from-prompt
 import type { GenerateResumeFromPromptOutput } from '@/ai/flows/generate-resume-from-prompt';
 import { generateCoverLetter, type GenerateCoverLetterInput, type GenerateCoverLetterOutput } from '@/ai/flows/generate-cover-letter';
 import { rephraseCoverLetter } from '@/ai/flows/rephrase-cover-letter';
+import { analyzeResume, type AnalyzeResumeInput, type AnalyzeResumeOutput } from '@/ai/flows/analyze-resume';
 
 export async function generateResumeAction(prompt: string): Promise<GenerateResumeFromPromptOutput | null> {
     if (!prompt) {
@@ -40,6 +41,19 @@ export async function rephraseCoverLetterAction(coverLetter: string): Promise<{ 
         return result;
     } catch (error) {
         console.error("Error in rephraseCoverLetterAction:", error);
+        return null;
+    }
+}
+
+export async function analyzeResumeAction(input: AnalyzeResumeInput): Promise<AnalyzeResumeOutput | null> {
+    if (!input.resumeContent || !input.jobDescription) {
+        return null;
+    }
+    try {
+        const result = await analyzeResume(input);
+        return result;
+    } catch (error) {
+        console.error("Error in analyzeResumeAction:", error);
         return null;
     }
 }

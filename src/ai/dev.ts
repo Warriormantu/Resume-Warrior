@@ -6,3 +6,4 @@ import '@/ai/flows/generate-resume-from-prompt.ts';
 import '@/ai/flows/generate-summary.ts';
 import '@/ai/flows/generate-cover-letter.ts';
 import '@/ai/flows/rephrase-cover-letter.ts';
+import '@/ai/flows/analyze-resume.ts';
