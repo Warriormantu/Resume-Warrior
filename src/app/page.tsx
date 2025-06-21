@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ResumePreview } from "@/components/ResumePreview";
 import { sampleResumeData } from "@/lib/sampleData";
 import { templates } from "@/lib/templates";
+import { GenerateResumeForm } from "@/components/GenerateResumeForm";
 
 const testimonials = [
   {
@@ -120,8 +121,14 @@ export default function Home() {
           </div>
         </div>
       </section>
-      
+
       <section className="w-full py-16 md:py-24 bg-secondary">
+         <div className="container px-4 md:px-6">
+            <GenerateResumeForm />
+         </div>
+      </section>
+      
+      <section className="w-full py-16 md:py-24">
         <div className="container px-4 md:px-6 grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-up">
               <div className="rounded-lg shadow-lg border overflow-hidden aspect-[8.5/11]">
@@ -140,7 +147,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full py-16 md:py-24">
+      <section className="w-full py-16 md:py-24 bg-secondary">
         <div className="container px-4 md:px-6">
            <h2 className="text-3xl font-bold text-center font-headline mb-12">
             Loved by Professionals Worldwide
@@ -172,7 +179,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full py-16 md:py-24 bg-secondary">
+      <section className="w-full py-16 md:py-24 bg-background">
         <div className="container px-4 md:px-6">
             <h2 className="text-center text-xl font-semibold text-muted-foreground mb-8">
                 Trusted by Professionals at Top Companies

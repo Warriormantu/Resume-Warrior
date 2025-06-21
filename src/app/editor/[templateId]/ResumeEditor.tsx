@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Template } from '@/lib/templates';
 import type { ResumeData } from '@/lib/types';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
@@ -45,10 +45,34 @@ import { sampleResumeData } from '@/lib/sampleData';
 import { ResumePreview } from '@/components/ResumePreview';
 
 export function ResumeEditor({ template }: { template: Template }) {
+  const { toast } = useToast();
   const form = useForm<ResumeData>({
     resolver: zodResolver(ResumeSchema),
     defaultValues: sampleResumeData,
   });
+
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('resume-draft');
+    if (savedDraft) {
+        try {
+            const draftData = JSON.parse(savedDraft);
+            form.reset(draftData);
+            toast({
+                title: 'Draft Applied',
+                description: 'Your AI-generated draft has been loaded into the editor.',
+            });
+        } catch (e) {
+            console.error("Failed to parse resume draft from localStorage", e);
+             toast({
+                variant: 'destructive',
+                title: 'Error Loading Draft',
+                description: 'Could not load the generated draft.',
+            });
+        } finally {
+            localStorage.removeItem('resume-draft');
+        }
+    }
+  }, [form, toast]);
 
   const { fields: expFields, append: appendExp, remove: removeExp } = useFieldArray({
     control: form.control,
@@ -62,7 +86,6 @@ export function ResumeEditor({ template }: { template: Template }) {
 
   const watchedData = form.watch();
   const previewRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
 
   const handleDownloadPDF = async () => {

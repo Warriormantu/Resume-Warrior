@@ -20,8 +20,31 @@ export type GenerateResumeFromPromptInput = z.infer<
 >;
 
 const GenerateResumeFromPromptOutputSchema = z.object({
-  resumeDraft: z.string().describe('A draft of the resume in text format.'),
+  personalInfo: z.object({
+    name: z.string().describe("The user's full name."),
+    email: z.string().describe("The user's email address."),
+    phone: z.string().describe("The user's phone number."),
+    address: z.string().describe("The user's city and state."),
+  }),
+  summary: z.string().describe("A 2-3 sentence professional summary."),
+  experience: z.array(z.object({
+    id: z.string().describe("A unique ID for this experience, e.g., '1'."),
+    title: z.string().describe("The job title."),
+    company: z.string().describe("The company name."),
+    startDate: z.string().describe("The start date in YYYY-MM format."),
+    endDate: z.string().describe("The end date in YYYY-MM format, or 'Present' if current."),
+    points: z.array(z.string()).describe("Bulleted list of key achievements."),
+  })),
+  education: z.array(z.object({
+     id: z.string().describe("A unique ID for this education, e.g., '1'."),
+     institution: z.string().describe("The name of the school or university."),
+     degree: z.string().describe("The degree or certificate obtained."),
+     startDate: z.string().describe("The start date in YYYY-MM format."),
+     endDate: z.string().describe("The end date in YYYY-MM format."),
+  })),
+  skills: z.array(z.string()).describe("A list of relevant skills."),
 });
+
 
 export type GenerateResumeFromPromptOutput = z.infer<
   typeof GenerateResumeFromPromptOutputSchema
@@ -37,7 +60,10 @@ const prompt = ai.definePrompt({
   name: 'generateResumeFromPromptPrompt',
   input: {schema: GenerateResumeFromPromptInputSchema},
   output: {schema: GenerateResumeFromPromptOutputSchema},
-  prompt: `You are an expert resume writer. Generate a resume draft based on the following prompt:\n\n{{{prompt}}}`,
+  prompt: `You are an expert resume writer. A user will provide a prompt describing their background. Your task is to generate a complete, professional resume draft based on this prompt. The output MUST be a valid JSON object that conforms to the provided output schema. Fill in all the fields (personalInfo, summary, experience, education, skills) as best you can based on the user's prompt. For dates, use YYYY-MM format. For current jobs, use 'Present' as the end date.
+
+User Prompt:
+{{{prompt}}}`,
 });
 
 const generateResumeFromPromptFlow = ai.defineFlow(
