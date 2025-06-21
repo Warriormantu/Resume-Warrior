@@ -22,7 +22,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, { data: ResumeData
     const TemplateComponent = templateComponents[template.id] || ClassicProfessional;
     
     return (
-        <div ref={ref} className="bg-white text-black p-8 shadow-lg w-full aspect-[8.5/11] h-full">
+        <div ref={ref} className="bg-white text-black p-8 shadow-lg" style={{ width: '816px', minHeight: '1056px' }}>
             <TemplateComponent data={data} />
         </div>
     );

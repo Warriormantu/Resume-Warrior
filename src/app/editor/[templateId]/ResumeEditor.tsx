@@ -173,9 +173,13 @@ const SortableEducationCard = ({
 const SortableProjectCard = ({
   index,
   onRemove,
+  onRephrase,
+  rephrasingIndex,
 }: {
   index: number;
   onRemove: (index: number) => void;
+  onRephrase: (index: number) => void;
+  rephrasingIndex: number | null;
 }) => {
   const { control, getValues } = useFormContext<ResumeData>();
   const fieldId = getValues(`projects.${index}.id`);
@@ -209,6 +213,10 @@ const SortableProjectCard = ({
                 <FormField name={`projects.${index}.url`} control={control} render={({ field }) => (<FormItem><FormLabel>Project URL</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
                 <FormField name={`projects.${index}.description`} control={control} render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={2}/></FormControl></FormItem>)}/>
                 <FormField name={`projects.${index}.points`} control={control} render={({ field }) => (<FormItem><FormLabel>Key Points/Features</FormLabel><FormControl><Textarea {...field} value={Array.isArray(field.value) ? field.value.join('\n') : ''} onChange={e => field.onChange(e.target.value.split('\n'))} placeholder="Enter each point on a new line." rows={3}/></FormControl></FormItem>)}/>
+                <Button type="button" size="sm" onClick={() => onRephrase(index)} disabled={rephrasingIndex === index}>
+                    {rephrasingIndex === index ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                    AI Rephrase Points
+                </Button>
             </div>
         </Card>
     </div>
@@ -319,6 +327,7 @@ export function ResumeEditor({ template }: { template: Template }) {
   const watchedData = form.watch();
   const previewRef = useRef<HTMLDivElement>(null);
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
+  const [rephrasingProjectIndex, setRephrasingProjectIndex] = useState<number | null>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   
   const sensors = useSensors(
@@ -376,6 +385,19 @@ export function ResumeEditor({ template }: { template: Template }) {
         toast({ variant: "destructive", title: 'AI Rephrase Failed', description: 'Could not rephrase points at this time.' });
     }
     setRephrasingIndex(null);
+  };
+  
+  const handleRephraseProjectPoints = async (projectIndex: number) => {
+    setRephrasingProjectIndex(projectIndex);
+    const points = form.getValues(`projects.${projectIndex}.points`);
+    const rephrased = await getRephrasedPoints(points || []);
+    if (rephrased) {
+        form.setValue(`projects.${projectIndex}.points`, rephrased);
+        toast({ title: 'AI Rephrase Successful', description: 'Your project points have been updated.' });
+    } else {
+        toast({ variant: "destructive", title: 'AI Rephrase Failed', description: 'Could not rephrase points at this time.' });
+    }
+    setRephrasingProjectIndex(null);
   };
 
   const handleGenerateSummary = async () => {
@@ -504,7 +526,13 @@ export function ResumeEditor({ template }: { template: Template }) {
                             <SortableContext items={projFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-4">
                                 {projFields.map((field, index) => (
-                                    <SortableProjectCard key={field.id} index={index} onRemove={removeProj} />
+                                    <SortableProjectCard 
+                                        key={field.id} 
+                                        index={index} 
+                                        onRemove={removeProj}
+                                        onRephrase={handleRephraseProjectPoints}
+                                        rephrasingIndex={rephrasingProjectIndex}
+                                    />
                                 ))}
                                 </div>
                             </SortableContext>
@@ -554,9 +582,9 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download Image</Button>
             </div>
-            <div className="aspect-[8.5/11]">
-                <div className="w-[111.11%] h-[111.11%] origin-top scale-[0.9] lg:w-[166.67%] lg:h-[166.67%] lg:scale-[0.6] xl:w-[125%] xl:h-[125%] xl:scale-[0.8]">
-                  <ResumePreview data={watchedData} template={template} ref={previewRef} />
+            <div className="flex justify-center">
+                <div className="origin-top transform scale-[0.75]">
+                    <ResumePreview data={watchedData} template={template} ref={previewRef} />
                 </div>
             </div>
         </div>
