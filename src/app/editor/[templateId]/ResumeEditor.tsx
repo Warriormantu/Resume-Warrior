@@ -37,113 +37,17 @@ import {
   Wrench,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import Image from 'next/image';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { getRephrasedPoints } from './actions';
+import { sampleResumeData } from '@/lib/sampleData';
+import { ResumePreview } from '@/components/ResumePreview';
 
-interface ResumeEditorProps {
-  template: Template;
-}
-
-const initialValues: ResumeData = {
-  personalInfo: {
-    name: 'Your Name',
-    email: 'your.email@example.com',
-    phone: '123-456-7890',
-    address: 'Your City, State',
-    linkedin: '',
-    portfolio: '',
-  },
-  summary:
-    'A brief summary about your professional background, skills, and career goals. Tailor this to the job you are applying for.',
-  experience: [
-    {
-      id: '1',
-      title: 'Job Title',
-      company: 'Company Name',
-      location: 'City, State',
-      startDate: '2020-01',
-      endDate: 'Present',
-      isCurrent: true,
-      points: [
-        'Accomplishment or responsibility 1',
-        'Accomplishment or responsibility 2',
-      ],
-    },
-  ],
-  education: [
-    {
-      id: '1',
-      institution: 'University Name',
-      degree: 'Degree or Certificate',
-      fieldOfStudy: 'Field of Study',
-      startDate: '2016-09',
-      endDate: '2020-05',
-    },
-  ],
-  skills: ['Skill 1', 'Skill 2', 'Skill 3', 'Data Analysis', 'Project Management'],
-};
-
-// Resume Preview Component (Internal to Editor)
-function ResumePreview({ data, template, previewRef }: { data: ResumeData; template: Template, previewRef: React.RefObject<HTMLDivElement> }) {
-    const { personalInfo, summary, experience, education, skills } = data;
-    return (
-        <div ref={previewRef} className="bg-white text-black p-8 shadow-lg aspect-[8.5/11] w-full max-w-[816px] mx-auto scale-[0.9] lg:scale-[0.6] xl:scale-[0.8] origin-top">
-            {/* Basic template structure */}
-            <header className="text-center mb-6">
-                <h1 className="text-4xl font-bold font-headline text-slate-800">{personalInfo.name}</h1>
-                <p className="text-sm text-slate-600">
-                    {personalInfo.address} | {personalInfo.phone} | {personalInfo.email}
-                    {personalInfo.linkedin && ` | ${personalInfo.linkedin}`}
-                    {personalInfo.portfolio && ` | ${personalInfo.portfolio}`}
-                </p>
-            </header>
-            <section className="mb-4">
-                <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">SUMMARY</h2>
-                <p className="text-sm text-slate-700">{summary}</p>
-            </section>
-            <section className="mb-4">
-                <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">EXPERIENCE</h2>
-                {experience.map(exp => (
-                    <div key={exp.id} className="mb-3">
-                        <div className="flex justify-between items-baseline">
-                             <h3 className="text-md font-bold text-slate-800">{exp.title}</h3>
-                             <p className="text-xs text-slate-600">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
-                        </div>
-                        <p className="text-sm font-semibold text-slate-600">{exp.company}{exp.location && `, ${exp.location}`}</p>
-                        <ul className="list-disc list-inside mt-1 text-sm text-slate-700">
-                            {exp.points?.map((point, i) => <li key={i}>{point}</li>)}
-                        </ul>
-                    </div>
-                ))}
-            </section>
-            <section className="mb-4">
-                <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">EDUCATION</h2>
-                {education.map(edu => (
-                     <div key={edu.id} className="mb-2">
-                        <div className="flex justify-between items-baseline">
-                           <h3 className="text-md font-bold text-slate-800">{edu.institution}</h3>
-                           <p className="text-xs text-slate-600">{edu.startDate} - {edu.endDate}</p>
-                        </div>
-                        <p className="text-sm text-slate-600">{edu.degree}{edu.fieldOfStudy && `, ${edu.fieldOfStudy}`}</p>
-                     </div>
-                ))}
-            </section>
-            <section>
-                 <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">SKILLS</h2>
-                 <p className="text-sm text-slate-700">{skills.join(' | ')}</p>
-            </section>
-        </div>
-    );
-}
-
-// Main Editor Component
-export function ResumeEditor({ template }: ResumeEditorProps) {
+export function ResumeEditor({ template }: { template: Template }) {
   const form = useForm<ResumeData>({
     resolver: zodResolver(ResumeSchema),
-    defaultValues: initialValues,
+    defaultValues: sampleResumeData,
   });
 
   const { fields: expFields, append: appendExp, remove: removeExp } = useFieldArray({
@@ -324,7 +228,9 @@ export function ResumeEditor({ template }: ResumeEditorProps) {
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download Image</Button>
             </div>
-            <ResumePreview data={watchedData} template={template} previewRef={previewRef} />
+            <div className="scale-[0.9] lg:scale-[0.6] xl:scale-[0.8] origin-top">
+              <ResumePreview data={watchedData} template={template} ref={previewRef} />
+            </div>
         </div>
         {/* Download buttons for mobile view */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm z-20 p-4 border-t flex gap-4 justify-center">

@@ -1,9 +1,10 @@
 import type { Template } from "@/lib/templates";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { ResumePreview } from "./ResumePreview";
+import { sampleResumeData } from "@/lib/sampleData";
 
 interface TemplateCardProps {
   template: Template;
@@ -23,14 +24,11 @@ export function TemplateCard({ template }: TemplateCardProps) {
             <Badge variant="default">₹{template.price}</Badge>
           )}
         </div>
-        <Image
-          src={template.image}
-          alt={template.name}
-          width={400}
-          height={566}
-          className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          data-ai-hint={template.hint}
-        />
+        <div className="aspect-[8.5/11] w-full overflow-hidden bg-gray-100 group-hover:opacity-90 transition-opacity">
+            <div className="scale-[0.3] origin-top">
+                <ResumePreview data={sampleResumeData} template={template} />
+            </div>
+        </div>
       </CardHeader>
       <CardContent className="flex-grow p-4">
         <CardTitle className="font-headline text-lg">{template.name}</CardTitle>

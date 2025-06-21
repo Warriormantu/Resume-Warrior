@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Sparkles, Download } from "lucide-react";
-import Image from "next/image";
+import { Palette, Sparkles, Download } from "lucide-react";
 import Link from "next/link";
+import { ResumePreview } from "@/components/ResumePreview";
+import { sampleResumeData } from "@/lib/sampleData";
+import { templates } from "@/lib/templates";
 
 export default function Home() {
+  const featuredTemplate = templates.find(t => t.id === 'modern-creative') || templates[0];
+
   return (
     <div className="flex flex-col items-center">
       <section className="w-full py-20 md:py-32 lg:py-40 text-center bg-primary text-primary-foreground">
@@ -33,7 +37,7 @@ export default function Home() {
             <Card className="text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <CardHeader>
                 <div className="mx-auto bg-accent/20 text-accent p-3 rounded-full w-fit">
-                  <FileText className="h-8 w-8 text-primary" />
+                  <Palette className="h-8 w-8 text-primary" />
                 </div>
                 <CardTitle className="font-headline mt-4">1. Select a Template</CardTitle>
               </CardHeader>
@@ -79,14 +83,11 @@ export default function Home() {
       <section className="w-full py-16 md:py-24 bg-secondary">
         <div className="container px-4 md:px-6 grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-up">
-              <Image
-                src="https://placehold.co/600x400.png"
-                alt="Resume Editor Preview"
-                width={600}
-                height={400}
-                className="rounded-lg shadow-lg"
-                data-ai-hint="resume builder"
-              />
+              <div className="rounded-lg shadow-lg border overflow-hidden">
+                <div className="scale-75 origin-top-left -translate-x-12 -translate-y-16">
+                    <ResumePreview data={sampleResumeData} template={featuredTemplate} />
+                </div>
+              </div>
             </div>
             <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                 <h2 className="text-3xl font-bold font-headline mb-4">AI That Works For You</h2>

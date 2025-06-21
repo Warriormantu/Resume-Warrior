@@ -2,12 +2,13 @@
 
 import { useParams } from 'next/navigation';
 import { getTemplateById } from '@/lib/templates';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { ResumePreview } from '@/components/ResumePreview';
+import { sampleResumeData } from '@/lib/sampleData';
 
 declare global {
     interface Window {
@@ -72,14 +73,9 @@ export default function BuyPage() {
                 <div>
                     <h1 className="text-3xl font-bold font-headline mb-2">{template.name}</h1>
                     <p className="text-muted-foreground mb-6">Preview of the premium template.</p>
-                    <Image
-                        src={template.image}
-                        alt={template.name}
-                        width={800}
-                        height={1132}
-                        className="rounded-lg shadow-lg border"
-                        data-ai-hint={template.hint}
-                    />
+                    <div className="rounded-lg shadow-lg border overflow-hidden">
+                        <ResumePreview data={sampleResumeData} template={template} />
+                    </div>
                 </div>
                 <div className="sticky top-24">
                     <Card>
