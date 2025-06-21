@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-export function Logo() {
-  const gradientId = React.useId();
+export function Logo({ id }: { id: string }) {
+  const gradientId = `${id}-gradient`;
 
   return (
     <svg
