@@ -21,13 +21,13 @@ const templateComponents: Record<string, React.FC<{ data: ResumeData }>> = {
 type ResumePreviewProps = {
     data: ResumeData;
     template: Template;
-    accentColor: string;
-    accentColorBg: string;
-    fontFamily: string;
+    accentColor?: string;
+    accentColorBg?: string;
+    fontFamily?: string;
 };
 
 export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps>(
-    ({ data, template, accentColor, accentColorBg, fontFamily }, ref) => {
+    ({ data, template, accentColor = '#009cff', accentColorBg = 'rgba(0, 156, 255, 0.1)', fontFamily = 'Inter' }, ref) => {
     
     const TemplateComponent = templateComponents[template.id] || ClassicProfessional;
 
