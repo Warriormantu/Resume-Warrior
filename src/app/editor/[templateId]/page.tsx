@@ -1,13 +1,7 @@
 import { getTemplateById } from "@/lib/templates";
 import { ResumeEditor } from "./ResumeEditor";
 
-type EditorPageProps = {
-    params: {
-        templateId: string;
-    }
-}
-
-export default function EditorPage({ params }: EditorPageProps) {
+export default function EditorPage({ params }: { params: { templateId: string } }) {
     const template = getTemplateById(params.templateId);
 
     if (!template) {
