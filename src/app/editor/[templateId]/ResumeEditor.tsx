@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Template } from '@/lib/templates';
 import type { ResumeData } from '@/lib/types';
-import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
+import { useForm, useFieldArray, FormProvider, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ResumeSchema } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -36,14 +36,184 @@ import {
   GraduationCap,
   Wrench,
   Rocket,
+  GripVertical
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { getRephrasedPoints, getAiSummary } from './actions';
 import { sampleResumeData } from '@/lib/sampleData';
 import { ResumePreview } from '@/components/ResumePreview';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+const SortableExperienceCard = ({
+  index,
+  onRemove,
+  onRephrase,
+  rephrasingIndex,
+}: {
+  index: number;
+  onRemove: (index: number) => void;
+  onRephrase: (index: number) => void;
+  rephrasingIndex: number | null;
+}) => {
+  const { control, getValues, watch } = useFormContext<ResumeData>();
+  const fieldId = getValues(`experience.${index}.id`);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: fieldId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="touch-none">
+      <Card className="p-4 bg-background">
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h4 className="font-semibold">Experience #{index + 1}</h4>
+            <div className="flex items-center">
+              <Button type="button" variant="ghost" size="icon" className="cursor-grab" {...attributes} {...listeners}>
+                <GripVertical className="h-4 w-4" />
+              </Button>
+              <Button type="button" variant="ghost" size="icon" onClick={() => onRemove(index)}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <FormField name={`experience.${index}.title`} control={control} render={({ field }) => (<FormItem><FormLabel>Job Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+            <FormField name={`experience.${index}.company`} control={control} render={({ field }) => (<FormItem><FormLabel>Company</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)} />
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <FormField name={`experience.${index}.startDate`} control={control} render={({ field }) => (<FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="month" {...field} /></FormControl></FormItem>)} />
+            <FormField name={`experience.${index}.endDate`} control={control} render={({ field }) => (<FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="month" {...field} disabled={watch(`experience.${index}.isCurrent`)} /></FormControl></FormItem>)} />
+          </div>
+          <FormField name={`experience.${index}.isCurrent`} control={control} render={({ field }) => (<FormItem className="flex items-center gap-2"><FormControl><Input type="checkbox" className="w-4 h-4" {...field} checked={field.value} onChange={e => field.onChange(e.target.checked)} /></FormControl><FormLabel className="!mt-0">I currently work here</FormLabel></FormItem>)} />
+          <FormField name={`experience.${index}.points`} control={control} render={({ field }) => (<FormItem><FormLabel>Key Responsibilities/Achievements</FormLabel><FormControl><Textarea {...field} value={Array.isArray(field.value) ? field.value.join('\n') : ''} onChange={e => field.onChange(e.target.value.split('\n'))} placeholder="Enter each point on a new line." rows={4} /></FormControl></FormItem>)} />
+          <Button type="button" size="sm" onClick={() => onRephrase(index)} disabled={rephrasingIndex === index}>
+            {rephrasingIndex === index ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+            AI Rephrase Points
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+const SortableEducationCard = ({
+  index,
+  onRemove,
+}: {
+  index: number;
+  onRemove: (index: number) => void;
+}) => {
+  const { control, getValues } = useFormContext<ResumeData>();
+  const fieldId = getValues(`education.${index}.id`);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: fieldId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="touch-none">
+       <Card className="p-4 bg-background">
+            <div className="space-y-4">
+               <div className="flex justify-between items-center">
+                   <h4 className="font-semibold">Education #{index + 1}</h4>
+                    <div className="flex items-center">
+                        <Button type="button" variant="ghost" size="icon" className="cursor-grab" {...attributes} {...listeners}>
+                            <GripVertical className="h-4 w-4" />
+                        </Button>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => onRemove(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                    </div>
+               </div>
+                <FormField name={`education.${index}.institution`} control={control} render={({ field }) => (<FormItem><FormLabel>Institution</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                <FormField name={`education.${index}.degree`} control={control} render={({ field }) => (<FormItem><FormLabel>Degree/Certificate</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                <div className="grid md:grid-cols-2 gap-4">
+                    <FormField name={`education.${index}.startDate`} control={control} render={({ field }) => (<FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="month" {...field} /></FormControl></FormItem>)}/>
+                    <FormField name={`education.${index}.endDate`} control={control} render={({ field }) => (<FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="month" {...field} /></FormControl></FormItem>)}/>
+                </div>
+           </div>
+       </Card>
+    </div>
+  );
+};
+
+
+const SortableProjectCard = ({
+  index,
+  onRemove,
+}: {
+  index: number;
+  onRemove: (index: number) => void;
+}) => {
+  const { control, getValues } = useFormContext<ResumeData>();
+  const fieldId = getValues(`projects.${index}.id`);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: fieldId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="touch-none">
+       <Card className="p-4 bg-background">
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h4 className="font-semibold">Project #{index + 1}</h4>
+                    <div className="flex items-center">
+                        <Button type="button" variant="ghost" size="icon" className="cursor-grab" {...attributes} {...listeners}>
+                            <GripVertical className="h-4 w-4" />
+                        </Button>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => onRemove(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                    </div>
+                </div>
+                <FormField name={`projects.${index}.name`} control={control} render={({ field }) => (<FormItem><FormLabel>Project Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                <FormField name={`projects.${index}.url`} control={control} render={({ field }) => (<FormItem><FormLabel>Project URL</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                <FormField name={`projects.${index}.description`} control={control} render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={2}/></FormControl></FormItem>)}/>
+                <FormField name={`projects.${index}.points`} control={control} render={({ field }) => (<FormItem><FormLabel>Key Points/Features</FormLabel><FormControl><Textarea {...field} value={Array.isArray(field.value) ? field.value.join('\n') : ''} onChange={e => field.onChange(e.target.value.split('\n'))} placeholder="Enter each point on a new line." rows={3}/></FormControl></FormItem>)}/>
+            </div>
+        </Card>
+    </div>
+  );
+};
+
 
 export function ResumeEditor({ template }: { template: Template }) {
   const { toast } = useToast();
@@ -75,17 +245,17 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
   }, [form, toast]);
 
-  const { fields: expFields, append: appendExp, remove: removeExp } = useFieldArray({
+  const { fields: expFields, append: appendExp, remove: removeExp, move: moveExp } = useFieldArray({
     control: form.control,
     name: "experience",
   });
 
-  const { fields: eduFields, append: appendEdu, remove: removeEdu } = useFieldArray({
+  const { fields: eduFields, append: appendEdu, remove: removeEdu, move: moveEdu } = useFieldArray({
     control: form.control,
     name: "education"
   });
   
-  const { fields: projFields, append: appendProj, remove: removeProj } = useFieldArray({
+  const { fields: projFields, append: appendProj, remove: removeProj, move: moveProj } = useFieldArray({
     control: form.control,
     name: "projects"
   });
@@ -95,6 +265,28 @@ export function ResumeEditor({ template }: { template: Template }) {
   const previewRef = useRef<HTMLDivElement>(null);
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (
+    event: DragEndEvent,
+    moveFn: (from: number, to: number) => void,
+    fields: { id: string }[]
+  ) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex((field) => field.id === active.id);
+      const newIndex = fields.findIndex((field) => field.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        moveFn(oldIndex, newIndex);
+      }
+    }
+  };
 
   const handleDownloadPDF = async () => {
     if (!previewRef.current) return;
@@ -207,30 +399,21 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <AccordionItem value="experience">
                     <AccordionTrigger><Briefcase className="mr-2"/>Work Experience</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                        {expFields.map((field, index) => (
-                            <Card key={field.id} className="p-4 bg-background">
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                       <h4 className="font-semibold">Experience #{index + 1}</h4>
-                                       <Button type="button" variant="ghost" size="icon" onClick={() => removeExp(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
-                                    </div>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <FormField name={`experience.${index}.title`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Job Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                                        <FormField name={`experience.${index}.company`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Company</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                                    </div>
-                                     <div className="grid md:grid-cols-2 gap-4">
-                                        <FormField name={`experience.${index}.startDate`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="month" {...field} /></FormControl></FormItem>)}/>
-                                        <FormField name={`experience.${index}.endDate`} control={form.control} render={({ field }) => (<FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="month" {...field} disabled={form.watch(`experience.${index}.isCurrent`)} /></FormControl></FormItem>)}/>
-                                    </div>
-                                    <FormField name={`experience.${index}.isCurrent`} control={form.control} render={({ field }) => (<FormItem className="flex items-center gap-2"><FormControl><Input type="checkbox" className="w-4 h-4" {...field} checked={field.value} onChange={e => field.onChange(e.target.checked)}/></FormControl><FormLabel className="!mt-0">I currently work here</FormLabel></FormItem>)}/>
-                                    <FormField name={`experience.${index}.points`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Key Responsibilities/Achievements</FormLabel><FormControl><Textarea {...field} value={Array.isArray(field.value) ? field.value.join('\n') : ''} onChange={e => field.onChange(e.target.value.split('\n'))} placeholder="Enter each point on a new line." rows={4}/></FormControl></FormItem>)}/>
-                                    <Button type="button" size="sm" onClick={() => handleRephrase(index)} disabled={rephrasingIndex === index}>
-                                        {rephrasingIndex === index ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
-                                        AI Rephrase Points
-                                    </Button>
-                                </div>
-                            </Card>
-                        ))}
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveExp, expFields)}>
+                        <SortableContext items={expFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                            <div className="space-y-4">
+                                {expFields.map((field, index) => (
+                                    <SortableExperienceCard
+                                        key={field.id}
+                                        index={index}
+                                        onRemove={removeExp}
+                                        onRephrase={handleRephrase}
+                                        rephrasingIndex={rephrasingIndex}
+                                    />
+                                ))}
+                            </div>
+                        </SortableContext>
+                      </DndContext>
                         <Button type="button" variant="outline" onClick={() => appendExp({ id: `${Date.now()}`, title: '', company: '', location: '', startDate: '', endDate: '', isCurrent: false, points: [] })}>
                             <PlusCircle className="mr-2 h-4 w-4"/> Add Experience
                         </Button>
@@ -241,22 +424,15 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <AccordionItem value="education">
                     <AccordionTrigger><GraduationCap className="mr-2"/>Education</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                       {eduFields.map((field, index) => (
-                           <Card key={field.id} className="p-4 bg-background">
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveEdu, eduFields)}>
+                            <SortableContext items={eduFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-4">
-                                   <div className="flex justify-between items-center">
-                                       <h4 className="font-semibold">Education #{index + 1}</h4>
-                                       <Button type="button" variant="ghost" size="icon" onClick={() => removeEdu(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
-                                   </div>
-                                    <FormField name={`education.${index}.institution`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Institution</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                                    <FormField name={`education.${index}.degree`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Degree/Certificate</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <FormField name={`education.${index}.startDate`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="month" {...field} /></FormControl></FormItem>)}/>
-                                        <FormField name={`education.${index}.endDate`} control={form.control} render={({ field }) => (<FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="month" {...field} /></FormControl></FormItem>)}/>
-                                    </div>
-                               </div>
-                           </Card>
-                       ))}
+                                    {eduFields.map((field, index) => (
+                                        <SortableEducationCard key={field.id} index={index} onRemove={removeEdu} />
+                                    ))}
+                                </div>
+                            </SortableContext>
+                        </DndContext>
                        <Button type="button" variant="outline" onClick={() => appendEdu({ id: `${Date.now()}`, institution: '', degree: '', startDate: '', fieldOfStudy: '', endDate: '' })}>
                            <PlusCircle className="mr-2 h-4 w-4"/> Add Education
                        </Button>
@@ -266,20 +442,15 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <AccordionItem value="projects">
                     <AccordionTrigger><Rocket className="mr-2"/>Projects</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                        {projFields.map((field, index) => (
-                            <Card key={field.id} className="p-4 bg-background">
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveProj, projFields)}>
+                            <SortableContext items={projFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <h4 className="font-semibold">Project #{index + 1}</h4>
-                                        <Button type="button" variant="ghost" size="icon" onClick={() => removeProj(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
-                                    </div>
-                                    <FormField name={`projects.${index}.name`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Project Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                                    <FormField name={`projects.${index}.url`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Project URL</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                                    <FormField name={`projects.${index}.description`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={2}/></FormControl></FormItem>)}/>
-                                    <FormField name={`projects.${index}.points`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Key Points/Features</FormLabel><FormControl><Textarea {...field} value={Array.isArray(field.value) ? field.value.join('\n') : ''} onChange={e => field.onChange(e.target.value.split('\n'))} placeholder="Enter each point on a new line." rows={3}/></FormControl></FormItem>)}/>
+                                {projFields.map((field, index) => (
+                                    <SortableProjectCard key={field.id} index={index} onRemove={removeProj} />
+                                ))}
                                 </div>
-                            </Card>
-                        ))}
+                            </SortableContext>
+                        </DndContext>
                         <Button type="button" variant="outline" onClick={() => appendProj({ id: `${Date.now()}`, name: '', description: '', url: '', points: [] })}>
                             <PlusCircle className="mr-2 h-4 w-4"/> Add Project
                         </Button>
