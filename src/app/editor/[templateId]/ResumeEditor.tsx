@@ -40,7 +40,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
-import { getRephrasedPoints } from './actions';
+import { getRephrasedPoints, getAiSummary } from './actions';
 import { sampleResumeData } from '@/lib/sampleData';
 import { ResumePreview } from '@/components/ResumePreview';
 
@@ -87,6 +87,7 @@ export function ResumeEditor({ template }: { template: Template }) {
   const watchedData = form.watch();
   const previewRef = useRef<HTMLDivElement>(null);
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   const handleDownloadPDF = async () => {
     if (!previewRef.current) return;
@@ -121,6 +122,27 @@ export function ResumeEditor({ template }: { template: Template }) {
         toast({ variant: "destructive", title: 'AI Rephrase Failed', description: 'Could not rephrase points at this time.' });
     }
     setRephrasingIndex(null);
+  };
+
+  const handleGenerateSummary = async () => {
+    setIsGeneratingSummary(true);
+    const { personalInfo, experience, skills } = form.getValues();
+
+    const summaryInput = {
+      name: personalInfo.name,
+      experience: experience.map(exp => ({ title: exp.title, company: exp.company })),
+      skills: skills,
+    };
+
+    const newSummary = await getAiSummary(summaryInput);
+
+    if (newSummary) {
+      form.setValue('summary', newSummary);
+      toast({ title: 'AI Summary Generated', description: 'Your professional summary has been updated.' });
+    } else {
+      toast({ variant: 'destructive', title: 'AI Summary Failed', description: 'Could not generate a summary at this time.' });
+    }
+    setIsGeneratingSummary(false);
   };
 
   return (
@@ -164,10 +186,14 @@ export function ResumeEditor({ template }: { template: Template }) {
                  {/* Summary */}
                 <AccordionItem value="summary">
                     <AccordionTrigger><BookUser className="mr-2"/>Professional Summary</AccordionTrigger>
-                    <AccordionContent className="p-1">
+                    <AccordionContent className="space-y-4 p-1">
                          <FormField name="summary" control={form.control} render={({ field }) => (
                             <FormItem><FormControl><Textarea {...field} rows={5}/></FormControl><FormMessage /></FormItem>
                          )}/>
+                         <Button type="button" size="sm" onClick={handleGenerateSummary} disabled={isGeneratingSummary}>
+                            {isGeneratingSummary ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4" />}
+                            Generate with AI
+                        </Button>
                     </AccordionContent>
                 </AccordionItem>
                 {/* Experience */}
