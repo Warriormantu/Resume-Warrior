@@ -35,6 +35,7 @@ import {
   Briefcase,
   GraduationCap,
   Wrench,
+  Rocket,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import jsPDF from 'jspdf';
@@ -83,6 +84,12 @@ export function ResumeEditor({ template }: { template: Template }) {
     control: form.control,
     name: "education"
   });
+  
+  const { fields: projFields, append: appendProj, remove: removeProj } = useFieldArray({
+    control: form.control,
+    name: "projects"
+  });
+
 
   const watchedData = form.watch();
   const previewRef = useRef<HTMLDivElement>(null);
@@ -253,6 +260,29 @@ export function ResumeEditor({ template }: { template: Template }) {
                        <Button type="button" variant="outline" onClick={() => appendEdu({ id: `${Date.now()}`, institution: '', degree: '', startDate: '' })}>
                            <PlusCircle className="mr-2 h-4 w-4"/> Add Education
                        </Button>
+                    </AccordionContent>
+                </AccordionItem>
+                {/* Projects */}
+                <AccordionItem value="projects">
+                    <AccordionTrigger><Rocket className="mr-2"/>Projects</AccordionTrigger>
+                    <AccordionContent className="space-y-4 p-1">
+                        {projFields.map((field, index) => (
+                            <Card key={field.id} className="p-4 bg-background">
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <h4 className="font-semibold">Project #{index + 1}</h4>
+                                        <Button type="button" variant="ghost" size="icon" onClick={() => removeProj(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
+                                    </div>
+                                    <FormField name={`projects.${index}.name`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Project Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                                    <FormField name={`projects.${index}.url`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Project URL</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
+                                    <FormField name={`projects.${index}.description`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={2}/></FormControl></FormItem>)}/>
+                                    <FormField name={`projects.${index}.points`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Key Points/Features</FormLabel><FormControl><Textarea {...field} value={Array.isArray(field.value) ? field.value.join('\n') : ''} onChange={e => field.onChange(e.target.value.split('\n'))} placeholder="Enter each point on a new line." rows={3}/></FormControl></FormItem>)}/>
+                                </div>
+                            </Card>
+                        ))}
+                        <Button type="button" variant="outline" onClick={() => appendProj({ id: `${Date.now()}`, name: '', description: '', url: '', points: [] })}>
+                            <PlusCircle className="mr-2 h-4 w-4"/> Add Project
+                        </Button>
                     </AccordionContent>
                 </AccordionItem>
                 {/* Skills */}

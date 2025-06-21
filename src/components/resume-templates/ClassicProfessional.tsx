@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export function ClassicProfessional({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills } = data;
     return (
         <div className="font-sans text-slate-800">
             <header className="text-center mb-6">
@@ -43,6 +43,23 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                      </div>
                 ))}
             </section>
+            {projects && projects.length > 0 && (
+                <section className="mb-4">
+                    <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">PROJECTS</h2>
+                    {projects.map(proj => (
+                    <div key={proj.id} className="mb-3">
+                        <h3 className="text-md font-bold text-slate-800">{proj.name}</h3>
+                        {proj.url && <p className="text-sm text-slate-600 italic">{proj.url}</p>}
+                        {proj.description && <p className="text-sm text-slate-700 mt-1">{proj.description}</p>}
+                        {proj.points && proj.points.length > 0 && (
+                        <ul className="list-disc list-inside mt-1 text-sm text-slate-700">
+                            {proj.points.map((point, i) => <li key={i}>{point}</li>)}
+                        </ul>
+                        )}
+                    </div>
+                    ))}
+                </section>
+            )}
             <section>
                  <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">SKILLS</h2>
                  <p className="text-sm text-slate-700">{skills.join(' | ')}</p>

@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export function ModernCreative({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills } = data;
     return (
         <div className="font-sans text-slate-800 flex gap-6">
             <div className="w-1/3 bg-slate-100 p-6 rounded-l-lg">
@@ -42,7 +42,7 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                         </div>
                     ))}
                 </section>
-                <section>
+                <section className="mb-6">
                     <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider">EDUCATION</h2>
                     {education.map(edu => (
                         <div key={edu.id} className="mb-3">
@@ -54,6 +54,23 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                         </div>
                     ))}
                 </section>
+                 {projects && projects.length > 0 && (
+                    <section>
+                        <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider">PROJECTS</h2>
+                        {projects.map(proj => (
+                            <div key={proj.id} className="mb-4">
+                                <h3 className="text-md font-bold text-slate-800">{proj.name}</h3>
+                                {proj.url && <p className="text-sm text-slate-500 italic">{proj.url}</p>}
+                                {proj.description && <p className="text-sm text-slate-700 mt-1">{proj.description}</p>}
+                                {proj.points && proj.points.length > 0 && (
+                                <ul className="list-disc list-inside mt-1 text-sm text-slate-700 space-y-1">
+                                    {proj.points.map((point, i) => <li key={i}>{point}</li>)}
+                                </ul>
+                                )}
+                            </div>
+                        ))}
+                    </section>
+                )}
             </div>
         </div>
     );

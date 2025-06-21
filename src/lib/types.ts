@@ -20,6 +20,14 @@ export const EducationSchema = z.object({
     endDate: z.string().optional(),
 });
 
+export const ProjectSchema = z.object({
+    id: z.string(),
+    name: z.string().min(1, "Project name is required"),
+    description: z.string().optional(),
+    url: z.string().url().optional().or(z.literal('')),
+    points: z.array(z.string()).optional(),
+});
+
 export const ResumeSchema = z.object({
   personalInfo: z.object({
     name: z.string().min(1, "Name is required"),
@@ -32,9 +40,11 @@ export const ResumeSchema = z.object({
   summary: z.string().min(1, "A summary is required."),
   experience: z.array(ExperienceSchema),
   education: z.array(EducationSchema),
+  projects: z.array(ProjectSchema).optional(),
   skills: z.array(z.string()).min(1, "At least one skill is required."),
 });
 
 export type ResumeData = z.infer<typeof ResumeSchema>;
 export type ExperienceData = z.infer<typeof ExperienceSchema>;
 export type EducationData = z.infer<typeof EducationSchema>;
+export type ProjectData = z.infer<typeof ProjectSchema>;

@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export function AcademicResearcher({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills } = data;
     return (
         <div className="font-serif text-gray-800">
             <header className="text-center mb-6 pb-4 border-b border-gray-300">
@@ -48,6 +48,21 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                     </div>
                 ))}
             </section>
+
+            {projects && projects.length > 0 && (
+                <section className="mb-4">
+                    <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Projects</h2>
+                    {projects.map(proj => (
+                        <div key={proj.id} className="mb-3">
+                            <h3 className="text-md font-bold text-gray-800">{proj.name}</h3>
+                            <p className="text-sm text-gray-700">{proj.description}</p>
+                            <ul className="list-disc list-inside mt-1 text-sm text-gray-700">
+                                {proj.points?.map((point, i) => <li key={i}>{point}</li>)}
+                            </ul>
+                        </div>
+                    ))}
+                </section>
+            )}
 
              <section className="mb-4">
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Skills</h2>

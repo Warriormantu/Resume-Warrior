@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export function BoldMinimalist({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills } = data;
     return (
         <div className="font-sans text-gray-800 p-4">
             <header className="text-center mb-10">
@@ -47,6 +47,21 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
                      </div>
                 ))}
             </section>
+            
+            {projects && projects.length > 0 && (
+                <section className="mb-6">
+                    <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Projects</h2>
+                    {projects.map(proj => (
+                        <div key={proj.id} className="mb-4">
+                            <h3 className="text-md font-bold text-gray-800">{proj.name}</h3>
+                             {proj.url && <p className="text-xs text-gray-500">{proj.url}</p>}
+                            <ul className="mt-1 text-sm text-gray-700 list-none space-y-1">
+                                {proj.points?.map((point, i) => <li key={i} className="relative pl-4 before:content-['-'] before:absolute before:left-0">{point}</li>)}
+                            </ul>
+                        </div>
+                    ))}
+                </section>
+            )}
 
             <section>
                  <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Skills</h2>

@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export function CorporateLadder({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills } = data;
     return (
         <div className="font-serif text-gray-900 flex">
             <div className="w-1/3 bg-gray-50 p-6 border-r border-gray-200">
@@ -45,7 +45,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                     <p className="text-sm text-gray-600 leading-relaxed">{summary}</p>
                 </section>
 
-                <section>
+                <section className="mb-6">
                     <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Work Experience</h2>
                     {experience.map(exp => (
                         <div key={exp.id} className="mb-4">
@@ -60,6 +60,21 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                         </div>
                     ))}
                 </section>
+
+                {projects && projects.length > 0 && (
+                    <section>
+                        <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Projects</h2>
+                        {projects.map(proj => (
+                            <div key={proj.id} className="mb-4">
+                                <h3 className="text-md font-bold text-gray-800">{proj.name}</h3>
+                                {proj.url && <p className="text-sm text-gray-500 italic">{proj.url}</p>}
+                                <ul className="list-disc list-inside mt-1 text-sm text-gray-600 space-y-1">
+                                    {proj.points?.map((point, i) => <li key={i}>{point}</li>)}
+                                </ul>
+                            </div>
+                        ))}
+                    </section>
+                )}
             </div>
         </div>
     );

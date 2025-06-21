@@ -52,6 +52,7 @@ export function GenerateResumeForm() {
                 fieldOfStudy: '',
                 endDate: edu.endDate || ''
             })) || [],
+            projects: result.projects?.map(proj => ({ ...proj, points: proj.points || [] })) || [],
             skills: result.skills || [],
         };
 

@@ -37,4 +37,16 @@ export const sampleResumeData: ResumeData = {
     },
   ],
   skills: ['Skill 1', 'Skill 2', 'Skill 3', 'Data Analysis', 'Project Management'],
+  projects: [
+    {
+        id: '1',
+        name: 'Project Name',
+        description: 'A brief description of your project, highlighting the technologies used and your role.',
+        url: 'https://your-project-url.com',
+        points: [
+            'Key feature or contribution 1: e.g., Implemented a feature that improved performance by 20%.',
+            'Key feature or contribution 2: e.g., Designed and built the user authentication system.',
+        ]
+    }
+  ]
 };

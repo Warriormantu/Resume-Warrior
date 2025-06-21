@@ -42,6 +42,13 @@ const GenerateResumeFromPromptOutputSchema = z.object({
      startDate: z.string().describe("The start date in YYYY-MM format."),
      endDate: z.string().describe("The end date in YYYY-MM format."),
   })),
+  projects: z.array(z.object({
+    id: z.string().describe("A unique ID for this project, e.g., '1'."),
+    name: z.string().describe("The name of the project."),
+    description: z.string().describe("A brief description of the project."),
+    url: z.string().optional().describe("A URL to the project if available."),
+    points: z.array(z.string()).describe("Bulleted list of key features or contributions."),
+  })).optional().describe("A list of personal or professional projects."),
   skills: z.array(z.string()).describe("A list of relevant skills."),
 });
 
@@ -60,7 +67,7 @@ const prompt = ai.definePrompt({
   name: 'generateResumeFromPromptPrompt',
   input: {schema: GenerateResumeFromPromptInputSchema},
   output: {schema: GenerateResumeFromPromptOutputSchema},
-  prompt: `You are an expert resume writer. A user will provide a prompt describing their background. Your task is to generate a complete, professional resume draft based on this prompt. The output MUST be a valid JSON object that conforms to the provided output schema. Fill in all the fields (personalInfo, summary, experience, education, skills) as best you can based on the user's prompt. For dates, use YYYY-MM format. For current jobs, use 'Present' as the end date.
+  prompt: `You are an expert resume writer. A user will provide a prompt describing their background. Your task is to generate a complete, professional resume draft based on this prompt. The output MUST be a valid JSON object that conforms to the provided output schema. Fill in all the fields (personalInfo, summary, experience, education, projects, skills) as best you can based on the user's prompt. For dates, use YYYY-MM format. For current jobs, use 'Present' as the end date.
 
 User Prompt:
 {{{prompt}}}`,

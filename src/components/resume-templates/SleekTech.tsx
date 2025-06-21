@@ -2,7 +2,7 @@ import type { ResumeData } from '@/lib/types';
 import { Phone, Mail, MapPin, Linkedin, Globe } from 'lucide-react';
 
 export function SleekTech({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills } = data;
     return (
         <div className="font-sans text-white bg-[#1a1a1a] flex">
             <div className="w-1/3 bg-[#2a2a2a] p-6 flex flex-col">
@@ -41,7 +41,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     <h2 className="text-xl font-bold font-headline text-cyan-400 mb-2">SUMMARY</h2>
                     <p className="text-sm text-gray-300 leading-relaxed">{summary}</p>
                 </section>
-                <section>
+                <section className="mb-6">
                     <h2 className="text-xl font-bold font-headline text-cyan-400 mb-2">EXPERIENCE</h2>
                     {experience.map(exp => (
                         <div key={exp.id} className="mb-4 relative pl-4 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:bg-cyan-400 before:rounded-full">
@@ -56,6 +56,21 @@ export function SleekTech({ data }: { data: ResumeData }) {
                         </div>
                     ))}
                 </section>
+                 {projects && projects.length > 0 && (
+                    <section>
+                        <h2 className="text-xl font-bold font-headline text-cyan-400 mb-2">PROJECTS</h2>
+                        {projects.map(proj => (
+                            <div key={proj.id} className="mb-4 relative pl-4 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:bg-cyan-400 before:rounded-full">
+                                <h3 className="text-md font-bold text-gray-100">{proj.name}</h3>
+                                {proj.url && <p className="text-sm text-cyan-400/80">{proj.url}</p>}
+                                <p className="text-sm text-gray-300 my-1">{proj.description}</p>
+                                <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
+                                    {proj.points?.map((point, i) => <li key={i}>{point}</li>)}
+                                </ul>
+                            </div>
+                        ))}
+                    </section>
+                 )}
             </div>
         </div>
     );
