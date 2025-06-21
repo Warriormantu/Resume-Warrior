@@ -10,7 +10,7 @@ export default function TermsOfServicePage() {
             <CardTitle className="font-headline">1. Acceptance of Terms</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
-            <p>By accessing and using Resume_Warrior, you accept and agree to be bound by the terms and provision of this agreement.</p>
+            <p>By accessing and using Resume Warrior, you accept and agree to be bound by the terms and provision of this agreement.</p>
           </CardContent>
         </Card>
         <Card className="mt-6">

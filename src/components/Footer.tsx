@@ -16,7 +16,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
                 <FileText className="h-6 w-6 text-primary" />
-                <span className="font-bold font-headline text-lg">Resume_Warrior</span>
+                <span className="font-bold font-headline text-lg">Resume Warrior</span>
             </div>
           <nav className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm font-medium mb-4 md:mb-0">
             {footerLinks.map(({ href, label }) => (
@@ -27,7 +27,7 @@ export function Footer() {
           </nav>
         </div>
         <div className="mt-8 pt-8 border-t text-center text-sm text-foreground/60">
-            <p>&copy; {new Date().getFullYear()} Resume_Warrior. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Resume Warrior. All rights reserved.</p>
         </div>
       </div>
     </footer>

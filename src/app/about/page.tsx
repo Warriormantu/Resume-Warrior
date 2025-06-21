@@ -34,7 +34,7 @@ export default function AboutPage() {
     <div className="bg-background">
       <section className="py-20 md:py-32 bg-secondary">
         <div className="container mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold font-headline">About Resume_Warrior</h1>
+            <h1 className="text-4xl md:text-5xl font-bold font-headline">About Resume Warrior</h1>
             <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
                 We're on a mission to help job seekers everywhere conquer the job market with powerful, professional resumes.
             </p>
@@ -74,7 +74,7 @@ export default function AboutPage() {
                         <CardTitle className="font-headline mt-4">Our Story</CardTitle>
                     </CardHeader>
                     <CardContent className="text-muted-foreground">
-                        Founded by a team of career coaches and tech enthusiasts, Resume_Warrior was born from a desire to make high-quality resume creation accessible to everyone.
+                        Founded by a team of career coaches and tech enthusiasts, Resume Warrior was born from a desire to make high-quality resume creation accessible to everyone.
                     </CardContent>
                 </Card>
              </div>

@@ -12,7 +12,7 @@ const testimonials = [
   {
     name: "Sarah L.",
     role: "Marketing Manager",
-    quote: "Resume_Warrior's AI helped me rephrase my experience in a way I never could have on my own. I got three interviews within a week!",
+    quote: "Resume Warrior's AI helped me rephrase my experience in a way I never could have on my own. I got three interviews within a week!",
     avatar: "https://placehold.co/100x100.png",
     aiHint: "woman portrait"
   },
@@ -26,7 +26,7 @@ const testimonials = [
   {
     name: "Jessica P.",
     role: "Recent Graduate",
-    quote: "As a recent grad, I was lost. Resume_Warrior gave me the confidence and the tools to build a resume that landed me my first job.",
+    quote: "As a recent grad, I was lost. Resume Warrior gave me the confidence and the tools to build a resume that landed me my first job.",
     avatar: "https://placehold.co/100x100.png",
     aiHint: "person smiling"
   },

@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'Resume_Warrior',
+  title: 'Resume Warrior',
   description: 'Craft your professional resume with AI-powered assistance.',
 };
 

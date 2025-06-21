@@ -31,7 +31,7 @@ export default function BuyPage() {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_1DPQoVjVpLpQ8D', // Use a public test key
             amount: template.price * 100, // Amount in paise
             currency: 'INR',
-            name: 'Resume_Warrior',
+            name: 'Resume Warrior',
             description: `Purchase of ${template.name} Template`,
             image: '/icon.svg',
             handler: function (response: any) {
