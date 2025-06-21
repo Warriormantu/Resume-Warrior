@@ -1,4 +1,4 @@
-# Resume Warrior
+it# Resume Warrior
 
 Welcome to **Resume Warrior**, an AI-powered resume builder designed to help you craft the perfect professional resume and land your dream job. This application is built with Next.js, Tailwind CSS, ShadCN UI, and Genkit for its AI capabilities.
 
