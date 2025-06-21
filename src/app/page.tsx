@@ -175,7 +175,7 @@ export default function Home() {
       <section className="w-full py-16 md:py-24 bg-secondary">
         <div className="container px-4 md:px-6">
             <h2 className="text-center text-xl font-semibold text-muted-foreground mb-8">
-                Helping job seekers at top companies
+                Trusted by Professionals at Top Companies
             </h2>
             <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
                 {companyLogos.map((company, index) => (
