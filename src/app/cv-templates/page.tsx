@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Clipboard, FileText } from 'lucide-react';
-import { generateCoverLetterAction } from '@/app/actions';
+import { generateCoverLetterAction, rephraseCoverLetterAction } from '@/app/actions';
 
 export default function CoverLetterGeneratorPage() {
   const { toast } = useToast();
@@ -17,6 +17,7 @@ export default function CoverLetterGeneratorPage() {
   const [userName, setUserName] = useState('');
   const [generatedLetter, setGeneratedLetter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isRephrasing, setIsRephrasing] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +66,39 @@ export default function CoverLetterGeneratorPage() {
         title: 'Copied to clipboard!',
     });
   }
+
+  const handleRephraseLetter = async () => {
+    if (!generatedLetter.trim()) {
+      toast({
+        variant: 'destructive',
+        title: 'No letter to rephrase',
+        description: 'Please generate a cover letter first.',
+      });
+      return;
+    }
+    setIsRephrasing(true);
+    try {
+      const result = await rephraseCoverLetterAction(generatedLetter);
+      if (result?.rephrasedCoverLetter) {
+        setGeneratedLetter(result.rephrasedCoverLetter);
+        toast({
+          title: 'Cover Letter Rephrased!',
+          description: 'The AI has provided a new version of your letter.',
+        });
+      } else {
+        throw new Error('Failed to rephrase cover letter.');
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Rephrasing Failed',
+        description: 'Something went wrong. Please try again.',
+      });
+    } finally {
+      setIsRephrasing(false);
+    }
+  };
 
   return (
     <div className="container py-12">
@@ -142,10 +176,16 @@ export default function CoverLetterGeneratorPage() {
               <CardTitle className="font-headline text-2xl flex items-center justify-between">
                 Generated Cover Letter
                 {generatedLetter && (
-                    <Button variant="outline" size="sm" onClick={handleCopyToClipboard}>
-                        <Clipboard className="mr-2 h-4 w-4" />
-                        Copy
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={handleRephraseLetter} disabled={isRephrasing || isLoading}>
+                            {isRephrasing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                            Rephrase
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={handleCopyToClipboard} disabled={isRephrasing || isLoading}>
+                            <Clipboard className="mr-2 h-4 w-4" />
+                            Copy
+                        </Button>
+                    </div>
                 )}
               </CardTitle>
               <CardDescription>
@@ -158,9 +198,14 @@ export default function CoverLetterGeneratorPage() {
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               ) : (
-                <div className="bg-muted p-4 rounded-md min-h-[400px] whitespace-pre-wrap text-sm font-sans">
-                  {generatedLetter || "Your generated letter will be displayed here..."}
-                </div>
+                <Textarea
+                  className="bg-muted min-h-[400px] whitespace-pre-wrap text-sm font-sans"
+                  value={generatedLetter}
+                  onChange={(e) => setGeneratedLetter(e.target.value)}
+                  placeholder="Your generated letter will be displayed here..."
+                  disabled={isLoading}
+                  rows={20}
+                />
               )}
             </CardContent>
           </Card>
