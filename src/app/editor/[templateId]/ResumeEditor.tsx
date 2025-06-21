@@ -228,8 +228,10 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download Image</Button>
             </div>
-            <div className="scale-[0.9] lg:scale-[0.6] xl:scale-[0.8] origin-top">
-              <ResumePreview data={watchedData} template={template} ref={previewRef} />
+            <div className="aspect-[8.5/11]">
+                <div className="w-[111.11%] h-[111.11%] origin-top scale-[0.9] lg:w-[166.67%] lg:h-[166.67%] lg:scale-[0.6] xl:w-[125%] xl:h-[125%] xl:scale-[0.8]">
+                  <ResumePreview data={watchedData} template={template} ref={previewRef} />
+                </div>
             </div>
         </div>
         {/* Download buttons for mobile view */}

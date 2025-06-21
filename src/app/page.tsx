@@ -83,8 +83,8 @@ export default function Home() {
       <section className="w-full py-16 md:py-24 bg-secondary">
         <div className="container px-4 md:px-6 grid md:grid-cols-2 gap-16 items-center">
             <div className="animate-fade-in-up">
-              <div className="rounded-lg shadow-lg border overflow-hidden">
-                <div className="scale-75 origin-top-left -translate-x-12 -translate-y-16">
+              <div className="rounded-lg shadow-lg border overflow-hidden aspect-[8.5/11]">
+                <div className="w-[133.33%] h-[133.33%] origin-top-left scale-75">
                     <ResumePreview data={sampleResumeData} template={featuredTemplate} />
                 </div>
               </div>

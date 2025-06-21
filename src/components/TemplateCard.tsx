@@ -25,7 +25,7 @@ export function TemplateCard({ template }: TemplateCardProps) {
           )}
         </div>
         <div className="aspect-[8.5/11] w-full overflow-hidden bg-gray-100 group-hover:opacity-90 transition-opacity">
-            <div className="scale-[0.3] origin-top">
+            <div className="w-[333.33%] h-[333.33%] origin-top-left scale-[0.3]">
                 <ResumePreview data={sampleResumeData} template={template} />
             </div>
         </div>

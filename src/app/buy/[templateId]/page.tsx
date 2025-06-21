@@ -73,8 +73,10 @@ export default function BuyPage() {
                 <div>
                     <h1 className="text-3xl font-bold font-headline mb-2">{template.name}</h1>
                     <p className="text-muted-foreground mb-6">Preview of the premium template.</p>
-                    <div className="rounded-lg shadow-lg border overflow-hidden">
-                        <ResumePreview data={sampleResumeData} template={template} />
+                    <div className="rounded-lg shadow-lg border overflow-hidden aspect-[8.5/11]">
+                        <div className="w-[166.67%] h-[166.67%] origin-top-left scale-[0.6]">
+                            <ResumePreview data={sampleResumeData} template={template} />
+                        </div>
                     </div>
                 </div>
                 <div className="sticky top-24">
