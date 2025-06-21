@@ -4,15 +4,18 @@ import type { Template } from '@/lib/templates';
 
 import { ClassicProfessional } from './resume-templates/ClassicProfessional';
 import { ModernCreative } from './resume-templates/ModernCreative';
+import { BoldMinimalist } from './resume-templates/BoldMinimalist';
+import { CorporateLadder } from './resume-templates/CorporateLadder';
+import { SleekTech } from './resume-templates/SleekTech';
+import { AcademicResearcher } from './resume-templates/AcademicResearcher';
 
-// For simplicity, other templates will reuse existing components as placeholders
 const templateComponents: Record<string, React.FC<{ data: ResumeData }>> = {
     'classic-professional': ClassicProfessional,
     'modern-creative': ModernCreative,
-    'bold-minimalist': ClassicProfessional,
-    'corporate-ladder': ModernCreative,
-    'sleek-tech': ClassicProfessional,
-    'academic-researcher': ClassicProfessional
+    'bold-minimalist': BoldMinimalist,
+    'corporate-ladder': CorporateLadder,
+    'sleek-tech': SleekTech,
+    'academic-researcher': AcademicResearcher,
 };
 
 export const ResumePreview = React.forwardRef<HTMLDivElement, { data: ResumeData; template: Template }>(({ data, template }, ref) => {
