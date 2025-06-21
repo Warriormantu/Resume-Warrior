@@ -85,7 +85,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center">
-      <section className="w-full py-20 md:py-32 lg:py-40 text-center bg-primary text-primary-foreground">
+      <section className="w-full py-20 md:py-32 lg:py-40 text-center bg-gradient-to-br from-primary to-accent text-primary-foreground">
         <div className="container px-4 md:px-6">
           <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tight mb-4 animate-fade-in-up">
             Build Your Professional Resume in Minutes
@@ -110,8 +110,8 @@ export default function Home() {
           <div className="grid gap-8 md:grid-cols-3">
             <Card className="text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <CardHeader>
-                <div className="mx-auto bg-accent/20 text-accent p-3 rounded-full w-fit">
-                  <Palette className="h-8 w-8 text-primary" />
+                <div className="mx-auto bg-primary/10 text-primary p-3 rounded-full w-fit">
+                  <Palette className="h-8 w-8" />
                 </div>
                 <CardTitle className="font-headline mt-4">1. Select a Template</CardTitle>
               </CardHeader>
@@ -124,8 +124,8 @@ export default function Home() {
             </Card>
             <Card className="text-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
               <CardHeader>
-                <div className="mx-auto bg-accent/20 text-accent p-3 rounded-full w-fit">
-                  <Sparkles className="h-8 w-8 text-primary" />
+                <div className="mx-auto bg-primary/10 text-primary p-3 rounded-full w-fit">
+                  <Sparkles className="h-8 w-8" />
                 </div>
                 <CardTitle className="font-headline mt-4">2. AI-Powered Editing</CardTitle>
               </CardHeader>
@@ -138,8 +138,8 @@ export default function Home() {
             </Card>
             <Card className="text-center animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
               <CardHeader>
-                <div className="mx-auto bg-accent/20 text-accent p-3 rounded-full w-fit">
-                  <Download className="h-8 w-8 text-primary" />
+                <div className="mx-auto bg-primary/10 text-primary p-3 rounded-full w-fit">
+                  <Download className="h-8 w-8" />
                 </div>
                 <CardTitle className="font-headline mt-4">3. Download Your Resume</CardTitle>
               </CardHeader>

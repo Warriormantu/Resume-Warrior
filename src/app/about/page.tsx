@@ -32,10 +32,10 @@ const teamMembers = [
 export default function AboutPage() {
   return (
     <div className="bg-background">
-      <section className="py-20 md:py-32 bg-secondary">
+      <section className="py-20 md:py-32 bg-gradient-to-br from-primary to-accent text-primary-foreground">
         <div className="container mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold font-headline">About Resume Warrior</h1>
-            <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="mt-4 text-lg md:text-xl text-primary-foreground/80 max-w-3xl mx-auto">
                 We're on a mission to help job seekers everywhere conquer the job market with powerful, professional resumes.
             </p>
         </div>
