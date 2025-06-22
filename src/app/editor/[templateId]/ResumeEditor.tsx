@@ -64,6 +64,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const hexToRgba = (hex: string, alpha: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -119,7 +120,21 @@ const SortableExperienceCard = ({
             <FormField name={`experience.${index}.startDate`} control={control} render={({ field }) => (<FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="month" {...field} /></FormControl></FormItem>)} />
             <FormField name={`experience.${index}.endDate`} control={control} render={({ field }) => (<FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="month" {...field} disabled={watch(`experience.${index}.isCurrent`)} /></FormControl></FormItem>)} />
           </div>
-          <FormField name={`experience.${index}.isCurrent`} control={control} render={({ field }) => (<FormItem className="flex items-center gap-2"><FormControl><Input type="checkbox" className="w-4 h-4" {...field} checked={field.value} onChange={e => field.onChange(e.target.checked)} /></FormControl><FormLabel className="!mt-0">I currently work here</FormLabel></FormItem>)} />
+          <FormField
+            name={`experience.${index}.isCurrent`}
+            control={control}
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="!mt-0">I currently work here</FormLabel>
+              </FormItem>
+            )}
+          />
           <FormField name={`experience.${index}.points`} control={control} render={({ field }) => (<FormItem><FormLabel>Key Responsibilities/Achievements</FormLabel><FormControl><Textarea {...field} value={Array.isArray(field.value) ? field.value.join('\n') : ''} onChange={e => field.onChange(e.target.value.split('\n'))} placeholder="Enter each point on a new line." rows={4} /></FormControl></FormItem>)} />
           <Button type="button" size="sm" onClick={() => onRephrase(index)} disabled={rephrasingIndex === index}>
             {rephrasingIndex === index ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
