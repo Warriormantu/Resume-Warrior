@@ -124,14 +124,18 @@ const SortableExperienceCard = ({
             control={control}
             name={`experience.${index}.isCurrent`}
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-                <FormLabel className="font-normal">
-                  I currently work here
-                </FormLabel>
+              <FormItem className="flex flex-row items-start space-x-2 space-y-0 mt-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel className="font-normal">
+                    I currently work here
+                  </FormLabel>
+                </div>
               </FormItem>
             )}
           />
@@ -322,7 +326,7 @@ const SortableSkillItem = ({
       </Button>
       <FormField
         control={control}
-        name={`skills.${index}`}
+        name={`skills.${index}.name`}
         render={({ field }) => (
           <FormItem className="flex-grow">
             <FormControl>
@@ -719,3 +723,5 @@ export function ResumeEditor({ template }: { template: Template }) {
     </FormProvider>
   );
 }
+
+    
