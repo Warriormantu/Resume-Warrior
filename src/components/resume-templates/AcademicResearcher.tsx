@@ -68,7 +68,7 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
              <section className="mb-4">
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Skills</h2>
                 <ul className="columns-2 text-sm text-gray-700">
-                  {skills.map(skill => <li key={skill}>{skill}</li>)}
+                  {skills.map(skill => <li key={skill.name}>{skill.name}</li>)}
                 </ul>
             </section>
 

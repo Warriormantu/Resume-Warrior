@@ -35,7 +35,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                 <section>
                     <h2 className="text-md font-bold text-gray-700 border-b-2 border-gray-300 pb-1 mb-2 font-headline uppercase tracking-wider">Skills</h2>
                     <ul className="text-sm space-y-1 text-gray-700">
-                      {skills.map(skill => <li key={skill}>{skill}</li>)}
+                      {skills.map(skill => <li key={skill.id}>{skill.name}</li>)}
                     </ul>
                 </section>
 

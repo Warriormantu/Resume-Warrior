@@ -22,8 +22,8 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     <h2 className="text-lg font-semibold font-headline mb-3 border-b-2 pb-1" style={{ color: 'var(--resume-accent-color)', borderColor: 'var(--resume-accent-color)' }}>SKILLS</h2>
                     <div className="flex flex-wrap gap-2">
                         {skills.map(skill => (
-                            <span key={skill} className="bg-gray-700 text-xs font-mono px-2 py-1 rounded" style={{ color: 'var(--resume-accent-color)' }}>
-                                {skill}
+                            <span key={skill.id} className="bg-gray-700 text-xs font-mono px-2 py-1 rounded" style={{ color: 'var(--resume-accent-color)' }}>
+                                {skill.name}
                             </span>
                         ))}
                     </div>

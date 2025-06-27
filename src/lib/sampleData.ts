@@ -55,7 +55,13 @@ export const sampleResumeData: ResumeData = {
       url: 'https://example-conference.com/proceeding/456',
     }
   ],
-  skills: ['Skill 1', 'Skill 2', 'Skill 3', 'Data Analysis', 'Project Management'],
+  skills: [
+    { id: '1', name: 'Skill 1' },
+    { id: '2', name: 'Skill 2' },
+    { id: '3', name: 'Skill 3' },
+    { id: '4', name: 'Data Analysis' },
+    { id: '5', name: 'Project Management' },
+  ],
   projects: [
     {
         id: '1',

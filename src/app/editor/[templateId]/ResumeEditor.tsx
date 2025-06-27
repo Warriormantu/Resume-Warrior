@@ -121,15 +121,17 @@ const SortableExperienceCard = ({
             <FormField name={`experience.${index}.endDate`} control={control} render={({ field }) => (<FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="month" {...field} disabled={watch(`experience.${index}.isCurrent`)} /></FormControl></FormItem>)} />
           </div>
           <FormField
-            name={`experience.${index}.isCurrent`}
             control={control}
+            name={`experience.${index}.isCurrent`}
             render={({ field }) => (
-              <FormItem className="flex items-center gap-2">
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                <FormLabel className="!mt-0">I currently work here</FormLabel>
+              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <FormLabel className="font-normal">
+                  I currently work here
+                </FormLabel>
               </FormItem>
             )}
           />
@@ -681,7 +683,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                                 </div>
                             </SortableContext>
                         </DndContext>
-                        <Button type="button" variant="outline" onClick={() => appendSkill('')}>
+                        <Button type="button" variant="outline" onClick={() => appendSkill({ id: `${Date.now()}`, name: '' })}>
                             <PlusCircle className="mr-2 h-4 w-4"/> Add Skill
                         </Button>
                     </AccordionContent>

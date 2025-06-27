@@ -58,7 +58,10 @@ const GenerateResumeFromPromptOutputSchema = z.object({
     year: z.string().describe("The publication year in YYYY format."),
     url: z.string().optional().describe("A URL to the publication if available."),
   })).optional().describe("A list of publications, relevant for academic or research roles."),
-  skills: z.array(z.string()).describe("A list of relevant skills."),
+  skills: z.array(z.object({
+    id: z.string().describe("A unique ID for this skill, e.g., '1'."),
+    name: z.string().describe("The name of the skill."),
+  })).describe("A list of relevant skills."),
 });
 
 
@@ -76,7 +79,7 @@ const prompt = ai.definePrompt({
   name: 'generateResumeFromPromptPrompt',
   input: {schema: GenerateResumeFromPromptInputSchema},
   output: {schema: GenerateResumeFromPromptOutputSchema},
-  prompt: `You are an expert resume writer. A user will provide a prompt describing their background. Your task is to generate a complete, professional resume draft based on this prompt. The output MUST be a valid JSON object that conforms to the provided output schema. Fill in all the fields (personalInfo, summary, experience, education, projects, skills) as best you can based on the user's prompt. For dates, use YYYY-MM format. For current jobs, use 'Present' as the end date. Also generate a suitable job title based on the prompt. For academic or research roles, include a list of publications.
+  prompt: `You are an expert resume writer. A user will provide a prompt describing their background. Your task is to generate a complete, professional resume draft based on this prompt. The output MUST be a valid JSON object that conforms to the provided output schema. Fill in all the fields (personalInfo, summary, experience, education, projects, skills) as best you can based on the user's prompt. For dates, use YYYY-MM format. For current jobs, use 'Present' as the end date. Also generate a suitable job title based on the prompt. For academic or research roles, include a list of publications. For each skill, provide a unique ID.
 
 User Prompt:
 {{{prompt}}}`,

@@ -66,7 +66,7 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
 
             <section>
                  <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Skills</h2>
-                 <p className="text-sm text-gray-700">{skills.join(', ')}</p>
+                 <p className="text-sm text-gray-700">{skills.map(s => s.name).join(', ')}</p>
             </section>
         </div>
     );

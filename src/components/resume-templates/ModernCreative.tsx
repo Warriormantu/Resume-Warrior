@@ -21,14 +21,14 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                      <div className="flex flex-wrap gap-2">
                         {skills.map(skill => (
                             <span 
-                                key={skill} 
+                                key={skill.id} 
                                 className="text-xs font-medium px-2 py-1 rounded"
                                 style={{
                                     backgroundColor: 'var(--resume-accent-color-bg)',
                                     color: 'var(--resume-accent-color)'
                                 }}
                             >
-                                {skill}
+                                {skill.name}
                             </span>
                         ))}
                      </div>

@@ -63,7 +63,7 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
             )}
             <section>
                  <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">SKILLS</h2>
-                 <p className="text-sm text-slate-700">{skills.join(' | ')}</p>
+                 <p className="text-sm text-slate-700">{skills.map(s => s.name).join(' | ')}</p>
             </section>
         </div>
     );

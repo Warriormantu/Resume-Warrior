@@ -15,7 +15,10 @@ const GenerateSummaryInputSchema = z.object({
     title: z.string().describe("The job title."),
     company: z.string().describe("The company name."),
   })).describe('A list of professional experiences.'),
-  skills: z.array(z.string()).describe('A list of skills.'),
+  skills: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+  })).describe('A list of skills.'),
 });
 export type GenerateSummaryInput = z.infer<typeof GenerateSummaryInputSchema>;
 
@@ -43,7 +46,7 @@ Work Experience:
 
 Skills:
 {{#each skills}}
-- {{{this}}}
+- {{{this.name}}}
 {{/each}}
 `,
 });
