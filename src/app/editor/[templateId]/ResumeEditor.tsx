@@ -125,12 +125,10 @@ const SortableExperienceCard = ({
             control={control}
             render={({ field }) => (
               <FormItem className="flex items-center gap-2">
-                <FormControl>
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
-                </FormControl>
                 <FormLabel className="!mt-0">I currently work here</FormLabel>
               </FormItem>
             )}
