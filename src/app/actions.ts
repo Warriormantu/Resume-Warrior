@@ -1,90 +1,79 @@
 'use server';
 
-import { generateResumeFromPrompt } from '@/ai/flows/generate-resume-from-prompt';
 import type { GenerateResumeFromPromptOutput } from '@/ai/flows/generate-resume-from-prompt';
-import { generateCoverLetter, type GenerateCoverLetterInput, type GenerateCoverLetterOutput } from '@/ai/flows/generate-cover-letter';
-import { rephraseCoverLetter } from '@/ai/flows/rephrase-cover-letter';
-import { analyzeResume, type AnalyzeResumeInput, type AnalyzeResumeOutput } from '@/ai/flows/analyze-resume';
-import { rephraseResumePoints } from '@/ai/flows/rephrase-resume-points';
-import { generateSummary, type GenerateSummaryInput } from '@/ai/flows/generate-summary';
+import type { GenerateCoverLetterInput, GenerateCoverLetterOutput } from '@/ai/flows/generate-cover-letter';
+import type { AnalyzeResumeInput, AnalyzeResumeOutput } from '@/ai/flows/analyze-resume';
+import type { GenerateSummaryInput } from '@/ai/flows/generate-summary';
+import { headers } from 'next/headers';
+
+function getBaseUrl() {
+    const headersList = headers();
+    const host = headersList.get('host') || 'localhost:9002';
+    const protocol = host.startsWith('localhost') ? 'http' : 'https';
+    return `${protocol}://${host}`;
+}
+
+async function callGenkitFlow<T>(flowName: string, input: any): Promise<T | null> {
+    const baseUrl = getBaseUrl();
+    try {
+        const response = await fetch(`${baseUrl}/api/genkit/${flowName}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`API call to ${flowName} failed with status ${response.status}:`, errorText);
+            return null;
+        }
+
+        const result = await response.json();
+        return result.output;
+
+    } catch (error) {
+        console.error(`Error calling ${flowName}:`, error);
+        return null;
+    }
+}
+
 
 export async function generateResumeAction(prompt: string): Promise<GenerateResumeFromPromptOutput | null> {
-    if (!prompt) {
-        return null;
-    }
-    try {
-        const result = await generateResumeFromPrompt({ prompt });
-        return result;
-    } catch(error) {
-        console.error("Error in generateResumeAction:", error);
-        return null;
-    }
+    if (!prompt) return null;
+    return callGenkitFlow<GenerateResumeFromPromptOutput>('generateResumeFromPromptFlow', { prompt });
 }
 
 export async function generateCoverLetterAction(input: GenerateCoverLetterInput): Promise<GenerateCoverLetterOutput | null> {
-    if (!input.jobDescription || !input.resumeContent || !input.userName) {
-        return null;
-    }
-    try {
-        const result = await generateCoverLetter(input);
-        return result;
-    } catch (error) {
-        console.error("Error in generateCoverLetterAction:", error);
-        return null;
-    }
+    if (!input.jobDescription || !input.resumeContent || !input.userName) return null;
+    return callGenkitFlow<GenerateCoverLetterOutput>('generateCoverLetterFlow', input);
 }
 
 export async function rephraseCoverLetterAction(coverLetter: string): Promise<{ rephrasedCoverLetter: string } | null> {
-    if (!coverLetter) {
-        return null;
-    }
-    try {
-        const result = await rephraseCoverLetter({ coverLetter });
-        return result;
-    } catch (error) {
-        console.error("Error in rephraseCoverLetterAction:", error);
-        return null;
-    }
+    if (!coverLetter) return null;
+    const output = await callGenkitFlow<{ rephrasedCoverLetter: string }>('rephraseCoverLetterFlow', { coverLetter });
+    return output ? { rephrasedCoverLetter: output.rephrasedCoverLetter } : null;
 }
 
 export async function analyzeResumeAction(input: AnalyzeResumeInput): Promise<AnalyzeResumeOutput | null> {
-    if (!input.resumeContent || !input.jobDescription) {
-        return null;
-    }
-    try {
-        const result = await analyzeResume(input);
-        return result;
-    } catch (error) {
-        console.error("Error in analyzeResumeAction:", error);
-        return null;
-    }
+    if (!input.resumeContent || !input.jobDescription) return null;
+    return callGenkitFlow<AnalyzeResumeOutput>('analyzeResumeFlow', input);
 }
 
 export async function getRephrasedPoints(points: string[]): Promise<string[] | null> {
-  if (!points || points.length === 0) {
-    return [];
-  }
-  try {
-    const result = await rephraseResumePoints({
-      skills: [], // Not rephrasing skills here, just experience
+  if (!points || points.length === 0) return [];
+
+  const input = {
+      skills: [],
       experiencePoints: points,
-    });
-    return result.rephrasedExperiencePoints;
-  } catch (error) {
-    console.error("AI rephrasing failed:", error);
-    return null;
-  }
+  };
+  
+  const output = await callGenkitFlow<{ rephrasedExperiencePoints: string[] }>('rephraseResumePointsFlow', input);
+  return output ? output.rephrasedExperiencePoints : null;
 }
 
 export async function getAiSummary(input: GenerateSummaryInput): Promise<string | null> {
-    if (!input.name || !input.experience?.length || !input.skills?.length) {
-        return null;
-    }
-    try {
-        const result = await generateSummary(input);
-        return result.summary;
-    } catch (error) {
-        console.error("AI summary generation failed:", error);
-        return null;
-    }
+    if (!input.name || !input.experience?.length || !input.skills?.length) return null;
+    
+    const output = await callGenkitFlow<{ summary: string }>('generateSummaryFlow', input);
+    return output ? output.summary : null;
 }
