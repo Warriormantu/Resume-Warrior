@@ -251,7 +251,7 @@ const SortableProjectCard = ({
   );
 };
 
-const SortablePublicationCard = ({
+const SortableCustomCard = ({
   index,
   onRemove,
 }: {
@@ -259,7 +259,7 @@ const SortablePublicationCard = ({
   onRemove: (index: number) => void;
 }) => {
   const { control, getValues } = useFormContext<ResumeData>();
-  const fieldId = getValues(`publications.${index}.id`);
+  const fieldId = getValues(`custom.${index}.id`);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: fieldId });
@@ -276,7 +276,7 @@ const SortablePublicationCard = ({
        <Card className="p-4 bg-background">
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                    <h4 className="font-semibold">Publication #{index + 1}</h4>
+                    <FormField name={`custom.${index}.title`} control={control} render={({ field }) => (<FormItem className="flex-grow"><FormLabel className="sr-only">Section Title</FormLabel><FormControl><Input {...field} placeholder="Section Title (e.g., Awards)" className="text-lg font-semibold" /></FormControl></FormItem>)}/>
                     <div className="flex items-center">
                         <Button type="button" variant="ghost" size="icon" className="cursor-grab" {...attributes} {...listeners}>
                             <GripVertical className="h-4 w-4" />
@@ -286,13 +286,7 @@ const SortablePublicationCard = ({
                         </Button>
                     </div>
                 </div>
-                <FormField name={`publications.${index}.title`} control={control} render={({ field }) => (<FormItem><FormLabel>Title</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                <FormField name={`publications.${index}.authors`} control={control} render={({ field }) => (<FormItem><FormLabel>Authors (comma separated)</FormLabel><FormControl><Input {...field} value={Array.isArray(field.value) ? field.value.join(', ') : ''} onChange={e => field.onChange(e.target.value.split(',').map(s => s.trim()))} /></FormControl></FormItem>)}/>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <FormField name={`publications.${index}.journal`} control={control} render={({ field }) => (<FormItem><FormLabel>Journal / Conference</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>)}/>
-                  <FormField name={`publications.${index}.year`} control={control} render={({ field }) => (<FormItem><FormLabel>Year</FormLabel><FormControl><Input type="text" placeholder="YYYY" {...field} /></FormControl></FormItem>)}/>
-                </div>
-                <FormField name={`publications.${index}.url`} control={control} render={({ field }) => (<FormItem><FormLabel>URL</FormLabel><FormControl><Input {...field} placeholder="https://..."/></FormControl></FormItem>)}/>
+                <FormField name={`custom.${index}.content`} control={control} render={({ field }) => (<FormItem><FormLabel className="sr-only">Section Content</FormLabel><FormControl><Textarea {...field} value={field.value || ''} onChange={e => field.onChange(e.target.value)} placeholder="Enter each point on a new line." rows={4}/></FormControl></FormItem>)}/>
             </div>
         </Card>
     </div>
@@ -390,10 +384,10 @@ export function ResumeEditor({ template }: { template: Template }) {
     control: form.control,
     name: "projects"
   });
-
-  const { fields: pubFields, append: appendPub, remove: removePub, move: movePub } = useFieldArray({
+  
+  const { fields: customFields, append: appendCustom, remove: removeCustom, move: moveCustom } = useFieldArray({
     control: form.control,
-    name: "publications"
+    name: "custom"
   });
 
   const { fields: skillFields, append: appendSkill, remove: removeSkill, move: moveSkill } = useFieldArray({
@@ -447,8 +441,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
     const canvas = await html2canvas(previewRef.current, { scale: 3 });
     const link = document.createElement('a');
-    link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.jpg`;
+    link.href = canvas.toDataURL('image/jpeg');
     link.click();
   };
 
@@ -510,7 +504,7 @@ export function ResumeEditor({ template }: { template: Template }) {
           
           <Form {...form}>
             <form className="space-y-4">
-              <Accordion type="multiple" defaultValue={['appearance', 'personal', 'summary', 'experience', 'education', 'projects', 'publications', 'skills']} className="w-full">
+              <Accordion type="multiple" defaultValue={['appearance', 'personal', 'summary', 'experience', 'education', 'projects', 'custom', 'skills']} className="w-full">
                 {/* Appearance */}
                 <AccordionItem value="appearance">
                     <AccordionTrigger><Paintbrush className="mr-2"/>Appearance</AccordionTrigger>
@@ -651,21 +645,25 @@ export function ResumeEditor({ template }: { template: Template }) {
                         </Button>
                     </AccordionContent>
                 </AccordionItem>
-                 {/* Publications */}
-                 <AccordionItem value="publications">
-                    <AccordionTrigger><Library className="mr-2"/>Publications</AccordionTrigger>
+                {/* Custom Sections */}
+                <AccordionItem value="custom">
+                    <AccordionTrigger><Library className="mr-2"/>Additional Sections</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                        <DndContext id="publications-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, movePub, pubFields)}>
-                            <SortableContext items={pubFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                        <DndContext id="custom-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveCustom, customFields)}>
+                            <SortableContext items={customFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-4">
-                                {pubFields.map((field, index) => (
-                                    <SortablePublicationCard key={field.id} index={index} onRemove={removePub} />
+                                {customFields.map((field, index) => (
+                                    <SortableCustomCard 
+                                        key={field.id} 
+                                        index={index} 
+                                        onRemove={removeCustom}
+                                    />
                                 ))}
                                 </div>
                             </SortableContext>
                         </DndContext>
-                        <Button type="button" variant="outline" onClick={() => appendPub({ id: `${Date.now()}`, title: '', authors:[], journal: '', year: '' })}>
-                            <PlusCircle className="mr-2 h-4 w-4"/> Add Publication
+                        <Button type="button" variant="outline" onClick={() => appendCustom({ id: `${Date.now()}`, title: '', content: '' })}>
+                            <PlusCircle className="mr-2 h-4 w-4"/> Add Section
                         </Button>
                     </AccordionContent>
                 </AccordionItem>
@@ -699,7 +697,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         <div className="w-full bg-background p-8 overflow-y-auto max-h-[calc(100vh-56px)] hidden lg:block">
             <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex gap-4 justify-center">
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
-                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download Image</Button>
+                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download JPG</Button>
             </div>
             <div className="flex justify-center">
                 <div className="origin-top transform scale-[0.75]">
@@ -717,7 +715,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         {/* Download buttons for mobile view */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm z-20 p-4 border-t flex gap-4 justify-center">
              <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> PDF</Button>
-             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Image</Button>
+             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> JPG</Button>
         </div>
       </div>
     </FormProvider>

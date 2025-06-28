@@ -1,9 +1,9 @@
 import type { ResumeData } from '@/lib/types';
 
 export function AcademicResearcher({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, projects, skills, publications } = data;
+    const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-serif text-gray-800" style={{ fontFamily: 'var(--resume-font-family, "serif")' }}>
+        <div className="font-serif text-gray-800 break-words" style={{ fontFamily: 'var(--resume-font-family, "serif")' }}>
             <header className="text-center mb-6 pb-4 border-b border-gray-300">
                 <h1 className="text-4xl font-bold text-gray-900">{personalInfo.name}</h1>
                 {personalInfo.jobTitle && <p className="text-xl font-semibold text-gray-700 mt-1">{personalInfo.jobTitle}</p>}
@@ -65,28 +65,23 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                 </section>
             )}
 
+            {custom?.map(section => (
+                section.title && section.content && (
+                    <section key={section.id} className="mb-4">
+                        <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">{section.title.toUpperCase()}</h2>
+                        <ul className="list-disc list-inside mt-1 text-sm text-gray-700">
+                            {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}
+                        </ul>
+                    </section>
+                )
+            ))}
+
              <section className="mb-4">
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Skills</h2>
                 <ul className="columns-2 text-sm text-gray-700">
                   {skills.map(skill => <li key={skill.name}>{skill.name}</li>)}
                 </ul>
             </section>
-
-            {publications && publications.length > 0 && (
-                <section className="mb-4">
-                    <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Publications</h2>
-                    <div className="text-sm text-gray-700 space-y-2">
-                        {publications.map(pub => (
-                            <div key={pub.id}>
-                                <p>
-                                    <span className="font-semibold">{pub.authors.join(', ')} ({pub.year}).</span> {pub.title}. <em>{pub.journal}</em>.
-                                    {pub.url && <a href={pub.url} style={{ color: 'var(--resume-accent-color)' }} className="hover:underline" target="_blank" rel="noopener noreferrer"> Link</a>}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            )}
         </div>
     );
 }

@@ -1,9 +1,9 @@
 import type { ResumeData } from '@/lib/types';
 
 export function BoldMinimalist({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, projects, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-gray-800 p-4" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
+        <div className="font-sans text-gray-800 p-4 break-words" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
             <header className="text-center mb-10">
                 <h1 className="text-5xl font-extrabold font-headline tracking-tighter text-gray-900">{personalInfo.name}</h1>
                 {personalInfo.jobTitle && <p className="text-xl text-gray-700 mt-1">{personalInfo.jobTitle}</p>}
@@ -63,6 +63,17 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
                     ))}
                 </section>
             )}
+
+            {custom?.map(section => (
+                section.title && section.content && (
+                    <section key={section.id} className="mb-6">
+                        <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">{section.title.toUpperCase()}</h2>
+                        <ul className="mt-1 text-sm text-gray-700 list-none space-y-1">
+                             {section.content.split('\n').filter(p => p).map((point, i) => <li key={i} className="relative pl-4 before:content-['-'] before:absolute before:left-0">{point}</li>)}
+                        </ul>
+                    </section>
+                )
+            ))}
 
             <section>
                  <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Skills</h2>

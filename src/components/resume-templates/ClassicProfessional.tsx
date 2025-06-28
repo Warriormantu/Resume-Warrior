@@ -1,9 +1,9 @@
 import type { ResumeData } from '@/lib/types';
 
 export function ClassicProfessional({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, projects, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-slate-800" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
+        <div className="font-sans text-slate-800 break-words" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
             <header className="text-center mb-6">
                 <h1 className="text-4xl font-bold font-headline text-slate-800">{personalInfo.name}</h1>
                 {personalInfo.jobTitle && <p className="text-lg font-semibold text-slate-700 mt-1 mb-2">{personalInfo.jobTitle}</p>}
@@ -61,6 +61,18 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                     ))}
                 </section>
             )}
+
+            {custom?.map(section => (
+                section.title && section.content && (
+                    <section key={section.id} className="mb-4">
+                        <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">{section.title.toUpperCase()}</h2>
+                        <ul className="list-disc list-inside mt-1 text-sm text-slate-700">
+                            {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}
+                        </ul>
+                    </section>
+                )
+            ))}
+
             <section>
                  <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">SKILLS</h2>
                  <p className="text-sm text-slate-700">{skills.map(s => s.name).join(' | ')}</p>

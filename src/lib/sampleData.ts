@@ -37,24 +37,6 @@ export const sampleResumeData: ResumeData = {
       endDate: '2020-05',
     },
   ],
-  publications: [
-    {
-      id: '1',
-      title: 'The Study of Placeholders in UI Design',
-      authors: ['J. Doe'],
-      journal: 'Journal of Virtual Studies',
-      year: '2023',
-      url: 'https://example-journal.com/publication/123',
-    },
-    {
-      id: '2',
-      title: 'Advanced Pattern Recognition in Sample Data',
-      authors: ['J. Doe', 'A. Smith'],
-      journal: 'Proceedings of the International Conference on AI',
-      year: '2022',
-      url: 'https://example-conference.com/proceeding/456',
-    }
-  ],
   skills: [
     { id: '1', name: 'Skill 1' },
     { id: '2', name: 'Skill 2' },
@@ -72,6 +54,13 @@ export const sampleResumeData: ResumeData = {
             'Key feature or contribution 1: e.g., Implemented a feature that improved performance by 20%.',
             'Key feature or contribution 2: e.g., Designed and built the user authentication system.',
         ]
+    }
+  ],
+  custom: [
+    {
+        id: '1',
+        title: 'Awards',
+        content: 'First Place, National Design Competition (2021)\nEmployee of the Month (March 2022)'
     }
   ]
 };
