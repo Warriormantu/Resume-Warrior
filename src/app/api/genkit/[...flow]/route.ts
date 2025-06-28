@@ -10,4 +10,7 @@ import '@/ai/flows/generate-summary';
 import '@/ai/flows/rephrase-cover-letter';
 import '@/ai/flows/rephrase-resume-points';
 
-export const {GET, POST} = createNextApiHandler();
+const handler = createNextApiHandler();
+
+export const GET = handler;
+export const POST = handler;
