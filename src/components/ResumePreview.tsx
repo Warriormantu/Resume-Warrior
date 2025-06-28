@@ -31,11 +31,11 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     
     const TemplateComponent = templateComponents[template.id] || ClassicProfessional;
 
-    const previewStyle: React.CSSProperties = {
+    const previewStyle = {
         '--resume-accent-color': accentColor,
         '--resume-accent-color-bg': accentColorBg,
         '--resume-font-family': fontFamily,
-    };
+    } as React.CSSProperties;
     
     return (
         <div 
