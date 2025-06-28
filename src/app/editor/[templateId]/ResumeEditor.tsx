@@ -44,7 +44,7 @@ import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
-import { getRephrasedPoints, getAiSummary } from './actions';
+import { getRephrasedPoints, getAiSummary } from '@/app/actions';
 import { sampleResumeData } from '@/lib/sampleData';
 import { ResumePreview } from '@/components/ResumePreview';
 import {
@@ -723,5 +723,3 @@ export function ResumeEditor({ template }: { template: Template }) {
     </FormProvider>
   );
 }
-
-    
