@@ -14,6 +14,7 @@ const GenerateCoverLetterInputSchema = z.object({
   jobDescription: z.string().describe('The full job description text.'),
   resumeContent: z.string().describe('The full text content of the user\'s resume.'),
   userName: z.string().describe('The name of the user.'),
+  tone: z.enum(['Professional', 'Enthusiastic', 'Formal']).default('Professional').describe('The desired tone for the cover letter.'),
 });
 export type GenerateCoverLetterInput = z.infer<typeof GenerateCoverLetterInputSchema>;
 
@@ -39,6 +40,7 @@ The cover letter should:
 3. Match the tone of the job description (e.g., formal, casual, enthusiastic).
 4. Be structured as a standard cover letter with an introduction, body paragraphs, and a conclusion.
 5. Address the hiring manager if possible, or use a generic salutation if not.
+6. The writing style and tone MUST be {{{tone}}}.
 
 **User's Resume Content:**
 ---

@@ -9,12 +9,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Clipboard, FileText } from 'lucide-react';
 import { generateCoverLetterAction, rephraseCoverLetterAction } from '@/app/actions';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function CoverLetterGeneratorPage() {
   const { toast } = useToast();
   const [jobDescription, setJobDescription] = useState('');
   const [resumeContent, setResumeContent] = useState('');
   const [userName, setUserName] = useState('');
+  const [tone, setTone] = useState('Professional');
   const [generatedLetter, setGeneratedLetter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRephrasing, setIsRephrasing] = useState(false);
@@ -37,6 +39,7 @@ export default function CoverLetterGeneratorPage() {
         jobDescription,
         resumeContent,
         userName,
+        tone: tone as any,
       });
 
       if (result?.coverLetter) {
@@ -124,15 +127,30 @@ export default function CoverLetterGeneratorPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="user-name">Your Full Name</Label>
-                <Input
-                  id="user-name"
-                  placeholder="e.g., Alex Doe"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  disabled={isLoading}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="user-name">Your Full Name</Label>
+                  <Input
+                    id="user-name"
+                    placeholder="e.g., Alex Doe"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="tone">Tone of Voice</Label>
+                  <Select value={tone} onValueChange={setTone} disabled={isLoading}>
+                      <SelectTrigger id="tone">
+                          <SelectValue placeholder="Select a tone" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="Professional">Professional</SelectItem>
+                          <SelectItem value="Enthusiastic">Enthusiastic</SelectItem>
+                          <SelectItem value="Formal">Formal</SelectItem>
+                      </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="job-description">Job Description</Label>
