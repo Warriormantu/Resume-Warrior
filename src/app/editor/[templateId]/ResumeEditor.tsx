@@ -588,7 +588,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <AccordionItem value="experience">
                     <AccordionTrigger><Briefcase className="mr-2"/>Work Experience</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveExp, expFields)}>
+                      <DndContext id="experience-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveExp, expFields)}>
                         <SortableContext items={expFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                             <div className="space-y-4">
                                 {expFields.map((field, index) => (
@@ -613,7 +613,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <AccordionItem value="education">
                     <AccordionTrigger><GraduationCap className="mr-2"/>Education</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveEdu, eduFields)}>
+                        <DndContext id="education-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveEdu, eduFields)}>
                             <SortableContext items={eduFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-4">
                                     {eduFields.map((field, index) => (
@@ -631,7 +631,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <AccordionItem value="projects">
                     <AccordionTrigger><Rocket className="mr-2"/>Projects</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveProj, projFields)}>
+                        <DndContext id="projects-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveProj, projFields)}>
                             <SortableContext items={projFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-4">
                                 {projFields.map((field, index) => (
@@ -655,7 +655,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                  <AccordionItem value="publications">
                     <AccordionTrigger><Library className="mr-2"/>Publications</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, movePub, pubFields)}>
+                        <DndContext id="publications-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, movePub, pubFields)}>
                             <SortableContext items={pubFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-4">
                                 {pubFields.map((field, index) => (
@@ -673,7 +673,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <AccordionItem value="skills">
                     <AccordionTrigger><Wrench className="mr-2"/>Skills</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-1">
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveSkill, skillFields)}>
+                        <DndContext id="skills-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveSkill, skillFields)}>
                             <SortableContext items={skillFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
                                 <div className="space-y-2">
                                     {skillFields.map((field, index) => (
