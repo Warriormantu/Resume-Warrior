@@ -393,8 +393,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
     const canvas = await html2canvas(previewRef.current, { scale: 3 });
     const link = document.createElement('a');
-    link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.jpg`;
+    link.href = canvas.toDataURL('image/jpeg');
     link.click();
   };
 
@@ -627,7 +627,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         <div className="w-full bg-background p-8 overflow-y-auto max-h-[calc(100vh-56px)] hidden lg:block">
             <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex gap-4 justify-center">
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
-                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download Image</Button>
+                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download JPG</Button>
             </div>
             <div className="flex justify-center">
                 <div className="origin-top transform scale-[0.75]">
@@ -645,7 +645,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         {/* Download buttons for mobile view */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm z-20 p-4 border-t flex gap-4 justify-center">
              <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> PDF</Button>
-             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Image</Button>
+             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> JPG</Button>
         </div>
       </div>
     </FormProvider>
