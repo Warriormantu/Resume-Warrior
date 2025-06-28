@@ -4,13 +4,10 @@ import type { GenerateResumeFromPromptOutput } from '@/ai/flows/generate-resume-
 import type { GenerateCoverLetterInput, GenerateCoverLetterOutput } from '@/ai/flows/generate-cover-letter';
 import type { AnalyzeResumeInput, AnalyzeResumeOutput } from '@/ai/flows/analyze-resume';
 import type { GenerateSummaryInput } from '@/ai/flows/generate-summary';
-import { headers } from 'next/headers';
 
 function getBaseUrl() {
-    const headersList = headers();
-    const host = headersList.get('host') || 'localhost:9002';
-    const protocol = host.startsWith('localhost') ? 'http' : 'https';
-    return `${protocol}://${host}`;
+    // Use the `URL` environment variable provided by Netlify, or fall back to localhost for local development.
+    return process.env.URL || 'http://localhost:9002';
 }
 
 async function callGenkitFlow<T>(flowName: string, input: any): Promise<T | null> {
