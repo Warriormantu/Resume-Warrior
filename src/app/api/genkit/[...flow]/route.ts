@@ -1,5 +1,5 @@
 
-import {createNextApiHandler} from '@genkit-ai/next';
+import createNextApiHandler from '@genkit-ai/next';
 
 // Import all the flows to ensure they are registered with Genkit
 // and included in the production build by Next.js.
