@@ -4,9 +4,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Toaster } from "@/components/ui/toaster"
 
-// This side-effect import ensures all AI flows are registered with the
-// Genkit plugin and included in the production build.
-import '@/ai/dev';
+// Side-effect imports for AI flows are now handled in actions.ts
 
 export const metadata: Metadata = {
   title: 'Resume Warrior',
