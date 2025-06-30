@@ -39,7 +39,8 @@ import {
   Rocket,
   Library,
   GripVertical,
-  Paintbrush
+  Paintbrush,
+  Eye
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
@@ -439,17 +440,25 @@ export function ResumeEditor({ template }: { template: Template }) {
         
         setTimeout(async () => {
             try {
+                console.log("Starting PDF generation for element:", element);
                 const canvas = await domtoimage.toCanvas(element, {
-                    width: element.clientWidth * 2,
-                    height: element.clientHeight * 2,
+                    width: element.clientWidth,
+                    height: element.clientHeight,
                     style: {
-                        transform: 'scale(2)',
-                        transformOrigin: 'top left',
-                        fontFamily: fontFamily,
+                      transform: 'scale(1)',
+                      transformOrigin: 'top left',
                     },
+                    quality: 1.0,
+                    scale: 2,
                     backgroundColor: '#ffffff',
                 });
+                console.log("Canvas created, width:", canvas.width, "height:", canvas.height);
+                
                 const imgData = canvas.toDataURL('image/png');
+                if (!imgData || imgData.length < 100) {
+                  throw new Error("Generated image data is empty or too small.");
+                }
+                console.log("Image data URL created, length:", imgData.length);
                 
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -459,6 +468,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
                 
                 toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+                console.log("PDF download successful.");
             } catch (error) {
                 console.error("PDF generation process failed:", error);
                 toast({
@@ -494,13 +504,17 @@ export function ResumeEditor({ template }: { template: Template }) {
 
         setTimeout(async () => {
             try {
+                console.log("Starting PNG generation for element:", element);
                 const dataUrl = await domtoimage.toPng(element, {
                     quality: 1.0,
+                    scale: 2,
                     bgcolor: '#ffffff',
-                     style: {
-                        fontFamily: fontFamily,
-                    },
                 });
+
+                if (!dataUrl || dataUrl.length < 100) {
+                  throw new Error("Generated image data is empty or too small.");
+                }
+                console.log("Image data URL created, length:", dataUrl.length);
                 
                 const link = document.createElement('a');
                 link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
@@ -508,6 +522,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 link.click();
                 
                 toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+                console.log("PNG download successful.");
             } catch (error) {
                 console.error("Image generation process failed:", error);
                 toast({
@@ -583,6 +598,13 @@ export function ResumeEditor({ template }: { template: Template }) {
         <div className="w-full bg-secondary p-8 overflow-y-auto max-h-[calc(100vh-56px)]">
           <h1 className="text-2xl font-bold font-headline mb-1">Editing: {template.name}</h1>
           <p className="text-muted-foreground mb-6">Fill in your details below. The preview will update automatically.</p>
+          
+          <div className="lg:hidden p-3 mb-6 text-sm text-primary bg-primary/10 rounded-md flex items-start gap-3 border border-primary/20">
+            <Eye className="h-5 w-5 mt-0.5 flex-shrink-0" />
+            <p>
+              The live resume preview is hidden on this screen size. It will appear side-by-side with the editor on larger displays like a desktop.
+            </p>
+          </div>
           
           <Form {...form}>
             <form className="space-y-4">
@@ -782,7 +804,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.75]">
+                <div className="origin-top transform scale-[0.6]">
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
