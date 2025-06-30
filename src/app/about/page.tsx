@@ -6,8 +6,7 @@ const teamMembers = [
     {
         name: "Mantu Gupta",
         role: "Founder & Lead Developer",
-        avatar: "https://placehold.co/200x200.png",
-        aiHint: "developer portrait"
+        avatar: "/images/developer-photo.jpg"
     }
 ]
 
@@ -74,8 +73,7 @@ export default function AboutPage() {
                             alt={member.name}
                             width={192}
                             height={192}
-                            data-ai-hint={member.aiHint}
-                            className="w-48 h-48 rounded-full object-cover mb-4 shadow-lg"
+                            className="w-48 h-48 rounded-full object-cover mb-4 shadow-xl ring-4 ring-background"
                         />
                         <h3 className="font-bold font-headline text-xl">{member.name}</h3>
                         <p className="text-sm text-muted-foreground">{member.role}</p>
