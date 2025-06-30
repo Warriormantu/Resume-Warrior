@@ -49,20 +49,18 @@ export function SleekTech({ data }: { data: ResumeData }) {
                 <section className="mb-6">
                     <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>EXPERIENCE</h2>
                     {experience.map(exp => (
-                        <div key={exp.id} className="mb-4 relative pl-4 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:rounded-full" style={{ '--before-bg': 'var(--resume-accent-color)' } as React.CSSProperties}>
-                            <style>{`
-                                .before\\:absolute::before {
-                                    background-color: var(--before-bg) !important;
-                                }
-                            `}</style>
-                            <div className="flex justify-between items-baseline">
-                                <h3 className="text-md font-bold text-gray-100">{exp.title}</h3>
-                                <p className="text-xs text-gray-400">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                        <div key={exp.id} className="mb-4 flex items-start gap-3">
+                            <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: 'var(--resume-accent-color)' }} />
+                            <div className="flex-grow">
+                                <div className="flex justify-between items-baseline">
+                                    <h3 className="text-md font-bold text-gray-100">{exp.title}</h3>
+                                    <p className="text-xs text-gray-400">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                                </div>
+                                <p className="text-sm font-semibold text-gray-300">{exp.company}</p>
+                                <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
+                                    {exp.points?.map((point, i) => <li key={i}>{point}</li>)}
+                                </ul>
                             </div>
-                            <p className="text-sm font-semibold text-gray-300">{exp.company}</p>
-                            <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
-                                {exp.points?.map((point, i) => <li key={i}>{point}</li>)}
-                            </ul>
                         </div>
                     ))}
                 </section>
@@ -70,13 +68,16 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     <section className="mb-6">
                         <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>PROJECTS</h2>
                         {projects.map(proj => (
-                            <div key={proj.id} className="mb-4 relative pl-4 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:rounded-full" style={{ '--before-bg': 'var(--resume-accent-color)' } as React.CSSProperties}>
-                                <h3 className="text-md font-bold text-gray-100">{proj.name}</h3>
-                                {proj.url && <p className="text-sm" style={{ color: 'var(--resume-accent-color)', opacity: 0.9 }}>{proj.url}</p>}
-                                <p className="text-sm text-gray-300 my-1">{proj.description}</p>
-                                <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
-                                    {proj.points?.map((point, i) => <li key={i}>{point}</li>)}
-                                </ul>
+                            <div key={proj.id} className="mb-4 flex items-start gap-3">
+                                <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: 'var(--resume-accent-color)' }} />
+                                <div className="flex-grow">
+                                    <h3 className="text-md font-bold text-gray-100">{proj.name}</h3>
+                                    {proj.url && <p className="text-sm" style={{ color: 'var(--resume-accent-color)', opacity: 0.9 }}>{proj.url}</p>}
+                                    <p className="text-sm text-gray-300 my-1">{proj.description}</p>
+                                    <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
+                                        {proj.points?.map((point, i) => <li key={i}>{point}</li>)}
+                                    </ul>
+                                </div>
                             </div>
                         ))}
                     </section>
@@ -85,11 +86,14 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     section.title && section.content && (
                         <section key={section.id} className="mb-6">
                             <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>{section.title.toUpperCase()}</h2>
-                             <div className="relative pl-4 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:rounded-full" style={{ '--before-bg': 'var(--resume-accent-color)' } as React.CSSProperties}>
-                                <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
-                                    {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}
-                                </ul>
-                            </div>
+                            <ul className="list-none space-y-1">
+                                {section.content.split('\n').filter(p => p).map((point, i) => (
+                                    <li key={i} className="flex items-start gap-3">
+                                        <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: 'var(--resume-accent-color)' }} />
+                                        <span className="flex-grow text-sm text-gray-400">{point}</span>
+                                    </li>
+                                ))}
+                            </ul>
                         </section>
                     )
                 ))}
