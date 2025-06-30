@@ -97,4 +97,11 @@ body {
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
     }
+
+    /* Force styles for PDF/Image export */
+    .print-force * {
+        word-wrap: break-word !important;
+        word-break: break-all !important;
+        line-height: 1.5 !important;
+    }
 }

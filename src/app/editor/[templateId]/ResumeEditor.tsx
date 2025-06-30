@@ -427,7 +427,14 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadPDF = async () => {
     if (!previewRef.current) return;
     toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
-    const canvas = await html2canvas(previewRef.current, { scale: 3 });
+    
+    const element = previewRef.current;
+    element.classList.add('print-force');
+
+    const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+    
+    element.classList.remove('print-force');
+
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -439,10 +446,17 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadImage = async () => {
     if (!previewRef.current) return;
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
-    const canvas = await html2canvas(previewRef.current, { scale: 3 });
+    
+    const element = previewRef.current;
+    element.classList.add('print-force');
+
+    const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+
+    element.classList.remove('print-force');
+
     const link = document.createElement('a');
-    link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.jpg`;
-    link.href = canvas.toDataURL('image/jpeg');
+    link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+    link.href = canvas.toDataURL('image/png');
     link.click();
   };
 
@@ -697,7 +711,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         <div className="w-full bg-background p-8 overflow-y-auto max-h-[calc(100vh-56px)] hidden lg:block">
             <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex gap-4 justify-center">
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
-                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download JPG</Button>
+                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
                 <div className="origin-top transform scale-[0.75]">
@@ -715,7 +729,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         {/* Download buttons for mobile view */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm z-20 p-4 border-t flex gap-4 justify-center">
              <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> PDF</Button>
-             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> JPG</Button>
+             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> PNG</Button>
         </div>
       </div>
     </FormProvider>
