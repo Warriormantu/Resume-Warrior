@@ -71,9 +71,9 @@ export default function AboutPage() {
                         <Image
                             src={member.avatar}
                             alt={member.name}
-                            width={192}
-                            height={192}
-                            className="w-48 h-48 rounded-full object-cover mb-4 shadow-xl ring-4 ring-background"
+                            width={224}
+                            height={224}
+                            className="w-56 h-56 rounded-full object-cover mb-4 shadow-xl ring-4 ring-background transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
                         />
                         <h3 className="font-bold font-headline text-xl">{member.name}</h3>
                         <p className="text-sm text-muted-foreground">{member.role}</p>
