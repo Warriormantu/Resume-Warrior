@@ -43,7 +43,7 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image-more';
 import { useToast } from '@/hooks/use-toast';
 import { getRephrasedPoints, getAiSummary } from '@/app/actions';
 import { sampleResumeData } from '@/lib/sampleData';
@@ -428,7 +428,6 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadPDF = async () => {
     const element = previewRef.current;
     if (!element) {
-        console.error("Resume preview element not found for PDF download.");
         toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
         return;
     }
@@ -436,71 +435,38 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating PDF...', description: 'Please wait, this may take a moment.' });
     
     try {
-        console.log("Step 1: Waiting for fonts to be ready...");
         await document.fonts.ready;
-        console.log("Fonts are ready.");
-
-        console.log("Step 2: Adding print-force class and starting delay...");
-        element.classList.add('print-force');
-
-        setTimeout(() => {
-            console.log("Step 3: Calling html2canvas to capture resume for PDF...");
-            html2canvas(element, { 
-                scale: 2,
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: "#ffffff",
-                scrollX: 0,
-                scrollY: 0,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight,
-                logging: true,
-            }).then(canvas => {
-                console.log("Step 4: Canvas generated successfully.");
-                const imgData = canvas.toDataURL('image/png');
-                
-                if (!imgData || imgData.length < 100) {
-                    throw new Error('Generated image data is empty during PDF creation.');
-                }
-                console.log("Step 5: Image data URL created for PDF.");
-
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
-                
-                console.log("Step 6: PDF download complete.");
-                toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
-
-            }).catch(error => {
-                console.error("PDF generation process failed:", error);
-                toast({
-                    variant: 'destructive',
-                    title: 'Download Failed',
-                    description: 'Could not generate the PDF. Please try again.',
-                });
-            }).finally(() => {
-                console.log("Step 7: Cleaning up: removing print-force class.");
-                element.classList.remove('print-force');
-            });
-        }, 500);
-    } catch (e) {
-        console.error("An unexpected error occurred during PDF preparation:", e);
+        const canvas = await domtoimage.toCanvas(element, {
+            width: element.clientWidth * 2,
+            height: element.clientHeight * 2,
+            style: {
+                transform: 'scale(2)',
+                transformOrigin: 'top left',
+            },
+        });
+        const imgData = canvas.toDataURL('image/png');
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+        
+        toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+    } catch (error) {
+        console.error("PDF generation process failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'An unexpected error occurred. Please try again.',
+            description: 'Could not generate the PDF. Please try again.',
         });
-        element.classList.remove('print-force');
     }
   };
 
   const handleDownloadImage = async () => {
     const element = previewRef.current;
     if (!element) {
-        console.error("Resume preview element not found for image download.");
         toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
         return;
     }
@@ -508,62 +474,25 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait, this may take a moment.' });
     
     try {
-        console.log("Step 1: Waiting for fonts to be ready...");
         await document.fonts.ready;
-        console.log("Fonts are ready.");
-
-        console.log("Step 2: Adding print-force class and starting delay...");
-        element.classList.add('print-force');
-
-        setTimeout(() => {
-            console.log("Step 3: Calling html2canvas to capture resume for Image...");
-            html2canvas(element, { 
-                scale: 2,
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: "#ffffff",
-                scrollX: 0,
-                scrollY: 0,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight,
-                logging: true,
-            }).then(canvas => {
-                console.log("Step 4: Canvas generated successfully.");
-                const imgData = canvas.toDataURL('image/png');
-                
-                if (!imgData || imgData.length < 100) {
-                    throw new Error('Generated image data is empty.');
-                }
-                console.log("Step 5: Image data URL created for PNG.");
-
-                const link = document.createElement('a');
-                link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-                link.href = imgData;
-                link.click();
-                
-                console.log("Step 6: PNG download complete.");
-                toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
-
-            }).catch(error => {
-                console.error("Image generation process failed:", error);
-                toast({
-                    variant: 'destructive',
-                    title: 'Download Failed',
-                    description: 'Could not generate the image. Please try again.',
-                });
-            }).finally(() => {
-                console.log("Step 7: Cleaning up: removing print-force class.");
-                element.classList.remove('print-force');
-            });
-        }, 500);
-    } catch (e) {
-        console.error("An unexpected error occurred during Image preparation:", e);
+        const dataUrl = await domtoimage.toPng(element, {
+            quality: 1.0,
+            bgcolor: '#ffffff'
+        });
+        
+        const link = document.createElement('a');
+        link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+    } catch (error) {
+        console.error("Image generation process failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'An unexpected error occurred. Please try again.',
+            description: 'Could not generate the image. Please try again.',
         });
-        element.classList.remove('print-force');
     }
   };
 

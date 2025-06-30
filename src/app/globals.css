@@ -99,23 +99,8 @@ body {
         scrollbar-width: none;  /* Firefox */
     }
 
-    /* Force styles for PDF/Image export */
-    .print-force * {
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
-        overflow-wrap: break-word !important;
-        word-wrap: break-word !important;
-        word-break: break-word !important;
-        line-height: 1.5 !important;
-        overflow: visible !important;
-        transition: none !important;
-        animation: none !important;
-    }
-
-    .print-force section {
+    .resume-section {
       break-inside: avoid !important;
       page-break-inside: avoid !important;
     }
 }
-
-    
