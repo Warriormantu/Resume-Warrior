@@ -22,9 +22,9 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                 <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">EXPERIENCE</h2>
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-3">
-                        <div className="flex justify-between items-baseline">
+                        <div className="flex justify-between items-baseline gap-4">
                              <h3 className="text-md font-bold text-slate-800">{exp.title}</h3>
-                             <p className="text-xs text-slate-600">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                             <p className="text-xs text-slate-600 flex-shrink-0 whitespace-nowrap">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
                         </div>
                         <p className="text-sm font-semibold text-slate-600">{exp.company}{exp.location && `, ${exp.location}`}</p>
                         <ul className="list-disc list-inside mt-1 text-sm text-slate-700">
@@ -37,9 +37,9 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                 <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">EDUCATION</h2>
                 {education.map(edu => (
                      <div key={edu.id} className="mb-2">
-                        <div className="flex justify-between items-baseline">
+                        <div className="flex justify-between items-baseline gap-4">
                            <h3 className="text-md font-bold text-slate-800">{edu.institution}</h3>
-                           <p className="text-xs text-slate-600">{edu.startDate} - {edu.endDate}</p>
+                           <p className="text-xs text-slate-600 flex-shrink-0 whitespace-nowrap">{edu.startDate} - {edu.endDate}</p>
                         </div>
                         <p className="text-sm text-slate-600">{edu.degree}{edu.fieldOfStudy && `, ${edu.fieldOfStudy}`}</p>
                      </div>

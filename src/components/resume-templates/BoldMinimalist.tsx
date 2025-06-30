@@ -26,9 +26,9 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
                 <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Experience</h2>
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-4">
-                        <div className="flex justify-between items-start">
+                        <div className="flex justify-between items-start gap-4">
                              <h3 className="text-md font-bold text-gray-800">{exp.title} at {exp.company}</h3>
-                             <p className="text-xs text-gray-500 whitespace-nowrap pt-1">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                             <p className="text-xs text-gray-500 whitespace-nowrap pt-1 flex-shrink-0">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
                         </div>
                         <ul className="mt-1 text-sm text-gray-700 list-none space-y-1">
                             {exp.points?.map((point, i) => (
@@ -46,9 +46,9 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
                 <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Education</h2>
                 {education.map(edu => (
                      <div key={edu.id} className="mb-2">
-                        <div className="flex justify-between items-start">
+                        <div className="flex justify-between items-start gap-4">
                            <h3 className="text-md font-bold text-gray-800">{edu.degree}</h3>
-                           <p className="text-xs text-gray-500 whitespace-nowrap pt-1">{edu.startDate} - {edu.endDate}</p>
+                           <p className="text-xs text-gray-500 whitespace-nowrap pt-1 flex-shrink-0">{edu.startDate} - {edu.endDate}</p>
                         </div>
                         <p className="text-sm text-gray-600">{edu.institution}</p>
                      </div>
