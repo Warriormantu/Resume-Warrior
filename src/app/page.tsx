@@ -6,6 +6,7 @@ import Link from "next/link";
 import { templates } from "@/lib/templates";
 import { GenerateResumeForm } from "@/components/GenerateResumeForm";
 import { TemplateCard } from "@/components/TemplateCard";
+import Image from "next/image";
 
 const testimonials = [
   {
@@ -246,7 +247,7 @@ export default function Home() {
             </h2>
             <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
                 {companyLogos.map((company, index) => (
-                    <img key={index} src={company.logo} alt={company.name} data-ai-hint={company.aiHint} className="h-8 object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all"/>
+                    <Image key={index} src={company.logo} alt={company.name} width={80} height={32} data-ai-hint={company.aiHint} className="object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all"/>
                 ))}
             </div>
         </div>

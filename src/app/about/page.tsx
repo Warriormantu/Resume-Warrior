@@ -69,9 +69,11 @@ export default function AboutPage() {
             <div className="flex justify-center">
                 {teamMembers.map(member => (
                     <div key={member.name} className="flex flex-col items-center">
-                        <img
+                        <Image
                             src={member.avatar}
                             alt={member.name}
+                            width={192}
+                            height={192}
                             data-ai-hint={member.aiHint}
                             className="w-48 h-48 rounded-full object-cover mb-4 shadow-lg"
                         />
