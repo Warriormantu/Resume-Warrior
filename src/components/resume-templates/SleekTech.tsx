@@ -4,7 +4,7 @@ import { Phone, Mail, MapPin, Linkedin, Globe } from 'lucide-react';
 export function SleekTech({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-white bg-[#1a1a1a] flex break-words break-all" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
+        <div className="font-sans text-white bg-[#1a1a1a] flex break-all" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
             <div className="w-1/3 bg-[#2a2a2a] p-6 flex flex-col">
                  <header className="text-center mb-8">
                     <h1 className="text-4xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>

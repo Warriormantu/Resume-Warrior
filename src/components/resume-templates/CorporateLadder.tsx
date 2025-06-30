@@ -3,7 +3,7 @@ import type { ResumeData } from '@/lib/types';
 export function CorporateLadder({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-serif text-gray-900 flex break-words break-all" style={{ fontFamily: 'var(--resume-font-family, "serif")' }}>
+        <div className="font-serif text-gray-900 flex break-all" style={{ fontFamily: 'var(--resume-font-family, "serif")' }}>
             <div className="w-1/3 bg-gray-50 p-6 border-r border-gray-200">
                 <header className="mb-8">
                     <h1 className="text-4xl font-bold font-headline text-gray-800">{personalInfo.name}</h1>
