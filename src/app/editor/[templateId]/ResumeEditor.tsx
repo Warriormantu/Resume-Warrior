@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -431,29 +432,36 @@ export function ResumeEditor({ template }: { template: Template }) {
     const element = previewRef.current;
     element.classList.add('print-force');
     
-    try {
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-        
-        const imgData = canvas.toDataURL('image/png');
-        if (imgData.length < 100) {
-            throw new Error('Generated image data is empty.');
-        }
+    setTimeout(async () => {
+      try {
+          const canvas = await html2canvas(element, { 
+              scale: 2, 
+              useCORS: true,
+              allowTaint: true,
+              logging: false,
+          });
+          
+          const imgData = canvas.toDataURL('image/png');
+          if (imgData.length < 100) {
+              throw new Error('Generated image data is empty.');
+          }
 
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
-    } catch (error) {
-        console.error("PDF generation failed:", error);
-        toast({
-            variant: 'destructive',
-            title: 'Download Failed',
-            description: 'Could not generate the PDF. Please try again.',
-        });
-    } finally {
-        element.classList.remove('print-force');
-    }
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+      } catch (error) {
+          console.error("PDF generation failed:", error);
+          toast({
+              variant: 'destructive',
+              title: 'Download Failed',
+              description: 'Could not generate the PDF. Please try again.',
+          });
+      } finally {
+          element.classList.remove('print-force');
+      }
+    }, 100);
   };
 
   const handleDownloadImage = async () => {
@@ -463,28 +471,35 @@ export function ResumeEditor({ template }: { template: Template }) {
     const element = previewRef.current;
     element.classList.add('print-force');
 
-    try {
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    setTimeout(async () => {
+      try {
+          const canvas = await html2canvas(element, { 
+              scale: 2, 
+              useCORS: true,
+              allowTaint: true,
+              logging: false,
+           });
 
-        const dataUrl = canvas.toDataURL('image/png');
-        if (dataUrl.length < 100) {
-            throw new Error('Generated image data is empty.');
-        }
+          const dataUrl = canvas.toDataURL('image/png');
+          if (dataUrl.length < 100) {
+              throw new Error('Generated image data is empty.');
+          }
 
-        const link = document.createElement('a');
-        link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-        link.href = dataUrl;
-        link.click();
-    } catch (error) {
-        console.error("Image generation failed:", error);
-        toast({
-            variant: 'destructive',
-            title: 'Download Failed',
-            description: 'Could not generate the image. Please try again.',
-        });
-    } finally {
-      element.classList.remove('print-force');
-    }
+          const link = document.createElement('a');
+          link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+          link.href = dataUrl;
+          link.click();
+      } catch (error) {
+          console.error("Image generation failed:", error);
+          toast({
+              variant: 'destructive',
+              title: 'Download Failed',
+              description: 'Could not generate the image. Please try again.',
+          });
+      } finally {
+        element.classList.remove('print-force');
+      }
+    }, 100);
   };
 
   const handleRephrase = async (experienceIndex: number) => {

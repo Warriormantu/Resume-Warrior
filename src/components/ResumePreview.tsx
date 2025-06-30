@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import type { ResumeData } from '@/lib/types';
 import type { Template } from '@/lib/templates';
@@ -34,7 +35,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     const previewStyle = {
         '--resume-accent-color': accentColor,
         '--resume-accent-color-bg': accentColorBg,
-        '--resume-font-family': fontFamily,
+        fontFamily: fontFamily,
     } as React.CSSProperties;
     
     return (
