@@ -104,3 +104,25 @@ body {
       page-break-inside: avoid !important;
     }
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #resume-preview, #resume-preview * {
+    visibility: visible;
+  }
+  #resume-preview {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    transform: scale(1) !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .resume-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
