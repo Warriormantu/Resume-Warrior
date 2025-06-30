@@ -430,8 +430,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
-    element.classList.add('print-force');
     
+    // Give the browser a moment to ensure all styles and fonts are rendered.
     setTimeout(async () => {
       try {
           const canvas = await html2canvas(element, { 
@@ -439,6 +439,7 @@ export function ResumeEditor({ template }: { template: Template }) {
               useCORS: true,
               allowTaint: true,
               logging: false,
+              removeContainer: true, // Clean up the cloned DOM element
           });
           
           const imgData = canvas.toDataURL('image/png');
@@ -458,10 +459,8 @@ export function ResumeEditor({ template }: { template: Template }) {
               title: 'Download Failed',
               description: 'Could not generate the PDF. Please try again.',
           });
-      } finally {
-          element.classList.remove('print-force');
       }
-    }, 100);
+    }, 300); // Increased delay for stability
   };
 
   const handleDownloadImage = async () => {
@@ -469,8 +468,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
-    element.classList.add('print-force');
 
+    // Give the browser a moment to ensure all styles and fonts are rendered.
     setTimeout(async () => {
       try {
           const canvas = await html2canvas(element, { 
@@ -478,6 +477,7 @@ export function ResumeEditor({ template }: { template: Template }) {
               useCORS: true,
               allowTaint: true,
               logging: false,
+              removeContainer: true, // Clean up the cloned DOM element
            });
 
           const dataUrl = canvas.toDataURL('image/png');
@@ -496,10 +496,8 @@ export function ResumeEditor({ template }: { template: Template }) {
               title: 'Download Failed',
               description: 'Could not generate the image. Please try again.',
           });
-      } finally {
-        element.classList.remove('print-force');
       }
-    }, 100);
+    }, 300); // Increased delay for stability
   };
 
   const handleRephrase = async (experienceIndex: number) => {
