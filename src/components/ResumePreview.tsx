@@ -41,7 +41,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     return (
         <div 
             ref={ref} 
-            id="resume-preview-container"
+            id="resume-preview"
             className="bg-white text-black p-8 shadow-lg" 
             style={{ width: '816px', minHeight: '1056px', ...previewStyle }}
         >

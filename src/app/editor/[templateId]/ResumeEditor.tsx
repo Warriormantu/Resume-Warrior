@@ -433,56 +433,68 @@ export function ResumeEditor({ template }: { template: Template }) {
         return;
     }
     
-    console.log("Starting PDF download process...");
     toast({ title: 'Generating PDF...', description: 'Please wait, this may take a moment.' });
     
-    element.classList.add('print-force');
-    
-    setTimeout(() => {
-        console.log("Calling html2canvas to capture resume...");
-        html2canvas(element, { 
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: "#ffffff",
-            scrollX: 0,
-            scrollY: 0,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
-        }).then(canvas => {
-            console.log("Canvas generated successfully.");
-            const imgData = canvas.toDataURL('image/png');
-            if (imgData.length < 100) {
-                console.error('Generated image data is empty during PDF creation.');
-                throw new Error('Generated image data is empty.');
-            }
-            console.log("Image data URL created for PDF.");
+    try {
+        console.log("Step 1: Waiting for fonts to be ready...");
+        await document.fonts.ready;
+        console.log("Fonts are ready.");
 
-            console.log("Initializing jsPDF...");
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-            
-            console.log("Adding image to PDF document.");
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            
-            console.log("Saving PDF file...");
-            pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
-            console.log("PDF download should be complete.");
-            toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+        console.log("Step 2: Adding print-force class and starting delay...");
+        element.classList.add('print-force');
 
-        }).catch(error => {
-            console.error("PDF generation process failed:", error);
-            toast({
-                variant: 'destructive',
-                title: 'Download Failed',
-                description: 'Could not generate the PDF. Please try again.',
+        setTimeout(() => {
+            console.log("Step 3: Calling html2canvas to capture resume for PDF...");
+            html2canvas(element, { 
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: "#ffffff",
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight,
+                logging: true,
+            }).then(canvas => {
+                console.log("Step 4: Canvas generated successfully.");
+                const imgData = canvas.toDataURL('image/png');
+                
+                if (!imgData || imgData.length < 100) {
+                    throw new Error('Generated image data is empty during PDF creation.');
+                }
+                console.log("Step 5: Image data URL created for PDF.");
+
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+                
+                console.log("Step 6: PDF download complete.");
+                toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+
+            }).catch(error => {
+                console.error("PDF generation process failed:", error);
+                toast({
+                    variant: 'destructive',
+                    title: 'Download Failed',
+                    description: 'Could not generate the PDF. Please try again.',
+                });
+            }).finally(() => {
+                console.log("Step 7: Cleaning up: removing print-force class.");
+                element.classList.remove('print-force');
             });
-        }).finally(() => {
-            console.log("Cleaning up: removing print-force class.");
-            element.classList.remove('print-force');
+        }, 500);
+    } catch (e) {
+        console.error("An unexpected error occurred during PDF preparation:", e);
+        toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: 'An unexpected error occurred. Please try again.',
         });
-    }, 500);
+        element.classList.remove('print-force');
+    }
   };
 
   const handleDownloadImage = async () => {
@@ -493,50 +505,66 @@ export function ResumeEditor({ template }: { template: Template }) {
         return;
     }
 
-    console.log("Starting PNG image download process...");
     toast({ title: 'Generating Image...', description: 'Please wait, this may take a moment.' });
-    element.classList.add('print-force');
+    
+    try {
+        console.log("Step 1: Waiting for fonts to be ready...");
+        await document.fonts.ready;
+        console.log("Fonts are ready.");
 
-    setTimeout(() => {
-        console.log("Calling html2canvas to capture resume...");
-        html2canvas(element, { 
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: "#ffffff",
-            scrollX: 0,
-            scrollY: 0,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
-        }).then(canvas => {
-            console.log("Canvas generated successfully.");
-            const dataUrl = canvas.toDataURL('image/png');
-            if (dataUrl.length < 100) {
-                console.error('Generated image data is empty during image creation.');
-                throw new Error('Generated image data is empty.');
-            }
-            console.log("Image data URL created for PNG.");
-            const link = document.createElement('a');
-            link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-            link.href = dataUrl;
-            
-            console.log("Triggering PNG file download...");
-            link.click();
-            console.log("PNG download should be complete.");
-            toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+        console.log("Step 2: Adding print-force class and starting delay...");
+        element.classList.add('print-force');
 
-        }).catch(error => {
-            console.error("Image generation process failed:", error);
-            toast({
-                variant: 'destructive',
-                title: 'Download Failed',
-                description: 'Could not generate the image. Please try again.',
+        setTimeout(() => {
+            console.log("Step 3: Calling html2canvas to capture resume for Image...");
+            html2canvas(element, { 
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: "#ffffff",
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight,
+                logging: true,
+            }).then(canvas => {
+                console.log("Step 4: Canvas generated successfully.");
+                const imgData = canvas.toDataURL('image/png');
+                
+                if (!imgData || imgData.length < 100) {
+                    throw new Error('Generated image data is empty.');
+                }
+                console.log("Step 5: Image data URL created for PNG.");
+
+                const link = document.createElement('a');
+                link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+                link.href = imgData;
+                link.click();
+                
+                console.log("Step 6: PNG download complete.");
+                toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+
+            }).catch(error => {
+                console.error("Image generation process failed:", error);
+                toast({
+                    variant: 'destructive',
+                    title: 'Download Failed',
+                    description: 'Could not generate the image. Please try again.',
+                });
+            }).finally(() => {
+                console.log("Step 7: Cleaning up: removing print-force class.");
+                element.classList.remove('print-force');
             });
-        }).finally(() => {
-            console.log("Cleaning up: removing print-force class.");
-            element.classList.remove('print-force');
+        }, 500);
+    } catch (e) {
+        console.error("An unexpected error occurred during Image preparation:", e);
+        toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: 'An unexpected error occurred. Please try again.',
         });
-    }, 500);
+        element.classList.remove('print-force');
+    }
   };
 
   const handleRephrase = async (experienceIndex: number) => {
@@ -793,7 +821,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.75]">
+                <div className="origin-top transform scale-[0.6]">
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
