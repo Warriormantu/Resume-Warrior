@@ -71,8 +71,8 @@ export default function ContactPage() {
                         </div>
                         <div>
                             <h3 className="font-semibold text-xl">Office</h3>
-                            <p className="text-muted-foreground">123 Resume Lane, HR Tech City</p>
-                            <p className="text-muted-foreground">Bangalore, India</p>
+                            <p className="text-muted-foreground">Sahuakol, Gorakhpur</p>
+                            <p className="text-muted-foreground">Uttar Pradesh</p>
                         </div>
                     </div>
                 </div>
