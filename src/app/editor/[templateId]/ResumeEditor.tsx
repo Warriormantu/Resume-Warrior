@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -40,7 +39,6 @@ import {
   Library,
   GripVertical,
   Paintbrush,
-  Eye
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
@@ -437,6 +435,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     try {
         const domtoimage = (await import('dom-to-image-more')).default;
         await document.fonts.ready;
+        console.log("Fonts ready, preparing to generate PDF...");
         
         setTimeout(async () => {
             try {
@@ -501,6 +500,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     try {
         const domtoimage = (await import('dom-to-image-more')).default;
         await document.fonts.ready;
+        console.log("Fonts ready, preparing to generate PNG...");
 
         setTimeout(async () => {
             try {
@@ -594,17 +594,10 @@ export function ResumeEditor({ template }: { template: Template }) {
 
   return (
     <FormProvider {...form}>
-      <div className="grid lg:grid-cols-2 min-h-[calc(100vh-56px)]">
-        <div className="w-full bg-secondary p-8 overflow-y-auto max-h-[calc(100vh-56px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-56px)]">
+        <div className="w-full bg-secondary p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
           <h1 className="text-2xl font-bold font-headline mb-1">Editing: {template.name}</h1>
           <p className="text-muted-foreground mb-6">Fill in your details below. The preview will update automatically.</p>
-          
-          <div className="lg:hidden p-3 mb-6 text-sm text-primary bg-primary/10 rounded-md flex items-start gap-3 border border-primary/20">
-            <Eye className="h-5 w-5 mt-0.5 flex-shrink-0" />
-            <p>
-              The live resume preview is hidden on this screen size. It will appear side-by-side with the editor on larger displays like a desktop.
-            </p>
-          </div>
           
           <Form {...form}>
             <form className="space-y-4">
@@ -798,7 +791,7 @@ export function ResumeEditor({ template }: { template: Template }) {
             </form>
           </Form>
         </div>
-        <div className="w-full bg-background p-8 overflow-y-auto max-h-[calc(100vh-56px)] hidden lg:block">
+        <div className="w-full bg-background p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
             <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex gap-4 justify-center">
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
@@ -815,11 +808,6 @@ export function ResumeEditor({ template }: { template: Template }) {
                      />
                 </div>
             </div>
-        </div>
-        {/* Download buttons for mobile view */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm z-20 p-4 border-t flex gap-4 justify-center">
-             <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> PDF</Button>
-             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> PNG</Button>
         </div>
       </div>
     </FormProvider>
