@@ -52,8 +52,7 @@ export default function ContactPage() {
                         </div>
                         <div>
                             <h3 className="font-semibold text-xl">Email</h3>
-                            <p className="text-muted-foreground">support@resumewarrior.com</p>
-                            <p className="text-muted-foreground">sales@resumewarrior.com</p>
+                            <p className="text-muted-foreground">mantuassum@gmail.com</p>
                         </div>
                     </div>
                      <div className="flex items-start gap-4">
@@ -62,7 +61,7 @@ export default function ContactPage() {
                         </div>
                         <div>
                             <h3 className="font-semibold text-xl">Phone</h3>
-                            <p className="text-muted-foreground">(+91) 123-456-7890</p>
+                            <p className="text-muted-foreground">(+91) 8299721726</p>
                             <p className="text-muted-foreground">Mon-Fri from 9am to 5pm.</p>
                         </div>
                     </div>

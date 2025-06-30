@@ -4,28 +4,10 @@ import Image from "next/image";
 
 const teamMembers = [
     {
-        name: "Alex Johnson",
-        role: "Founder & CEO",
-        avatar: "https://placehold.co/200x200.png",
-        aiHint: "ceo portrait"
-    },
-    {
-        name: "Maria Garcia",
-        role: "Lead Developer",
+        name: "Mantu Gupta",
+        role: "Founder & Lead Developer",
         avatar: "https://placehold.co/200x200.png",
         aiHint: "developer portrait"
-    },
-    {
-        name: "Sam Chen",
-        role: "Head of Product",
-        avatar: "https://placehold.co/200x200.png",
-        aiHint: "product manager"
-    },
-     {
-        name: "Emily White",
-        role: "UX/UI Designer",
-        avatar: "https://placehold.co/200x200.png",
-        aiHint: "designer portrait"
     }
 ]
 
@@ -83,17 +65,17 @@ export default function AboutPage() {
 
       <section className="py-16 md:py-24 bg-secondary">
         <div className="container mx-auto text-center">
-            <h2 className="text-3xl font-bold font-headline mb-12">Meet the Team</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <h2 className="text-3xl font-bold font-headline mb-12">Meet the Developer</h2>
+            <div className="flex justify-center">
                 {teamMembers.map(member => (
                     <div key={member.name} className="flex flex-col items-center">
                         <img
                             src={member.avatar}
                             alt={member.name}
                             data-ai-hint={member.aiHint}
-                            className="w-32 h-32 rounded-full object-cover mb-4 shadow-lg"
+                            className="w-48 h-48 rounded-full object-cover mb-4 shadow-lg"
                         />
-                        <h3 className="font-bold font-headline">{member.name}</h3>
+                        <h3 className="font-bold font-headline text-xl">{member.name}</h3>
                         <p className="text-sm text-muted-foreground">{member.role}</p>
                     </div>
                 ))}
