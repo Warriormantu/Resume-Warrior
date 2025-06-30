@@ -10,12 +10,31 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     <h1 className="text-4xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>
                     {personalInfo.jobTitle && <p className="text-lg mt-1" style={{ color: 'var(--resume-accent-color)', opacity: 0.9 }}>{personalInfo.jobTitle}</p>}
                 </header>
-                <div className="text-sm space-y-2 text-gray-300">
-                    <p><strong className="font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Phone:</strong> {personalInfo.phone}</p>
-                    <p><strong className="font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Email:</strong> {personalInfo.email}</p>
-                    <p><strong className="font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Address:</strong> {personalInfo.address}</p>
-                    {personalInfo.linkedin && <p><strong className="font-semibold" style={{ color: 'var(--resume-accent-color)' }}>LinkedIn:</strong> {personalInfo.linkedin}</p>}
-                    {personalInfo.portfolio && <p><strong className="font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Web:</strong> {personalInfo.portfolio}</p>}
+                <div className="text-sm space-y-3 text-gray-300">
+                    <div className="flex items-start gap-2">
+                        <strong className="w-16 flex-shrink-0 font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Phone:</strong>
+                        <span>{personalInfo.phone}</span>
+                    </div>
+                     <div className="flex items-start gap-2">
+                        <strong className="w-16 flex-shrink-0 font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Email:</strong>
+                        <span className="break-all">{personalInfo.email}</span>
+                    </div>
+                     <div className="flex items-start gap-2">
+                        <strong className="w-16 flex-shrink-0 font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Address:</strong>
+                        <span>{personalInfo.address}</span>
+                    </div>
+                    {personalInfo.linkedin && (
+                        <div className="flex items-start gap-2">
+                            <strong className="w-16 flex-shrink-0 font-semibold" style={{ color: 'var(--resume-accent-color)' }}>LinkedIn:</strong>
+                            <span className="break-all">{personalInfo.linkedin}</span>
+                        </div>
+                    )}
+                    {personalInfo.portfolio && (
+                         <div className="flex items-start gap-2">
+                            <strong className="w-16 flex-shrink-0 font-semibold" style={{ color: 'var(--resume-accent-color)' }}>Web:</strong>
+                            <span className="break-all">{personalInfo.portfolio}</span>
+                        </div>
+                    )}
                 </div>
 
                 <section className="mt-8">
@@ -52,9 +71,9 @@ export function SleekTech({ data }: { data: ResumeData }) {
                         <div key={exp.id} className="mb-4 flex items-start gap-3">
                             <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: 'var(--resume-accent-color)' }} />
                             <div className="flex-grow">
-                                <div className="flex justify-between items-baseline">
+                                <div className="flex justify-between items-baseline gap-2">
                                     <h3 className="text-md font-bold text-gray-100">{exp.title}</h3>
-                                    <p className="text-xs text-gray-400">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                                    <p className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
                                 </div>
                                 <p className="text-sm font-semibold text-gray-300">{exp.company}</p>
                                 <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
@@ -72,7 +91,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
                                 <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: 'var(--resume-accent-color)' }} />
                                 <div className="flex-grow">
                                     <h3 className="text-md font-bold text-gray-100">{proj.name}</h3>
-                                    {proj.url && <p className="text-sm" style={{ color: 'var(--resume-accent-color)', opacity: 0.9 }}>{proj.url}</p>}
+                                    {proj.url && <p className="text-sm break-all" style={{ color: 'var(--resume-accent-color)', opacity: 0.9 }}>{proj.url}</p>}
                                     <p className="text-sm text-gray-300 my-1">{proj.description}</p>
                                     <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">
                                         {proj.points?.map((point, i) => <li key={i}>{point}</li>)}
