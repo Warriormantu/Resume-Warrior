@@ -11,7 +11,7 @@ export const sampleResumeData: ResumeData = {
     portfolio: 'yourportfolio.com',
   },
   summary:
-    'A brief summary about your professional background, skills, and career goals. Tailor this to the job you are applying for.',
+    'Highly-motivated and detail-oriented Software Engineer with 5+ years of experience developing and scaling web applications. Proficient in JavaScript, React, and Node.js with a proven track record of delivering high-quality code and collaborating effectively in agile environments. Seeking to leverage full-stack expertise to build innovative solutions at a forward-thinking company.',
   experience: [
     {
       id: '1',
