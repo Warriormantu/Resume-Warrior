@@ -429,13 +429,10 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
-    element.classList.add('print-force');
-
+    
     try {
         const canvas = await html2canvas(element, { scale: 2, useCORS: true });
         
-        element.classList.remove('print-force');
-
         const imgData = canvas.toDataURL('image/png');
         if (imgData.length < 100) {
             throw new Error('Generated image data is empty.');
@@ -453,7 +450,6 @@ export function ResumeEditor({ template }: { template: Template }) {
             title: 'Download Failed',
             description: 'Could not generate the PDF. Please try again.',
         });
-        element.classList.remove('print-force');
     }
   };
 
@@ -462,13 +458,10 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
-    element.classList.add('print-force');
 
     try {
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+        const canvas = await html2canvas(element, { scale: 1.5, useCORS: true });
 
-        element.classList.remove('print-force');
-        
         const dataUrl = canvas.toDataURL('image/png');
         if (dataUrl.length < 100) {
             throw new Error('Generated image data is empty.');
@@ -485,7 +478,6 @@ export function ResumeEditor({ template }: { template: Template }) {
             title: 'Download Failed',
             description: 'Could not generate the image. Please try again.',
         });
-        element.classList.remove('print-force');
     }
   };
 
@@ -743,7 +735,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.75]">
+                <div className="origin-top transform scale-[0.85]">
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
