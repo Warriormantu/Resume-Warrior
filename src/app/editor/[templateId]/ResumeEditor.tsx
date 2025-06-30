@@ -426,80 +426,83 @@ export function ResumeEditor({ template }: { template: Template }) {
   };
 
   const handleDownloadPDF = async () => {
-    if (!previewRef.current) return;
-    toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
-    
     const element = previewRef.current;
+    if (!element) return;
+    
+    toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
     element.classList.add('print-force');
     
-    setTimeout(async () => {
-      try {
-          const canvas = await html2canvas(element, { 
-              scale: 2, 
-              useCORS: true,
-              allowTaint: true,
-              logging: false,
-          });
-          
-          const imgData = canvas.toDataURL('image/png');
-          if (imgData.length < 100) {
-              throw new Error('Generated image data is empty.');
-          }
+    setTimeout(() => {
+        html2canvas(element, { 
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: "#ffffff",
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight,
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            if (imgData.length < 100) {
+                throw new Error('Generated image data is empty.');
+            }
 
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-          pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
-      } catch (error) {
-          console.error("PDF generation failed:", error);
-          toast({
-              variant: 'destructive',
-              title: 'Download Failed',
-              description: 'Could not generate the PDF. Please try again.',
-          });
-      } finally {
-        element.classList.remove('print-force');
-      }
-    }, 300);
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+        }).catch(error => {
+            console.error("PDF generation failed:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Download Failed',
+                description: 'Could not generate the PDF. Please try again.',
+            });
+        }).finally(() => {
+            element.classList.remove('print-force');
+        });
+    }, 500);
   };
 
   const handleDownloadImage = async () => {
-    if (!previewRef.current) return;
-    toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
-    
     const element = previewRef.current;
+    if (!element) return;
+
+    toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
     element.classList.add('print-force');
 
-    setTimeout(async () => {
-      try {
-          const canvas = await html2canvas(element, { 
-              scale: 2, 
-              useCORS: true,
-              allowTaint: true,
-              logging: false,
-           });
-
-          const dataUrl = canvas.toDataURL('image/png');
-          if (dataUrl.length < 100) {
-              throw new Error('Generated image data is empty.');
-          }
-
-          const link = document.createElement('a');
-          link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-          link.href = dataUrl;
-          link.click();
-      } catch (error) {
-          console.error("Image generation failed:", error);
-          toast({
-              variant: 'destructive',
-              title: 'Download Failed',
-              description: 'Could not generate the image. Please try again.',
-          });
-      } finally {
-        element.classList.remove('print-force');
-      }
-    }, 300);
+    setTimeout(() => {
+        html2canvas(element, { 
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: "#ffffff",
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight,
+        }).then(canvas => {
+            const dataUrl = canvas.toDataURL('image/png');
+            if (dataUrl.length < 100) {
+                throw new Error('Generated image data is empty.');
+            }
+            const link = document.createElement('a');
+            link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+            link.href = dataUrl;
+            link.click();
+        }).catch(error => {
+            console.error("Image generation failed:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Download Failed',
+                description: 'Could not generate the image. Please try again.',
+            });
+        }).finally(() => {
+            element.classList.remove('print-force');
+        });
+    }, 500);
   };
 
   const handleRephrase = async (experienceIndex: number) => {
@@ -756,7 +759,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.75]">
+                <div className="origin-top transform scale-[0.6]">
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
@@ -777,3 +780,5 @@ export function ResumeEditor({ template }: { template: Template }) {
     </FormProvider>
   );
 }
+
+    
