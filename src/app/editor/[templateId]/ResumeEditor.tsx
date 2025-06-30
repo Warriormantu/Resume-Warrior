@@ -464,7 +464,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     element.classList.add('print-force');
 
     try {
-        const canvas = await html2canvas(element, { scale: 1.5, useCORS: true });
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
 
         const dataUrl = canvas.toDataURL('image/png');
         if (dataUrl.length < 100) {
