@@ -429,6 +429,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
+    element.classList.add('print-force');
     
     try {
         const canvas = await html2canvas(element, { scale: 2, useCORS: true });
@@ -450,6 +451,8 @@ export function ResumeEditor({ template }: { template: Template }) {
             title: 'Download Failed',
             description: 'Could not generate the PDF. Please try again.',
         });
+    } finally {
+        element.classList.remove('print-force');
     }
   };
 
@@ -458,6 +461,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
+    element.classList.add('print-force');
 
     try {
         const canvas = await html2canvas(element, { scale: 1.5, useCORS: true });
@@ -478,6 +482,8 @@ export function ResumeEditor({ template }: { template: Template }) {
             title: 'Download Failed',
             description: 'Could not generate the image. Please try again.',
         });
+    } finally {
+      element.classList.remove('print-force');
     }
   };
 
