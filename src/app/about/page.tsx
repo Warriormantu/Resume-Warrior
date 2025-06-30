@@ -73,7 +73,7 @@ export default function AboutPage() {
                             alt={member.name}
                             width={224}
                             height={224}
-                            className="w-56 h-56 rounded-full object-cover mb-4 shadow-xl ring-4 ring-background transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
+                            className="w-56 h-56 rounded-full object-cover mb-4 shadow-2xl shadow-primary/20 ring-4 ring-primary/10 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2 hover:shadow-primary/30 hover:ring-primary/30"
                         />
                         <h3 className="font-bold font-headline text-xl">{member.name}</h3>
                         <p className="text-sm text-muted-foreground">{member.role}</p>
