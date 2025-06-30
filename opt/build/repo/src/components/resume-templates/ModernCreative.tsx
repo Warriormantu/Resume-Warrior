@@ -1,9 +1,9 @@
 import type { ResumeData } from '@/lib/types';
 
 export function ModernCreative({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, projects, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-slate-800 flex gap-6 break-words" style={{ fontFamily: 'var(--resume-font-family, "sans-serif")' }}>
+        <div className="font-sans text-slate-800 flex gap-6 break-words leading-relaxed">
             <div className="w-1/3 bg-slate-100 p-6 rounded-l-lg">
                  <header className="mb-6">
                     <h1 className="text-3xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>
@@ -67,7 +67,7 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                     ))}
                 </section>
                  {projects && projects.length > 0 && (
-                    <section>
+                    <section className="mb-6">
                         <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>PROJECTS</h2>
                         {projects.map(proj => (
                             <div key={proj.id} className="mb-4">
@@ -83,6 +83,16 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                         ))}
                     </section>
                 )}
+                 {custom?.map(section => (
+                    section.title && section.content && (
+                        <section key={section.id} className="mb-6">
+                            <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>{section.title.toUpperCase()}</h2>
+                             <ul className="list-disc list-inside mt-1 text-sm text-slate-700 space-y-1">
+                                {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}
+                            </ul>
+                        </section>
+                    )
+                ))}
             </div>
         </div>
     );

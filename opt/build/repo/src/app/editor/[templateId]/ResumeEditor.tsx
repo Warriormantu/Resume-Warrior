@@ -36,12 +36,12 @@ import {
   GraduationCap,
   Wrench,
   Rocket,
+  Library,
   GripVertical,
-  Paintbrush
+  Paintbrush,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { getRephrasedPoints, getAiSummary } from '@/app/actions';
 import { sampleResumeData } from '@/lib/sampleData';
@@ -250,6 +250,48 @@ const SortableProjectCard = ({
   );
 };
 
+const SortableCustomCard = ({
+  index,
+  onRemove,
+}: {
+  index: number;
+  onRemove: (index: number) => void;
+}) => {
+  const { control, getValues } = useFormContext<ResumeData>();
+  const fieldId = getValues(`custom.${index}.id`);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: fieldId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="touch-none">
+       <Card className="p-4 bg-background">
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <FormField name={`custom.${index}.title`} control={control} render={({ field }) => (<FormItem className="flex-grow"><FormLabel className="sr-only">Section Title</FormLabel><FormControl><Input {...field} placeholder="Section Title (e.g., Awards)" className="text-lg font-semibold" /></FormControl></FormItem>)}/>
+                    <div className="flex items-center">
+                        <Button type="button" variant="ghost" size="icon" className="cursor-grab" {...attributes} {...listeners}>
+                            <GripVertical className="h-4 w-4" />
+                        </Button>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => onRemove(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                    </div>
+                </div>
+                <FormField name={`custom.${index}.content`} control={control} render={({ field }) => (<FormItem><FormLabel className="sr-only">Section Content</FormLabel><FormControl><Textarea {...field} value={field.value || ''} onChange={e => field.onChange(e.target.value)} placeholder="Enter each point on a new line." rows={4}/></FormControl></FormItem>)}/>
+            </div>
+        </Card>
+    </div>
+  );
+};
+
 const SortableSkillItem = ({
   index,
   fieldId,
@@ -341,6 +383,11 @@ export function ResumeEditor({ template }: { template: Template }) {
     control: form.control,
     name: "projects"
   });
+  
+  const { fields: customFields, append: appendCustom, remove: removeCustom, move: moveCustom } = useFieldArray({
+    control: form.control,
+    name: "custom"
+  });
 
   const { fields: skillFields, append: appendSkill, remove: removeSkill, move: moveSkill } = useFieldArray({
     control: form.control,
@@ -377,25 +424,128 @@ export function ResumeEditor({ template }: { template: Template }) {
   };
 
   const handleDownloadPDF = async () => {
-    if (!previewRef.current) return;
-    toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
-    const canvas = await html2canvas(previewRef.current, { scale: 3 });
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+    const element = previewRef.current;
+    if (!element) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+      return;
+    }
+  
+    toast({ title: 'Generating PDF...', description: 'Please wait, this may take a moment.' });
+    
+    try {
+      // Dynamically import dom-to-image-more only on the client-side
+      const domtoimage = (await import('dom-to-image-more')).default;
+      console.log('dom-to-image-more loaded');
+      
+      // Ensure all fonts are loaded before capturing
+      await document.fonts.ready;
+      console.log('Fonts are ready');
+  
+      // Use a timeout to ensure the browser has completed rendering
+      setTimeout(async () => {
+        try {
+          console.log('Attempting to generate canvas from element:', element);
+          const canvas = await domtoimage.toCanvas(element, {
+            width: element.clientWidth,
+            height: element.clientHeight,
+            style: {
+              transform: 'scale(1)',
+              transformOrigin: 'top left',
+            },
+            quality: 1.0,
+            scale: 2,
+            bgcolor: '#ffffff',
+          });
+          console.log("Canvas created, width:", canvas.width, "height:", canvas.height);
+  
+          const imgData = canvas.toDataURL('image/png');
+          if (!imgData || imgData.length < 100) {
+            throw new Error('Generated image data is empty or too small.');
+          }
+          console.log('Image data URL created, length:', imgData.length);
+  
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+  
+          toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+          console.log("PDF download successful.");
+        } catch (error) {
+          console.error("PDF generation process failed:", error);
+          toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: 'Could not generate the PDF. Please try again.',
+          });
+        }
+      }, 500); // 500ms delay for rendering
+    } catch (error) {
+      console.error("Library loading or initial setup failed:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Download Failed',
+        description: 'Could not prepare the document for download.',
+      });
+    }
   };
-
+  
   const handleDownloadImage = async () => {
-    if (!previewRef.current) return;
-    toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
-    const canvas = await html2canvas(previewRef.current, { scale: 3 });
-    const link = document.createElement('a');
-    link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.jpg`;
-    link.href = canvas.toDataURL('image/jpeg');
-    link.click();
+    const element = previewRef.current;
+    if (!element) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+      return;
+    }
+  
+    toast({ title: 'Generating Image...', description: 'Please wait, this may take a moment.' });
+  
+    try {
+      const domtoimage = (await import('dom-to-image-more')).default;
+      console.log('dom-to-image-more loaded');
+      
+      await document.fonts.ready;
+      console.log('Fonts are ready');
+  
+      setTimeout(async () => {
+        try {
+          console.log('Attempting to generate PNG from element:', element);
+          const dataUrl = await domtoimage.toPng(element, {
+            quality: 1.0,
+            scale: 2,
+            bgcolor: '#ffffff',
+          });
+  
+          if (!dataUrl || dataUrl.length < 100) {
+            throw new Error('Generated image data is empty or too small.');
+          }
+          console.log('Image data URL created, length:', dataUrl.length);
+  
+          const link = document.createElement('a');
+          link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+          link.href = dataUrl;
+          link.click();
+  
+          toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+          console.log("PNG download successful.");
+        } catch (error) {
+          console.error("Image generation process failed:", error);
+          toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: 'Could not generate the image. Please try again.',
+          });
+        }
+      }, 500); // 500ms delay for rendering
+    } catch (error) {
+      console.error("Library loading or initial setup failed:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Download Failed',
+        description: 'Could not prepare the document for download.',
+      });
+    }
   };
 
   const handleRephrase = async (experienceIndex: number) => {
@@ -449,14 +599,14 @@ export function ResumeEditor({ template }: { template: Template }) {
 
   return (
     <FormProvider {...form}>
-      <div className="grid lg:grid-cols-2 min-h-[calc(100vh-56px)]">
-        <div className="w-full bg-secondary p-8 overflow-y-auto max-h-[calc(100vh-56px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-56px)]">
+        <div className="w-full bg-secondary p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
           <h1 className="text-2xl font-bold font-headline mb-1">Editing: {template.name}</h1>
           <p className="text-muted-foreground mb-6">Fill in your details below. The preview will update automatically.</p>
           
           <Form {...form}>
             <form className="space-y-4">
-              <Accordion type="multiple" defaultValue={['appearance', 'personal', 'summary', 'experience', 'education', 'projects', 'skills']} className="w-full">
+              <Accordion type="multiple" defaultValue={['appearance', 'personal', 'summary', 'experience', 'education', 'projects', 'custom', 'skills']} className="w-full">
                 {/* Appearance */}
                 <AccordionItem value="appearance">
                     <AccordionTrigger><Paintbrush className="mr-2"/>Appearance</AccordionTrigger>
@@ -597,6 +747,28 @@ export function ResumeEditor({ template }: { template: Template }) {
                         </Button>
                     </AccordionContent>
                 </AccordionItem>
+                {/* Custom Sections */}
+                <AccordionItem value="custom">
+                    <AccordionTrigger><Library className="mr-2"/>Additional Sections</AccordionTrigger>
+                    <AccordionContent className="space-y-4 p-1">
+                        <DndContext id="custom-dnd" sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, moveCustom, customFields)}>
+                            <SortableContext items={customFields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                                <div className="space-y-4">
+                                {customFields.map((field, index) => (
+                                    <SortableCustomCard 
+                                        key={field.id} 
+                                        index={index} 
+                                        onRemove={removeCustom}
+                                    />
+                                ))}
+                                </div>
+                            </SortableContext>
+                        </DndContext>
+                        <Button type="button" variant="outline" onClick={() => appendCustom({ id: `${Date.now()}`, title: '', content: '' })}>
+                            <PlusCircle className="mr-2 h-4 w-4"/> Add Section
+                        </Button>
+                    </AccordionContent>
+                </AccordionItem>
                 {/* Skills */}
                 <AccordionItem value="skills">
                     <AccordionTrigger><Wrench className="mr-2"/>Skills</AccordionTrigger>
@@ -624,13 +796,13 @@ export function ResumeEditor({ template }: { template: Template }) {
             </form>
           </Form>
         </div>
-        <div className="w-full bg-background p-8 overflow-y-auto max-h-[calc(100vh-56px)] hidden lg:block">
+        <div className="w-full bg-background p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
             <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex gap-4 justify-center">
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
-                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download JPG</Button>
+                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.75]">
+                <div className="origin-top transform scale-[0.6]">
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
@@ -641,11 +813,6 @@ export function ResumeEditor({ template }: { template: Template }) {
                      />
                 </div>
             </div>
-        </div>
-        {/* Download buttons for mobile view */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm z-20 p-4 border-t flex gap-4 justify-center">
-             <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> PDF</Button>
-             <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> JPG</Button>
         </div>
       </div>
     </FormProvider>

@@ -1,9 +1,9 @@
 import type { ResumeData } from '@/lib/types';
 
 export function CorporateLadder({ data }: { data: ResumeData }) {
-    const { personalInfo, summary, experience, education, projects, skills } = data;
+    const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-serif text-gray-900 flex break-words" style={{ fontFamily: 'var(--resume-font-family, "serif")' }}>
+        <div className="font-serif text-gray-900 flex break-words leading-relaxed">
             <div className="w-1/3 bg-gray-50 p-6 border-r border-gray-200">
                 <header className="mb-8">
                     <h1 className="text-4xl font-bold font-headline text-gray-800">{personalInfo.name}</h1>
@@ -43,7 +43,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
             <div className="w-2/3 p-6">
                  <section className="mb-6">
                     <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Professional Summary</h2>
-                    <p className="text-sm text-gray-600 leading-relaxed">{summary}</p>
+                    <p className="text-sm text-gray-600">{summary}</p>
                 </section>
 
                 <section className="mb-6">
@@ -63,7 +63,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                 </section>
 
                 {projects && projects.length > 0 && (
-                    <section>
+                    <section className="mb-6">
                         <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Projects</h2>
                         {projects.map(proj => (
                             <div key={proj.id} className="mb-4">
@@ -76,6 +76,17 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                         ))}
                     </section>
                 )}
+
+                 {custom?.map(section => (
+                    section.title && section.content && (
+                        <section key={section.id} className="mb-6">
+                            <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">{section.title.toUpperCase()}</h2>
+                            <ul className="list-disc list-inside mt-1 text-sm text-gray-600 space-y-1">
+                                {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}
+                            </ul>
+                        </section>
+                    )
+                ))}
             </div>
         </div>
     );
