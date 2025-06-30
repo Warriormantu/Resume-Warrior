@@ -43,7 +43,6 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
-import domtoimage from 'dom-to-image-more';
 import { useToast } from '@/hooks/use-toast';
 import { getRephrasedPoints, getAiSummary } from '@/app/actions';
 import { sampleResumeData } from '@/lib/sampleData';
@@ -435,31 +434,47 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating PDF...', description: 'Please wait, this may take a moment.' });
     
     try {
+        const domtoimage = (await import('dom-to-image-more')).default;
         await document.fonts.ready;
-        const canvas = await domtoimage.toCanvas(element, {
-            width: element.clientWidth * 2,
-            height: element.clientHeight * 2,
-            style: {
-                transform: 'scale(2)',
-                transformOrigin: 'top left',
-            },
-        });
-        const imgData = canvas.toDataURL('image/png');
         
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
-        
-        toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+        setTimeout(async () => {
+            try {
+                const canvas = await domtoimage.toCanvas(element, {
+                    width: element.clientWidth * 2,
+                    height: element.clientHeight * 2,
+                    style: {
+                        transform: 'scale(2)',
+                        transformOrigin: 'top left',
+                        fontFamily: fontFamily,
+                    },
+                    backgroundColor: '#ffffff',
+                });
+                const imgData = canvas.toDataURL('image/png');
+                
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+                
+                toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+            } catch (error) {
+                console.error("PDF generation process failed:", error);
+                toast({
+                    variant: 'destructive',
+                    title: 'Download Failed',
+                    description: 'Could not generate the PDF. Please try again.',
+                });
+            }
+        }, 300);
+
     } catch (error) {
-        console.error("PDF generation process failed:", error);
+        console.error("Font loading or initial setup failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'Could not generate the PDF. Please try again.',
+            description: 'Could not prepare the document for download.',
         });
     }
   };
@@ -474,24 +489,41 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait, this may take a moment.' });
     
     try {
+        const domtoimage = (await import('dom-to-image-more')).default;
         await document.fonts.ready;
-        const dataUrl = await domtoimage.toPng(element, {
-            quality: 1.0,
-            bgcolor: '#ffffff'
-        });
-        
-        const link = document.createElement('a');
-        link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-        link.href = dataUrl;
-        link.click();
-        
-        toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+
+        setTimeout(async () => {
+            try {
+                const dataUrl = await domtoimage.toPng(element, {
+                    quality: 1.0,
+                    bgcolor: '#ffffff',
+                     style: {
+                        fontFamily: fontFamily,
+                    },
+                });
+                
+                const link = document.createElement('a');
+                link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+                link.href = dataUrl;
+                link.click();
+                
+                toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+            } catch (error) {
+                console.error("Image generation process failed:", error);
+                toast({
+                    variant: 'destructive',
+                    title: 'Download Failed',
+                    description: 'Could not generate the image. Please try again.',
+                });
+            }
+        }, 300);
+
     } catch (error) {
-        console.error("Image generation process failed:", error);
+        console.error("Font loading or initial setup failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'Could not generate the image. Please try again.',
+            description: 'Could not prepare the document for download.',
         });
     }
   };
@@ -750,7 +782,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.6]">
+                <div className="origin-top transform scale-[0.75]">
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
