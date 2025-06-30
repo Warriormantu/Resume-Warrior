@@ -430,8 +430,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
+    element.classList.add('print-force');
     
-    // Give the browser a moment to ensure all styles and fonts are rendered.
     setTimeout(async () => {
       try {
           const canvas = await html2canvas(element, { 
@@ -439,7 +439,6 @@ export function ResumeEditor({ template }: { template: Template }) {
               useCORS: true,
               allowTaint: true,
               logging: false,
-              removeContainer: true, // Clean up the cloned DOM element
           });
           
           const imgData = canvas.toDataURL('image/png');
@@ -459,8 +458,10 @@ export function ResumeEditor({ template }: { template: Template }) {
               title: 'Download Failed',
               description: 'Could not generate the PDF. Please try again.',
           });
+      } finally {
+        element.classList.remove('print-force');
       }
-    }, 300); // Increased delay for stability
+    }, 300);
   };
 
   const handleDownloadImage = async () => {
@@ -468,8 +469,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
     
     const element = previewRef.current;
+    element.classList.add('print-force');
 
-    // Give the browser a moment to ensure all styles and fonts are rendered.
     setTimeout(async () => {
       try {
           const canvas = await html2canvas(element, { 
@@ -477,7 +478,6 @@ export function ResumeEditor({ template }: { template: Template }) {
               useCORS: true,
               allowTaint: true,
               logging: false,
-              removeContainer: true, // Clean up the cloned DOM element
            });
 
           const dataUrl = canvas.toDataURL('image/png');
@@ -496,8 +496,10 @@ export function ResumeEditor({ template }: { template: Template }) {
               title: 'Download Failed',
               description: 'Could not generate the image. Please try again.',
           });
+      } finally {
+        element.classList.remove('print-force');
       }
-    }, 300); // Increased delay for stability
+    }, 300);
   };
 
   const handleRephrase = async (experienceIndex: number) => {
@@ -754,7 +756,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.85]">
+                <div className="origin-top transform scale-[0.75]">
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
