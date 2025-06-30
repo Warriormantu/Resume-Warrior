@@ -4,7 +4,7 @@ import type { ResumeData } from '@/lib/types';
 export function ClassicProfessional({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-slate-800">
+        <div className="font-sans text-slate-800 break-words leading-relaxed">
             <header className="text-center mb-6">
                 <h1 className="text-4xl font-bold font-headline text-slate-800">{personalInfo.name}</h1>
                 {personalInfo.jobTitle && <p className="text-lg font-semibold text-slate-700 mt-1 mb-2">{personalInfo.jobTitle}</p>}

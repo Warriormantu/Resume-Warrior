@@ -4,7 +4,7 @@ import type { ResumeData } from '@/lib/types';
 export function CorporateLadder({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-serif text-gray-900 flex">
+        <div className="font-serif text-gray-900 flex break-words leading-relaxed">
             <div className="w-1/3 bg-gray-50 p-6 border-r border-gray-200">
                 <header className="mb-8">
                     <h1 className="text-4xl font-bold font-headline text-gray-800">{personalInfo.name}</h1>
@@ -44,7 +44,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
             <div className="w-2/3 p-6">
                  <section className="mb-6">
                     <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Professional Summary</h2>
-                    <p className="text-sm text-gray-600 leading-relaxed">{summary}</p>
+                    <p className="text-sm text-gray-600">{summary}</p>
                 </section>
 
                 <section className="mb-6">

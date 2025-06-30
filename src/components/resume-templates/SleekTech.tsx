@@ -4,7 +4,7 @@ import type { ResumeData } from '@/lib/types';
 export function SleekTech({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-white bg-[#1a1a1a] flex">
+        <div className="font-sans text-white bg-[#1a1a1a] flex break-words leading-relaxed">
             <div className="w-1/3 bg-[#2a2a2a] p-6 flex flex-col">
                  <header className="text-center mb-8">
                     <h1 className="text-4xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>
@@ -44,7 +44,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
             <div className="w-2/3 p-6">
                 <section className="mb-6">
                     <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>SUMMARY</h2>
-                    <p className="text-sm text-gray-300 leading-relaxed">{summary}</p>
+                    <p className="text-sm text-gray-300">{summary}</p>
                 </section>
                 <section className="mb-6">
                     <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>EXPERIENCE</h2>
