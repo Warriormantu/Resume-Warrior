@@ -429,7 +429,9 @@ export function ResumeEditor({ template }: { template: Template }) {
 
   const executeExport = async (exportFunction: () => Promise<void>) => {
     setIsExporting(true);
-    await new Promise(resolve => setTimeout(resolve, 100)); // Wait for state update and re-render
+    // This short delay is critical. It gives React time to re-render the component
+    // without the scale transform before the capture library runs.
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
         await exportFunction();
@@ -453,9 +455,11 @@ export function ResumeEditor({ template }: { template: Template }) {
             return;
         }
         toast({ title: 'Generating PDF...', description: 'Please wait...' });
+        
+        // Dynamically import dom-to-image-more only on the client-side
+        const domtoimage = (await import('dom-to-image-more')).default;
 
         await document.fonts.ready;
-        const domtoimage = (await import('dom-to-image-more')).default;
 
         const canvas = await domtoimage.toCanvas(node, {
             quality: 1.0,
@@ -487,8 +491,10 @@ export function ResumeEditor({ template }: { template: Template }) {
         }
         toast({ title: 'Generating Image...', description: 'Please wait...' });
 
-        await document.fonts.ready;
+        // Dynamically import dom-to-image-more only on the client-side
         const domtoimage = (await import('dom-to-image-more')).default;
+        
+        await document.fonts.ready;
         
         const dataUrl = await domtoimage.toPng(node, {
             quality: 1.0,
@@ -762,7 +768,7 @@ export function ResumeEditor({ template }: { template: Template }) {
           </Form>
         </div>
         <div className="w-full bg-background p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
-            <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex flex-wrap gap-4 justify-center">
+            <div className="bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex flex-wrap gap-4 justify-center">
                 <Button onClick={handlePrintPDF} variant="outline"><Printer className="mr-2 h-4 w-4" /> Print to PDF (Recommended)</Button>
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
