@@ -17,12 +17,12 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
                 </div>
             </header>
             
-            <section className="mb-6 resume-section">
+            <section className="mb-4 resume-section">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Summary</h2>
                 <p className="text-sm text-gray-700">{summary}</p>
             </section>
 
-            <section className="mb-6 resume-section">
+            <section className="mb-4 resume-section">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Experience</h2>
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-4">
@@ -42,7 +42,7 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
                 ))}
             </section>
             
-            <section className="mb-6 resume-section">
+            <section className="mb-4 resume-section">
                 <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Education</h2>
                 {education.map(edu => (
                      <div key={edu.id} className="mb-2">
@@ -56,7 +56,7 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
             </section>
             
             {projects && projects.length > 0 && (
-                <section className="mb-6 resume-section">
+                <section className="mb-4 resume-section">
                     <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">Projects</h2>
                     {projects.map(proj => (
                         <div key={proj.id} className="mb-4">
@@ -77,7 +77,7 @@ export function BoldMinimalist({ data }: { data: ResumeData }) {
 
             {custom?.map(section => (
                 section.title && section.content && (
-                    <section key={section.id} className="mb-6 resume-section">
+                    <section key={section.id} className="mb-4 resume-section">
                         <h2 className="text-sm font-bold font-headline uppercase tracking-widest border-b border-gray-300 pb-2 mb-3 text-gray-600">{section.title.toUpperCase()}</h2>
                         <ul className="mt-1 text-sm text-gray-700 list-none space-y-1">
                              {section.content.split('\n').filter(p => p).map((point, i) => (
