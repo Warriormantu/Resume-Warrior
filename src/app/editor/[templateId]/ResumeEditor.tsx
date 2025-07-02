@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -428,7 +429,10 @@ export function ResumeEditor({ template }: { template: Template }) {
 
   const executeExport = async (exportFunction: () => Promise<void>) => {
     setIsExporting(true);
-    await new Promise(resolve => setTimeout(resolve, 100)); // Wait for state update and re-render
+    // This short delay is critical. It gives React time to re-render the component
+    // with the `isExporting` state, which removes the `scale` transform before
+    // the capture library runs. This prevents layout bugs.
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
         await exportFunction();
@@ -453,6 +457,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         }
         toast({ title: 'Generating PDF...', description: 'Please wait...' });
 
+        // Ensure fonts are loaded and layout is stable
         await document.fonts.ready;
         const domtoimage = (await import('dom-to-image-more')).default;
 
@@ -486,6 +491,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         }
         toast({ title: 'Generating Image...', description: 'Please wait...' });
 
+        // Ensure fonts are loaded and layout is stable
         await document.fonts.ready;
         const domtoimage = (await import('dom-to-image-more')).default;
         
@@ -507,6 +513,8 @@ export function ResumeEditor({ template }: { template: Template }) {
     });
   };
 
+  // This is the most reliable way to create a PDF.
+  // It triggers the browser's native print dialog.
   const handlePrintPDF = () => {
     toast({ title: 'Opening Print Dialog...', description: 'Please select "Save as PDF" as the destination.' });
     window.print();
@@ -564,6 +572,7 @@ export function ResumeEditor({ template }: { template: Template }) {
   return (
     <FormProvider {...form}>
       <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-56px)]">
+        {/* Editor Panel */}
         <div className="w-full bg-secondary p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
           <h1 className="text-2xl font-bold font-headline mb-1">Editing: {template.name}</h1>
           <p className="text-muted-foreground mb-6">Fill in your details below. The preview will update automatically.</p>
@@ -760,6 +769,7 @@ export function ResumeEditor({ template }: { template: Template }) {
             </form>
           </Form>
         </div>
+        {/* Preview Panel */}
         <div className="w-full bg-background p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
             <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex flex-wrap gap-4 justify-center">
                 <Button onClick={handlePrintPDF} variant="outline"><Printer className="mr-2 h-4 w-4" /> Print to PDF (Recommended)</Button>
@@ -788,3 +798,5 @@ export function ResumeEditor({ template }: { template: Template }) {
     </FormProvider>
   );
 }
+
+    
