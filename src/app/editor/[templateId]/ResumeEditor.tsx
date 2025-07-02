@@ -428,10 +428,18 @@ export function ResumeEditor({ template }: { template: Template }) {
   };
 
   const executeExport = async (exportFunction: () => Promise<void>) => {
+    const node = previewRef.current;
+    if (!node) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+        return;
+    }
+
     setIsExporting(true);
     // This short delay is critical. It gives React time to re-render the component
     // without the scale transform before the capture library runs.
     await new Promise(resolve => setTimeout(resolve, 100));
+
+    node.classList.add('export-mode');
 
     try {
         await exportFunction();
@@ -443,6 +451,7 @@ export function ResumeEditor({ template }: { template: Template }) {
             description: 'Could not generate the download. Please try again.',
         });
     } finally {
+        node.classList.remove('export-mode');
         setIsExporting(false);
     }
   };
@@ -450,16 +459,12 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadPDF = async () => {
     await executeExport(async () => {
         const node = previewRef.current;
-        if (!node) {
-            toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
-            return;
-        }
-        toast({ title: 'Generating PDF...', description: 'Please wait...' });
+        if (!node) { return; } // Should be caught by executeExport, but for safety
         
-        // Dynamically import dom-to-image-more only on the client-side
-        const domtoimage = (await import('dom-to-image-more')).default;
+        toast({ title: 'Generating PDF...', description: 'Please wait...' });
 
         await document.fonts.ready;
+        const domtoimage = (await import('dom-to-image-more')).default;
 
         const canvas = await domtoimage.toCanvas(node, {
             quality: 1.0,
@@ -485,16 +490,12 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadImage = async () => {
     await executeExport(async () => {
         const node = previewRef.current;
-        if (!node) {
-            toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
-            return;
-        }
+        if (!node) { return; } // Should be caught by executeExport, but for safety
+
         toast({ title: 'Generating Image...', description: 'Please wait...' });
 
-        // Dynamically import dom-to-image-more only on the client-side
-        const domtoimage = (await import('dom-to-image-more')).default;
-        
         await document.fonts.ready;
+        const domtoimage = (await import('dom-to-image-more')).default;
         
         const dataUrl = await domtoimage.toPng(node, {
             quality: 1.0,
@@ -571,7 +572,8 @@ export function ResumeEditor({ template }: { template: Template }) {
   return (
     <FormProvider {...form}>
       <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-56px)]">
-        <div className="w-full bg-secondary p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
+        {/* Editor Form Panel */}
+        <div className="w-full bg-secondary p-4 md:p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
           <h1 className="text-2xl font-bold font-headline mb-1">Editing: {template.name}</h1>
           <p className="text-muted-foreground mb-6">Fill in your details below. The preview will update automatically.</p>
           
@@ -767,13 +769,15 @@ export function ResumeEditor({ template }: { template: Template }) {
             </form>
           </Form>
         </div>
-        <div className="w-full bg-background p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)]">
-            <div className="bg-background/80 backdrop-blur-sm z-10 py-4 mb-4 flex flex-wrap gap-4 justify-center">
+
+        {/* Preview Panel */}
+        <div className="w-full bg-background p-4 md:p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)] flex flex-col items-center">
+            <div className="w-full bg-background/80 backdrop-blur-sm py-4 mb-4 flex flex-wrap gap-2 md:gap-4 justify-center">
                 <Button onClick={handlePrintPDF} variant="outline"><Printer className="mr-2 h-4 w-4" /> Print to PDF (Recommended)</Button>
                 <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
-            <div className="flex justify-center">
+            <div id="resume-preview-wrapper" className="w-full flex justify-center">
                 <div
                     className={cn(
                         "origin-top transform transition-transform duration-300",

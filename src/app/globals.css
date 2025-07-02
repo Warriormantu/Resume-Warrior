@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 100%; /* White */
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -96,6 +96,15 @@
       break-inside: avoid !important;
       page-break-inside: avoid !important;
     }
+    
+    .export-mode input,
+    .export-mode textarea,
+    .export-mode select {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+    }
 }
 
 @media print {
@@ -109,22 +118,25 @@
   }
   
   #resume-preview-wrapper {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: auto;
-    margin: 0;
-    padding: 0;
   }
 
   #resume-preview {
     transform: scale(1) !important;
     box-shadow: none !important;
     border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: auto !important;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  input, textarea, select {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
   }
 }
