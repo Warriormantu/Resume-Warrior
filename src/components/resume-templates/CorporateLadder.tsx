@@ -6,12 +6,12 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
     return (
         <div className="font-serif text-gray-900 flex break-words leading-relaxed">
             <div className="w-1/3 bg-gray-50 p-6 border-r border-gray-200">
-                <header className="mb-8">
+                <header className="mb-8 resume-section">
                     <h1 className="text-4xl font-bold font-headline text-gray-800">{personalInfo.name}</h1>
                     {personalInfo.jobTitle && <p className="text-lg text-gray-600 mt-1">{personalInfo.jobTitle}</p>}
                 </header>
 
-                <section className="mb-6">
+                <section className="mb-6 resume-section">
                     <h2 className="text-md font-bold text-gray-700 border-b-2 border-gray-300 pb-1 mb-2 font-headline uppercase tracking-wider">Contact</h2>
                     <div className="text-xs space-y-1 text-gray-600">
                         <p>{personalInfo.phone}</p>
@@ -22,7 +22,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                     </div>
                 </section>
                 
-                <section className="mb-6">
+                <section className="mb-6 resume-section">
                     <h2 className="text-md font-bold text-gray-700 border-b-2 border-gray-300 pb-1 mb-2 font-headline uppercase tracking-wider">Education</h2>
                     {education.map(edu => (
                          <div key={edu.id} className="mb-3">
@@ -33,7 +33,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                     ))}
                 </section>
 
-                <section>
+                <section className="resume-section">
                     <h2 className="text-md font-bold text-gray-700 border-b-2 border-gray-300 pb-1 mb-2 font-headline uppercase tracking-wider">Skills</h2>
                     <ul className="text-sm space-y-1 text-gray-700">
                       {skills.map(skill => <li key={skill.id}>{skill.name}</li>)}
@@ -42,12 +42,12 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
 
             </div>
             <div className="w-2/3 p-6">
-                 <section className="mb-6">
+                 <section className="mb-6 resume-section">
                     <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Professional Summary</h2>
                     <p className="text-sm text-gray-600">{summary}</p>
                 </section>
 
-                <section className="mb-6">
+                <section className="mb-6 resume-section">
                     <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Work Experience</h2>
                     {experience.map(exp => (
                         <div key={exp.id} className="mb-4">
@@ -64,7 +64,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                 </section>
 
                 {projects && projects.length > 0 && (
-                    <section className="mb-6">
+                    <section className="mb-6 resume-section">
                         <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Projects</h2>
                         {projects.map(proj => (
                             <div key={proj.id} className="mb-4">
@@ -80,7 +80,7 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
 
                  {custom?.map(section => (
                     section.title && section.content && (
-                        <section key={section.id} className="mb-6">
+                        <section key={section.id} className="mb-6 resume-section">
                             <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">{section.title.toUpperCase()}</h2>
                             <ul className="list-disc list-inside mt-1 text-sm text-gray-600 space-y-1">
                                 {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}

@@ -98,11 +98,6 @@ body {
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
     }
-
-    .resume-section {
-      break-inside: avoid !important;
-      page-break-inside: avoid !important;
-    }
 }
 
 @media print {
@@ -120,6 +115,8 @@ body {
     transform: scale(1) !important;
     box-shadow: none !important;
     border: none !important;
+    margin: 0;
+    padding: 0;
   }
   .resume-section {
     page-break-inside: avoid;

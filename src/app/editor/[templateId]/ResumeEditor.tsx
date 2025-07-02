@@ -65,6 +65,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 
 const hexToRgba = (hex: string, alpha: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -346,6 +347,7 @@ export function ResumeEditor({ template }: { template: Template }) {
 
   const [accentColor, setAccentColor] = useState('#009cff');
   const [fontFamily, setFontFamily] = useState('Inter');
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     const savedDraft = localStorage.getItem('resume-draft');
@@ -424,105 +426,85 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    const node = previewRef.current;
-    if (!node) {
-      toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
-      return;
-    }
-    
-    toast({ title: 'Generating PDF...', description: 'Please wait...' });
-    console.log("Starting PDF download...");
+  const executeExport = async (exportFunction: () => Promise<void>) => {
+    setIsExporting(true);
+    await new Promise(resolve => setTimeout(resolve, 100)); // Wait for state update and re-render
 
     try {
-      await document.fonts.ready;
-      console.log("Fonts are ready for PDF generation.");
-
-      const domtoimage = (await import('dom-to-image-more')).default;
-      const canvas = await domtoimage.toCanvas(node, {
-        quality: 1.0,
-        bgcolor: "#ffffff",
-        style: {
-          transform: "scale(1)",
-          transformOrigin: "top left",
-          boxShadow: "none",
-          overflow: "visible",
-        },
-      });
-      
-      console.log("Canvas created for PDF, width:", canvas.width, "height:", canvas.height);
-      const imgData = canvas.toDataURL('image/png');
-      if (!imgData || imgData.length < 100) {
-        throw new Error("Generated image data for PDF is empty or too small.");
-      }
-
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
-
-      toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
-      console.log("PDF download successful.");
-    
+        await exportFunction();
     } catch (error) {
-      console.error("PDF generation process failed:", error);
-      toast({
-          variant: 'destructive',
-          title: 'Download Failed',
-          description: 'Could not generate the PDF. Please try again or use the "Print to PDF" option.',
-      });
+        console.error("Export process failed:", error);
+        toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: 'Could not generate the download. Please try again.',
+        });
+    } finally {
+        setIsExporting(false);
     }
   };
-  
+
+  const handleDownloadPDF = async () => {
+    await executeExport(async () => {
+        const node = previewRef.current;
+        if (!node) {
+            toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+            return;
+        }
+        toast({ title: 'Generating PDF...', description: 'Please wait...' });
+
+        await document.fonts.ready;
+        const domtoimage = (await import('dom-to-image-more')).default;
+
+        const canvas = await domtoimage.toCanvas(node, {
+            quality: 1.0,
+            bgcolor: "#ffffff",
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        if (!imgData || imgData.length < 100) {
+            throw new Error("Generated image data for PDF is empty or too small.");
+        }
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+
+        toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
+    });
+  };
+
   const handleDownloadImage = async () => {
-    const node = previewRef.current;
-    if (!node) {
-      toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
-      return;
-    }
+    await executeExport(async () => {
+        const node = previewRef.current;
+        if (!node) {
+            toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+            return;
+        }
+        toast({ title: 'Generating Image...', description: 'Please wait...' });
 
-    toast({ title: 'Generating Image...', description: 'Please wait...' });
-    console.log("Starting image download...");
+        await document.fonts.ready;
+        const domtoimage = (await import('dom-to-image-more')).default;
+        
+        const dataUrl = await domtoimage.toPng(node, {
+            quality: 1.0,
+            bgcolor: "#ffffff",
+        });
 
-    try {
-      await document.fonts.ready;
-      console.log("Fonts are ready for image generation.");
-      
-      const domtoimage = (await import('dom-to-image-more')).default;
-      const dataUrl = await domtoimage.toPng(node, {
-          quality: 1.0,
-          bgcolor: "#ffffff",
-          style: {
-            transform: "scale(1)",
-            transformOrigin: "top left",
-            boxShadow: "none",
-            overflow: "visible",
-          },
-      });
+        if (!dataUrl || dataUrl.length < 100) {
+            throw new Error("Generated image data is empty or too small.");
+        }
 
-      console.log("Image data URL created, length:", dataUrl.length);
-      if (!dataUrl || dataUrl.length < 100) {
-        throw new Error("Generated image data is empty or too small.");
-      }
-      
-      const link = document.createElement("a");
-      link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
-      link.href = dataUrl;
-      link.click();
-
-      toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
-      console.log("Image download successful.");
-
-    } catch (error) {
-      console.error("Image generation process failed:", error);
-      toast({
-          variant: 'destructive',
-          title: 'Download Failed',
-          description: 'Could not generate the image. Please try again.',
-      });
-    }
+        const link = document.createElement("a");
+        link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
+    });
   };
 
   const handlePrintPDF = () => {
@@ -785,7 +767,12 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
             </div>
             <div className="flex justify-center">
-                <div className="origin-top transform scale-[0.6] lg:scale-100">
+                <div
+                    className={cn(
+                        "origin-top transform transition-transform duration-300",
+                        isExporting ? 'scale-100' : 'scale-[0.6] sm:scale-100'
+                    )}
+                >
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 

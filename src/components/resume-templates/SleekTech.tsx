@@ -6,7 +6,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
     return (
         <div className="font-sans text-white bg-[#1a1a1a] flex break-words leading-relaxed">
             <div className="w-1/3 bg-[#2a2a2a] p-6 flex flex-col">
-                 <header className="text-center mb-8">
+                 <header className="text-center mb-8 resume-section">
                     <h1 className="text-4xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>
                     {personalInfo.jobTitle && <p className="text-lg mt-1" style={{ color: 'var(--resume-accent-color)', opacity: 0.9 }}>{personalInfo.jobTitle}</p>}
                 </header>
@@ -37,7 +37,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     )}
                 </div>
 
-                <section className="mt-8">
+                <section className="mt-8 resume-section">
                     <h2 className="text-lg font-semibold font-headline mb-3 border-b-2 pb-1" style={{ color: 'var(--resume-accent-color)', borderColor: 'var(--resume-accent-color)' }}>SKILLS</h2>
                     <div className="flex flex-wrap gap-2">
                         {skills.map(skill => (
@@ -48,7 +48,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     </div>
                 </section>
 
-                 <section className="mt-8">
+                 <section className="mt-8 resume-section">
                     <h2 className="text-lg font-semibold font-headline mb-3 border-b-2 pb-1" style={{ color: 'var(--resume-accent-color)', borderColor: 'var(--resume-accent-color)' }}>EDUCATION</h2>
                     {education.map(edu => (
                          <div key={edu.id} className="mb-3">
@@ -61,11 +61,11 @@ export function SleekTech({ data }: { data: ResumeData }) {
             </div>
 
             <div className="w-2/3 p-6">
-                <section className="mb-6">
+                <section className="mb-6 resume-section">
                     <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>SUMMARY</h2>
                     <p className="text-sm text-gray-300">{summary}</p>
                 </section>
-                <section className="mb-6">
+                <section className="mb-6 resume-section">
                     <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>EXPERIENCE</h2>
                     {experience.map(exp => (
                         <div key={exp.id} className="mb-4 flex items-start gap-3">
@@ -84,7 +84,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
                     ))}
                 </section>
                  {projects && projects.length > 0 && (
-                    <section className="mb-6">
+                    <section className="mb-6 resume-section">
                         <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>PROJECTS</h2>
                         {projects.map(proj => (
                             <div key={proj.id} className="mb-4 flex items-start gap-3">
@@ -103,7 +103,7 @@ export function SleekTech({ data }: { data: ResumeData }) {
                  )}
                  {custom?.map(section => (
                     section.title && section.content && (
-                        <section key={section.id} className="mb-6">
+                        <section key={section.id} className="mb-6 resume-section">
                             <h2 className="text-xl font-bold font-headline mb-2" style={{ color: 'var(--resume-accent-color)' }}>{section.title.toUpperCase()}</h2>
                             <ul className="list-none space-y-1">
                                 {section.content.split('\n').filter(p => p).map((point, i) => (

@@ -14,11 +14,11 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                     {personalInfo.portfolio && ` | ${personalInfo.portfolio}`}
                 </p>
             </header>
-            <section className="mb-4">
+            <section className="mb-4 resume-section">
                 <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">SUMMARY</h2>
                 <p className="text-sm text-slate-700">{summary}</p>
             </section>
-            <section className="mb-4">
+            <section className="mb-4 resume-section">
                 <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">EXPERIENCE</h2>
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-3">
@@ -33,7 +33,7 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                     </div>
                 ))}
             </section>
-            <section className="mb-4">
+            <section className="mb-4 resume-section">
                 <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">EDUCATION</h2>
                 {education.map(edu => (
                      <div key={edu.id} className="mb-2">
@@ -46,7 +46,7 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                 ))}
             </section>
             {projects && projects.length > 0 && (
-                <section className="mb-4">
+                <section className="mb-4 resume-section">
                     <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">PROJECTS</h2>
                     {projects.map(proj => (
                     <div key={proj.id} className="mb-3">
@@ -65,7 +65,7 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
 
             {custom?.map(section => (
                 section.title && section.content && (
-                    <section key={section.id} className="mb-4">
+                    <section key={section.id} className="mb-4 resume-section">
                         <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">{section.title.toUpperCase()}</h2>
                         <ul className="list-disc list-inside mt-1 text-sm text-slate-700">
                             {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}
@@ -74,7 +74,7 @@ export function ClassicProfessional({ data }: { data: ResumeData }) {
                 )
             ))}
 
-            <section>
+            <section className="resume-section">
                  <h2 className="text-lg font-bold font-headline border-b-2 border-slate-400 pb-1 mb-2 text-slate-700">SKILLS</h2>
                  <p className="text-sm text-slate-700">{skills.map(s => s.name).join(' | ')}</p>
             </section>

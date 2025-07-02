@@ -17,12 +17,12 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                 </p>
             </header>
 
-            <section className="mb-4">
+            <section className="mb-4 resume-section">
                 <h2 className="text-lg font-bold text-gray-800 pb-1 mb-2">Research Interests</h2>
                 <p className="text-sm text-gray-700">{summary}</p>
             </section>
             
-            <section className="mb-4">
+            <section className="mb-4 resume-section">
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Education</h2>
                 {education.map(edu => (
                      <div key={edu.id} className="mb-2">
@@ -35,7 +35,7 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                 ))}
             </section>
 
-            <section className="mb-4">
+            <section className="mb-4 resume-section">
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Research Experience</h2>
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-3">
@@ -52,7 +52,7 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
             </section>
 
             {projects && projects.length > 0 && (
-                <section className="mb-4">
+                <section className="mb-4 resume-section">
                     <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Projects</h2>
                     {projects.map(proj => (
                         <div key={proj.id} className="mb-3">
@@ -68,7 +68,7 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
 
             {custom?.map(section => (
                 section.title && section.content && (
-                    <section key={section.id} className="mb-4">
+                    <section key={section.id} className="mb-4 resume-section">
                         <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">{section.title.toUpperCase()}</h2>
                         <ul className="list-disc list-inside mt-1 text-sm text-gray-700">
                             {section.content.split('\n').filter(p => p).map((point, i) => <li key={i}>{point}</li>)}
@@ -77,7 +77,7 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                 )
             ))}
 
-             <section className="mb-4">
+             <section className="mb-4 resume-section">
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Skills</h2>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                   {skills.map(skill => (
