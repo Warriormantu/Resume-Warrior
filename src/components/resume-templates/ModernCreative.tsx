@@ -4,7 +4,7 @@ import type { ResumeData } from '@/lib/types';
 export function ModernCreative({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-slate-800 flex gap-6 break-words leading-relaxed">
+        <div className="font-sans text-slate-800 flex break-words leading-relaxed">
             <div className="w-1/3 bg-slate-100 p-6 rounded-l-lg">
                  <header className="mb-6 resume-section">
                     <h1 className="text-3xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>
