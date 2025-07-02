@@ -42,7 +42,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
         <div 
             ref={ref} 
             id="resume-preview"
-            className="bg-white text-black p-8 shadow-lg" 
+            className="bg-white text-black shadow-lg" 
             style={{ width: '816px', minHeight: '1056px', ...previewStyle }}
         >
             <TemplateComponent data={data} />

@@ -4,7 +4,7 @@ import type { ResumeData } from '@/lib/types';
 export function AcademicResearcher({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-serif text-gray-800 break-words leading-relaxed">
+        <div className="font-serif text-gray-800 break-words leading-relaxed p-8">
             <header className="text-center mb-6 pb-4 border-b border-gray-300">
                 <h1 className="text-4xl font-bold text-gray-900">{personalInfo.name}</h1>
                 {personalInfo.jobTitle && <p className="text-xl font-semibold text-gray-700 mt-1">{personalInfo.jobTitle}</p>}
