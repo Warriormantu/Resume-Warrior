@@ -80,9 +80,6 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
   }
@@ -101,25 +98,29 @@ body {
 }
 
 @media print {
-  body * {
-    visibility: hidden;
+  body > *:not(#resume-preview-wrapper) {
+    display: none !important;
   }
-  #resume-preview, #resume-preview * {
-    visibility: visible;
+  
+  #resume-preview-wrapper, #resume-preview-wrapper * {
+    display: block !important;
+    visibility: visible !important;
   }
-  #resume-preview {
-    position: absolute;
-    left: 0;
+  
+  #resume-preview-wrapper {
+    position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
+  }
+
+  #resume-preview {
     transform: scale(1) !important;
     box-shadow: none !important;
     border: none !important;
     margin: 0;
     padding: 0;
-  }
-  .resume-section {
-    page-break-inside: avoid;
-    break-inside: avoid;
+    width: 100%;
+    height: auto;
   }
 }
