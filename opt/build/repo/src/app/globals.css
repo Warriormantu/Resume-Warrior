@@ -80,9 +80,6 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
   }
@@ -106,19 +103,23 @@ body {
 }
 
 @media print {
-  body > *:not(#resume-preview) {
+  body > *:not(#resume-preview-wrapper) {
     display: none !important;
   }
   
-  #resume-preview, #resume-preview * {
+  #resume-preview-wrapper, #resume-preview-wrapper * {
     display: block !important;
     visibility: visible !important;
   }
   
-  #resume-preview {
+  #resume-preview-wrapper {
     position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
+  }
+
+  #resume-preview {
     transform: scale(1) !important;
     box-shadow: none !important;
     border: none !important;
