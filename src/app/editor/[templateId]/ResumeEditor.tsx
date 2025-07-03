@@ -459,16 +459,25 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadPDF = async () => {
     await executeExport(async () => {
         const node = previewRef.current;
-        if (!node) { return; } // Should be caught by executeExport, but for safety
+        if (!node) { return; }
         
         toast({ title: 'Generating PDF...', description: 'Please wait...' });
 
         await document.fonts.ready;
         const domtoimage = (await import('dom-to-image-more')).default;
 
+        const scale = 2; // Increase resolution for better quality
         const canvas = await domtoimage.toCanvas(node, {
             quality: 1.0,
             bgcolor: "#ffffff",
+            width: node.offsetWidth * scale,
+            height: node.offsetHeight * scale,
+            style: {
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                width: `${node.offsetWidth}px`,
+                height: `${node.offsetHeight}px`
+            }
         });
 
         const imgData = canvas.toDataURL('image/png');
@@ -490,16 +499,25 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadImage = async () => {
     await executeExport(async () => {
         const node = previewRef.current;
-        if (!node) { return; } // Should be caught by executeExport, but for safety
+        if (!node) { return; }
 
         toast({ title: 'Generating Image...', description: 'Please wait...' });
 
         await document.fonts.ready;
         const domtoimage = (await import('dom-to-image-more')).default;
         
+        const scale = 2; // Increase resolution
         const dataUrl = await domtoimage.toPng(node, {
             quality: 1.0,
             bgcolor: "#ffffff",
+            width: node.offsetWidth * scale,
+            height: node.offsetHeight * scale,
+            style: {
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                width: `${node.offsetWidth}px`,
+                height: `${node.offsetHeight}px`
+            }
         });
 
         if (!dataUrl || dataUrl.length < 100) {
