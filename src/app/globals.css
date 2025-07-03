@@ -108,35 +108,42 @@
 }
 
 @media print {
-  body > *:not(#resume-preview-wrapper) {
-    display: none !important;
+  /* Hide everything on the page by default */
+  body * {
+    visibility: hidden !important;
   }
-  
+
+  /* Make only the resume preview wrapper and its children visible */
   #resume-preview-wrapper, #resume-preview-wrapper * {
-    display: block !important;
     visibility: visible !important;
   }
   
+  /* Position the resume preview wrapper to take up the whole page */
   #resume-preview-wrapper {
-    position: fixed;
-    top: 0;
+    position: absolute;
     left: 0;
+    top: 0;
     width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
+  /* Ensure the resume itself is scaled correctly for printing */
   #resume-preview {
     transform: scale(1) !important;
     box-shadow: none !important;
     border: none !important;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
     width: 100%;
     height: auto;
   }
 
+  /* Remove borders from any form fields within the preview */
   input, textarea, select {
     border: none !important;
     box-shadow: none !important;
     outline: none !important;
+    -webkit-print-color-adjust: exact;
   }
 }
