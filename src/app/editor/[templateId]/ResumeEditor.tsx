@@ -445,7 +445,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'Could not generate the file. Please try again or use the Print option.',
+            description: `Could not generate the file. Error: ${error instanceof Error ? error.message : String(error)}`,
         });
     } finally {
         setIsExporting(false);
@@ -801,7 +801,7 @@ export function ResumeEditor({ template }: { template: Template }) {
       </div>
 
       {/* Hidden container for the full-scale export clone */}
-      <div className="fixed -z-50 top-[-9999px] left-[-9999px]">
+      <div className="fixed top-[-9999px] left-[-9999px]">
         <div ref={exportRef}>
              <ResumePreview 
                 data={watchedData} 
