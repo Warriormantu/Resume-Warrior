@@ -26,9 +26,9 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Education</h2>
                 {education.map(edu => (
                      <div key={edu.id} className="mb-2">
-                        <div className="flex justify-between items-baseline gap-4">
+                        <div className="grid grid-cols-[1fr_auto] items-start gap-x-2">
                            <h3 className="text-md font-bold text-gray-800">{edu.degree}{edu.fieldOfStudy && `, ${edu.fieldOfStudy}`}</h3>
-                           <p className="text-xs text-gray-600 flex-shrink-0 whitespace-nowrap">{edu.startDate} - {edu.endDate}</p>
+                           <p className="text-xs text-gray-600 whitespace-nowrap text-right">{edu.startDate} - {edu.endDate}</p>
                         </div>
                         <p className="text-sm text-gray-600">{edu.institution}</p>
                      </div>
@@ -39,9 +39,9 @@ export function AcademicResearcher({ data }: { data: ResumeData }) {
                 <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2 text-gray-800">Research Experience</h2>
                 {experience.map(exp => (
                     <div key={exp.id} className="mb-3">
-                        <div className="flex justify-between items-baseline gap-4">
+                        <div className="grid grid-cols-[1fr_auto] items-start gap-x-2">
                              <h3 className="text-md font-bold text-gray-800">{exp.title}</h3>
-                             <p className="text-xs text-gray-600 flex-shrink-0 whitespace-nowrap">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                             <p className="text-xs text-gray-600 whitespace-nowrap text-right">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
                         </div>
                         <p className="text-sm font-semibold text-gray-600">{exp.company}{exp.location && `, ${exp.location}`}</p>
                         <ul className="list-disc list-inside mt-1 text-sm text-gray-700">

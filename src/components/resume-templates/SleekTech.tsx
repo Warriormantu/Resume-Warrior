@@ -4,7 +4,7 @@ import type { ResumeData } from '@/lib/types';
 export function SleekTech({ data }: { data: ResumeData }) {
     const { personalInfo, summary, experience, education, projects, skills, custom } = data;
     return (
-        <div className="font-sans text-white bg-[#1a1a1a] flex break-words leading-relaxed">
+        <div className="font-sans text-white bg-[#1a1a1a] flex break-words leading-relaxed p-8">
             <div className="w-1/3 bg-[#2a2a2a] p-6 flex flex-col">
                  <header className="text-center mb-8 resume-section">
                     <h1 className="text-4xl font-bold font-headline" style={{ color: 'var(--resume-accent-color)' }}>{personalInfo.name}</h1>
@@ -71,9 +71,9 @@ export function SleekTech({ data }: { data: ResumeData }) {
                         <div key={exp.id} className="mb-4 flex items-start gap-3">
                             <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: 'var(--resume-accent-color)' }} />
                             <div className="flex-grow">
-                                <div className="flex justify-between items-baseline gap-2">
+                                <div className="grid grid-cols-[1fr_auto] items-start gap-x-2">
                                     <h3 className="text-md font-bold text-gray-100">{exp.title}</h3>
-                                    <p className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                                    <p className="text-xs text-gray-400 whitespace-nowrap text-right">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
                                 </div>
                                 <p className="text-sm font-semibold text-gray-300">{exp.company}</p>
                                 <ul className="list-none mt-1 text-sm text-gray-400 space-y-1">

@@ -51,9 +51,9 @@ export function CorporateLadder({ data }: { data: ResumeData }) {
                     <h2 className="text-xl font-bold font-headline text-gray-700 border-b-4 border-gray-700 pb-1 mb-3">Work Experience</h2>
                     {experience.map(exp => (
                         <div key={exp.id} className="mb-4">
-                            <div className="flex justify-between items-baseline gap-4">
+                            <div className="grid grid-cols-[1fr_auto] items-start gap-x-2">
                                  <h3 className="text-md font-bold text-gray-800">{exp.title}</h3>
-                                 <p className="text-xs text-gray-500 flex-shrink-0 whitespace-nowrap">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                                 <p className="text-xs text-gray-500 whitespace-nowrap text-right">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
                             </div>
                             <p className="text-sm font-semibold text-gray-600">{exp.company}{exp.location && `, ${exp.location}`}</p>
                             <ul className="list-disc list-inside mt-1 text-sm text-gray-600 space-y-1">

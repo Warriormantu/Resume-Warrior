@@ -401,6 +401,7 @@ export function ResumeEditor({ template }: { template: Template }) {
 
   const watchedData = form.watch();
   const previewRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
   const [rephrasingProjectIndex, setRephrasingProjectIndex] = useState<number | null>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
@@ -427,56 +428,43 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
   };
 
-  const executeExport = async (exportFunction: () => Promise<void>) => {
-    const node = previewRef.current;
+  const executeExport = async (exportFunction: (node: HTMLDivElement) => Promise<void>) => {
+    const node = exportRef.current;
     if (!node) {
-        toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+        toast({ variant: 'destructive', title: 'Error', description: 'Export element not found.' });
         return;
     }
 
     setIsExporting(true);
-    // This short delay is critical. It gives React time to re-render the component
-    // without the scale transform before the capture library runs.
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    node.classList.add('export-mode');
-
+    toast({ title: 'Generating download...', description: 'Please wait a moment.' });
+    
     try {
-        await exportFunction();
+        await document.fonts.ready;
+        await exportFunction(node);
     } catch (error) {
         console.error("Export process failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'Could not generate the download. Please try again.',
+            description: 'Could not generate the file. Please try again or use the Print option.',
         });
     } finally {
-        node.classList.remove('export-mode');
         setIsExporting(false);
     }
   };
 
   const handleDownloadPDF = async () => {
-    await executeExport(async () => {
-        const node = previewRef.current;
-        if (!node) { return; }
-        
-        toast({ title: 'Generating PDF...', description: 'Please wait...' });
-
-        await document.fonts.ready;
+    await executeExport(async (node) => {
         const domtoimage = (await import('dom-to-image-more')).default;
-
-        const scale = 2; // Increase resolution for better quality
+        
         const canvas = await domtoimage.toCanvas(node, {
             quality: 1.0,
             bgcolor: "#ffffff",
-            width: node.offsetWidth * scale,
-            height: node.offsetHeight * scale,
+            height: node.offsetHeight,
+            width: node.offsetWidth,
             style: {
-                transform: `scale(${scale})`,
+                transform: 'scale(1)',
                 transformOrigin: 'top left',
-                width: `${node.offsetWidth}px`,
-                height: `${node.offsetHeight}px`
             }
         });
 
@@ -489,7 +477,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
         pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
 
         toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
@@ -497,26 +485,17 @@ export function ResumeEditor({ template }: { template: Template }) {
   };
 
   const handleDownloadImage = async () => {
-    await executeExport(async () => {
-        const node = previewRef.current;
-        if (!node) { return; }
-
-        toast({ title: 'Generating Image...', description: 'Please wait...' });
-
-        await document.fonts.ready;
+    await executeExport(async (node) => {
         const domtoimage = (await import('dom-to-image-more')).default;
         
-        const scale = 2; // Increase resolution
         const dataUrl = await domtoimage.toPng(node, {
             quality: 1.0,
             bgcolor: "#ffffff",
-            width: node.offsetWidth * scale,
-            height: node.offsetHeight * scale,
+            height: node.offsetHeight,
+            width: node.offsetWidth,
             style: {
-                transform: `scale(${scale})`,
+                transform: 'scale(1)',
                 transformOrigin: 'top left',
-                width: `${node.offsetWidth}px`,
-                height: `${node.offsetHeight}px`
             }
         });
 
@@ -791,12 +770,19 @@ export function ResumeEditor({ template }: { template: Template }) {
         {/* Preview Panel */}
         <div className="w-full bg-background p-4 md:p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)] flex flex-col items-center">
             <div className="w-full bg-background/80 backdrop-blur-sm py-4 mb-4 flex flex-wrap gap-2 md:gap-4 justify-center">
-                <Button onClick={handlePrintPDF} variant="outline"><Printer className="mr-2 h-4 w-4" /> Print to PDF (Recommended)</Button>
-                <Button onClick={handleDownloadPDF}><Download className="mr-2 h-4 w-4" /> Download PDF</Button>
-                <Button onClick={handleDownloadImage} variant="outline"><ImageIcon className="mr-2 h-4 w-4"/> Download PNG</Button>
+                <Button onClick={handlePrintPDF} variant="outline" disabled={isExporting}><Printer className="mr-2 h-4 w-4" /> Print to PDF (Recommended)</Button>
+                <Button onClick={handleDownloadPDF} disabled={isExporting}>
+                    {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Download className="mr-2 h-4 w-4" />} 
+                    Download PDF
+                </Button>
+                <Button onClick={handleDownloadImage} variant="outline" disabled={isExporting}>
+                     {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <ImageIcon className="mr-2 h-4 w-4"/>}
+                     Download PNG
+                </Button>
             </div>
             <div id="resume-preview-wrapper" className="w-full flex justify-center">
                 <div
+                    ref={previewRef}
                     className={cn(
                         "origin-top transform transition-transform duration-300",
                         isExporting
@@ -807,13 +793,25 @@ export function ResumeEditor({ template }: { template: Template }) {
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
-                        ref={previewRef}
                         accentColor={accentColor}
                         accentColorBg={accentColorBg}
                         fontFamily={fontFamily}
                      />
                 </div>
             </div>
+        </div>
+      </div>
+
+      {/* Hidden container for the full-scale export clone */}
+      <div className="hidden fixed -z-50 top-[-9999px] left-[-9999px]">
+        <div ref={exportRef}>
+             <ResumePreview 
+                data={watchedData} 
+                template={template}
+                accentColor={accentColor}
+                accentColorBg={accentColorBg}
+                fontFamily={fontFamily}
+            />
         </div>
       </div>
     </FormProvider>

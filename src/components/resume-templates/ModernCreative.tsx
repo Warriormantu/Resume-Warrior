@@ -44,9 +44,9 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                     <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>EXPERIENCE</h2>
                     {experience.map(exp => (
                         <div key={exp.id} className="mb-4">
-                            <div className="flex justify-between items-baseline gap-4">
+                            <div className="grid grid-cols-[1fr_auto] items-start gap-x-2">
                                 <h3 className="text-md font-bold text-slate-800">{exp.title}</h3>
-                                <p className="text-xs text-slate-600 flex-shrink-0 whitespace-nowrap">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                                <p className="text-xs text-slate-600 whitespace-nowrap text-right">{exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
                             </div>
                             <p className="text-sm font-semibold text-slate-600">{exp.company}{exp.location && `, ${exp.location}`}</p>
                             <ul className="list-disc list-inside mt-1 text-sm text-slate-700 space-y-1">
@@ -59,9 +59,9 @@ export function ModernCreative({ data }: { data: ResumeData }) {
                     <h2 className="text-md font-bold font-headline text-primary mb-2 uppercase tracking-wider" style={{ color: 'var(--resume-accent-color)' }}>EDUCATION</h2>
                     {education.map(edu => (
                         <div key={edu.id} className="mb-3">
-                            <div className="flex justify-between items-baseline gap-4">
+                            <div className="grid grid-cols-[1fr_auto] items-start gap-x-2">
                                <h3 className="text-md font-bold text-slate-800">{edu.institution}</h3>
-                               <p className="text-xs text-slate-600 flex-shrink-0 whitespace-nowrap">{edu.startDate} - {edu.endDate}</p>
+                               <p className="text-xs text-slate-600 whitespace-nowrap text-right">{edu.startDate} - {edu.endDate}</p>
                             </div>
                             <p className="text-sm text-slate-600">{edu.degree}{edu.fieldOfStudy && `, ${edu.fieldOfStudy}`}</p>
                         </div>
