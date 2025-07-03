@@ -400,6 +400,7 @@ export function ResumeEditor({ template }: { template: Template }) {
 
 
   const watchedData = form.watch();
+  const previewRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
   const [rephrasingProjectIndex, setRephrasingProjectIndex] = useState<number | null>(null);
@@ -427,7 +428,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
   };
 
-  const executeExport = async (exportFunction: (node: HTMLDivElement) => Promise<void>) => {
+ const executeExport = async (exportFunction: (node: HTMLDivElement) => Promise<void>) => {
     const node = exportRef.current;
     if (!node) {
         toast({ variant: 'destructive', title: 'Error', description: 'Export element not found.' });
@@ -439,6 +440,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     
     try {
         await document.fonts.ready;
+        await new Promise(resolve => setTimeout(resolve, 500)); // Extra delay
         await exportFunction(node);
     } catch (error) {
         console.error("Export process failed:", error);
@@ -455,29 +457,31 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadPDF = async () => {
     await executeExport(async (node) => {
         const domtoimage = (await import('dom-to-image-more')).default;
-        
-        const canvas = await domtoimage.toCanvas(node, {
-            quality: 1.0,
-            bgcolor: "#ffffff",
-            height: node.offsetHeight,
-            width: node.offsetWidth,
+        const scale = 2;
+
+        const dataUrl = await domtoimage.toPng(node, {
+            bgcolor: '#ffffff',
+            width: node.clientWidth * scale,
+            height: node.clientHeight * scale,
             style: {
-                transform: 'scale(1)',
+                transform: `scale(${scale})`,
                 transformOrigin: 'top left',
             }
         });
 
-        const imgData = canvas.toDataURL('image/png');
-        if (!imgData || imgData.length < 100) {
-            throw new Error("Generated image data for PDF is empty or too small.");
+        if (!dataUrl || dataUrl.length < 100) {
+            throw new Error("Generated image data is empty or too small.");
         }
 
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        const img = new Image();
+        img.src = dataUrl;
+        await new Promise(resolve => { img.onload = resolve; });
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-        pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+        const pdfHeight = (img.height * pdfWidth) / img.width;
+        pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+        pdf.save(`${watchedData.personalInfo.name.replace(/\s/g, '_')}_Resume.pdf`);
 
         toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
     });
@@ -486,14 +490,14 @@ export function ResumeEditor({ template }: { template: Template }) {
   const handleDownloadImage = async () => {
     await executeExport(async (node) => {
         const domtoimage = (await import('dom-to-image-more')).default;
-        
+        const scale = 2;
+
         const dataUrl = await domtoimage.toPng(node, {
-            quality: 1.0,
-            bgcolor: "#ffffff",
-            height: node.offsetHeight,
-            width: node.offsetWidth,
+            bgcolor: '#ffffff',
+            width: node.clientWidth * scale,
+            height: node.clientHeight * scale,
             style: {
-                transform: 'scale(1)',
+                transform: `scale(${scale})`,
                 transformOrigin: 'top left',
             }
         });
@@ -503,7 +507,7 @@ export function ResumeEditor({ template }: { template: Template }) {
         }
 
         const link = document.createElement("a");
-        link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+        link.download = `${watchedData.personalInfo.name.replace(/\s/g, '_')}_Resume.png`;
         link.href = dataUrl;
         link.click();
         
@@ -781,11 +785,10 @@ export function ResumeEditor({ template }: { template: Template }) {
             </div>
             <div id="resume-preview-wrapper" className="w-full flex justify-center">
                 <div
+                    ref={previewRef}
                     className={cn(
                         "origin-top transform transition-transform duration-300",
-                        isExporting
-                            ? 'scale-100'
-                            : 'scale-[0.4] sm:scale-[0.6] md:scale-[0.85] lg:scale-[0.5] xl:scale-[0.6] 2xl:scale-[0.75]'
+                        'scale-[0.4] sm:scale-[0.6] md:scale-[0.85] lg:scale-[0.5] xl:scale-[0.6] 2xl:scale-[0.75]'
                     )}
                 >
                     <ResumePreview 
@@ -801,7 +804,9 @@ export function ResumeEditor({ template }: { template: Template }) {
       </div>
 
       {/* Hidden container for the full-scale export clone */}
-      <div className="fixed top-[-9999px] left-[-9999px]">
+      <div 
+        className="fixed top-0 left-0 pointer-events-none -z-10 opacity-0"
+      >
         <div ref={exportRef}>
              <ResumePreview 
                 data={watchedData} 
@@ -815,3 +820,5 @@ export function ResumeEditor({ template }: { template: Template }) {
     </FormProvider>
   );
 }
+
+    
