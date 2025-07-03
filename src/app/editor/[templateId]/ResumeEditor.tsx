@@ -785,7 +785,7 @@ export function ResumeEditor({ template }: { template: Template }) {
                         "origin-top transform transition-transform duration-300",
                         isExporting
                             ? 'scale-100'
-                            : 'scale-[0.4] sm:scale-[0.85] lg:scale-[0.55] xl:scale-[0.7] 2xl:scale-[0.85]'
+                            : 'scale-[0.4] sm:scale-[0.6] md:scale-[0.85] lg:scale-[0.5] xl:scale-[0.6] 2xl:scale-[0.75]'
                     )}
                 >
                     <ResumePreview 
