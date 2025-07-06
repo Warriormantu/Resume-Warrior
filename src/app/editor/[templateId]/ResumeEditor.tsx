@@ -400,7 +400,6 @@ export function ResumeEditor({ template }: { template: Template }) {
 
 
   const watchedData = form.watch();
-  const previewRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
   const [rephrasingProjectIndex, setRephrasingProjectIndex] = useState<number | null>(null);
@@ -780,7 +779,6 @@ export function ResumeEditor({ template }: { template: Template }) {
             </div>
             <div id="resume-preview-wrapper" className="w-full flex justify-center">
                 <div
-                    ref={previewRef}
                     className={cn(
                         "origin-top transform transition-transform duration-300",
                         'scale-[0.4] sm:scale-[0.6] md:scale-[0.85] lg:scale-[0.5] xl:scale-[0.6] 2xl:scale-[0.75]'
@@ -799,7 +797,7 @@ export function ResumeEditor({ template }: { template: Template }) {
       </div>
 
       {/* Hidden container for the full-scale export clone */}
-      <div className="fixed top-[-9999px] left-0 opacity-0 pointer-events-none -z-10">
+      <div className="fixed top-0 left-0 opacity-0 pointer-events-none -z-10" aria-hidden="true">
         <div ref={exportRef}>
              <ResumePreview 
                 data={watchedData} 
@@ -813,3 +811,5 @@ export function ResumeEditor({ template }: { template: Template }) {
     </FormProvider>
   );
 }
+
+    
