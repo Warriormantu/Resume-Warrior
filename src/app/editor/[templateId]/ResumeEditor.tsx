@@ -44,6 +44,7 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { getRephrasedPoints, getAiSummary } from '@/app/actions';
 import { sampleResumeData } from '@/lib/sampleData';
@@ -428,7 +429,7 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
   };
 
- const executeExport = async (exportFunction: (node: HTMLDivElement) => Promise<void>) => {
+  const handleDownloadPDF = async () => {
     const node = exportRef.current;
     if (!node) {
         toast({ variant: 'destructive', title: 'Error', description: 'Export element not found.' });
@@ -436,71 +437,63 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
 
     setIsExporting(true);
-    toast({ title: 'Generating download...', description: 'Please wait a moment.' });
+    toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
     
     try {
         await document.fonts.ready;
-        await new Promise(resolve => setTimeout(resolve, 500)); // Extra delay
-        await exportFunction(node);
+        
+        const canvas = await html2canvas(node, {
+            scale: 2, // Capture at 2x resolution for high quality
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        if (!imgData || imgData.length < 100) {
+            throw new Error("Generated image data is empty or too small.");
+        }
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+        pdf.save(`${watchedData.personalInfo.name.replace(/\s/g, '_')}_Resume.pdf`);
+
+        toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
     } catch (error) {
-        console.error("Export process failed:", error);
+        console.error("PDF Export failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: `Could not generate the file. Error: ${error instanceof Error ? error.message : String(error)}`,
+            description: `Could not generate the PDF. ${error instanceof Error ? error.message : String(error)}`,
         });
     } finally {
         setIsExporting(false);
     }
   };
 
-  const handleDownloadPDF = async () => {
-    await executeExport(async (node) => {
-        const domtoimage = (await import('dom-to-image-more')).default;
-        const scale = 2;
-
-        const dataUrl = await domtoimage.toPng(node, {
-            bgcolor: '#ffffff',
-            width: node.clientWidth * scale,
-            height: node.clientHeight * scale,
-            style: {
-                transform: `scale(${scale})`,
-                transformOrigin: 'top left',
-            }
-        });
-
-        if (!dataUrl || dataUrl.length < 100) {
-            throw new Error("Generated image data is empty or too small.");
-        }
-
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const img = new Image();
-        img.src = dataUrl;
-        await new Promise(resolve => { img.onload = resolve; });
-
-        const pdfHeight = (img.height * pdfWidth) / img.width;
-        pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-        pdf.save(`${watchedData.personalInfo.name.replace(/\s/g, '_')}_Resume.pdf`);
-
-        toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
-    });
-  };
-
   const handleDownloadImage = async () => {
-    await executeExport(async (node) => {
-        const domtoimage = (await import('dom-to-image-more')).default;
-        const scale = 2;
+    const node = exportRef.current;
+    if (!node) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Export element not found.' });
+        return;
+    }
 
-        const dataUrl = await domtoimage.toPng(node, {
-            bgcolor: '#ffffff',
-            width: node.clientWidth * scale,
-            height: node.clientHeight * scale,
-            style: {
-                transform: `scale(${scale})`,
-                transformOrigin: 'top left',
-            }
+    setIsExporting(true);
+    toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
+
+    try {
+        await document.fonts.ready;
+
+        const canvas = await html2canvas(node, {
+            scale: 2, // Capture at 2x resolution
+            useCORS: true,
+            backgroundColor: '#ffffff'
         });
+
+        const dataUrl = canvas.toDataURL('image/png');
 
         if (!dataUrl || dataUrl.length < 100) {
             throw new Error("Generated image data is empty or too small.");
@@ -512,7 +505,16 @@ export function ResumeEditor({ template }: { template: Template }) {
         link.click();
         
         toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
-    });
+    } catch (error) {
+        console.error("Image Export failed:", error);
+        toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: `Could not generate the image. ${error instanceof Error ? error.message : String(error)}`,
+        });
+    } finally {
+        setIsExporting(false);
+    }
   };
 
   const handlePrintPDF = () => {
@@ -804,9 +806,7 @@ export function ResumeEditor({ template }: { template: Template }) {
       </div>
 
       {/* Hidden container for the full-scale export clone */}
-      <div 
-        className="fixed top-0 left-0 pointer-events-none -z-10 opacity-0"
-      >
+      <div className="fixed left-0 top-0 opacity-0 pointer-events-none -z-10">
         <div ref={exportRef}>
              <ResumePreview 
                 data={watchedData} 
@@ -820,5 +820,3 @@ export function ResumeEditor({ template }: { template: Template }) {
     </FormProvider>
   );
 }
-
-    
