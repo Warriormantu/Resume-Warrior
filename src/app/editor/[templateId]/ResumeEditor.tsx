@@ -40,7 +40,6 @@ import {
   Library,
   GripVertical,
   Paintbrush,
-  Printer,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
@@ -517,11 +516,6 @@ export function ResumeEditor({ template }: { template: Template }) {
     }
   };
 
-  const handlePrintPDF = () => {
-    toast({ title: 'Opening Print Dialog...', description: 'Please select "Save as PDF" as the destination.' });
-    window.print();
-  };
-
   const handleRephrase = async (experienceIndex: number) => {
     setRephrasingIndex(experienceIndex);
     const points = form.getValues(`experience.${experienceIndex}.points`);
@@ -775,7 +769,6 @@ export function ResumeEditor({ template }: { template: Template }) {
         {/* Preview Panel */}
         <div className="w-full bg-background p-4 md:p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)] flex flex-col items-center">
             <div className="w-full bg-background/80 backdrop-blur-sm py-4 mb-4 flex flex-wrap gap-2 md:gap-4 justify-center">
-                <Button onClick={handlePrintPDF} variant="outline" disabled={isExporting}><Printer className="mr-2 h-4 w-4" /> Print to PDF (Recommended)</Button>
                 <Button onClick={handleDownloadPDF} disabled={isExporting}>
                     {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Download className="mr-2 h-4 w-4" />} 
                     Download PDF
@@ -806,7 +799,7 @@ export function ResumeEditor({ template }: { template: Template }) {
       </div>
 
       {/* Hidden container for the full-scale export clone */}
-      <div className="fixed left-0 top-0 opacity-0 pointer-events-none -z-10">
+      <div className="fixed top-[-9999px] left-0 opacity-0 pointer-events-none -z-10">
         <div ref={exportRef}>
              <ResumePreview 
                 data={watchedData} 
