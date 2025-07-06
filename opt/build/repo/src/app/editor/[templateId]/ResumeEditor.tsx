@@ -40,10 +40,10 @@ import {
   Library,
   GripVertical,
   Paintbrush,
-  Printer,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { getRephrasedPoints, getAiSummary } from '@/app/actions';
 import { sampleResumeData } from '@/lib/sampleData';
@@ -400,7 +400,7 @@ export function ResumeEditor({ template }: { template: Template }) {
 
 
   const watchedData = form.watch();
-  const previewRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
   const [rephrasingIndex, setRephrasingIndex] = useState<number | null>(null);
   const [rephrasingProjectIndex, setRephrasingProjectIndex] = useState<number | null>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
@@ -428,122 +428,91 @@ export function ResumeEditor({ template }: { template: Template }) {
   };
 
   const handleDownloadPDF = async () => {
-    const node = previewRef.current;
+    const node = exportRef.current;
     if (!node) {
-        toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+        toast({ variant: 'destructive', title: 'Error', description: 'Export element not found.' });
         return;
     }
 
     setIsExporting(true);
     toast({ title: 'Generating PDF...', description: 'Please wait a moment.' });
     
-    // Allow state to update and component to re-render at scale-100
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    node.classList.add('export-mode');
-    
     try {
-        const domtoimage = (await import('dom-to-image-more')).default;
-        const scale = 2; // Capture at 2x resolution
-        
         await document.fonts.ready;
-
-        const dataUrl = await domtoimage.toPng(node, {
-            bgcolor: '#ffffff',
-            width: node.clientWidth * scale,
-            height: node.clientHeight * scale,
-            style: {
-                transform: `scale(${scale})`,
-                transformOrigin: 'top left',
-            }
+        
+        const canvas = await html2canvas(node, {
+            scale: 2, // Capture at 2x resolution for high quality
+            useCORS: true,
+            backgroundColor: '#ffffff'
         });
 
-        if (!dataUrl || dataUrl.length < 100) {
+        const imgData = canvas.toDataURL('image/png');
+
+        if (!imgData || imgData.length < 100) {
             throw new Error("Generated image data is empty or too small.");
         }
 
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const img = new Image();
-        img.src = dataUrl;
-        await new Promise(resolve => { img.onload = resolve; });
-
-        const pdfHeight = (img.height * pdfWidth) / img.width;
-        pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-        pdf.save(`${watchedData.personalInfo.name.replace(' ', '_')}_Resume.pdf`);
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+        pdf.save(`${watchedData.personalInfo.name.replace(/\s/g, '_')}_Resume.pdf`);
 
         toast({ title: 'Download Successful!', description: 'Your PDF has been saved.' });
-
     } catch (error) {
         console.error("PDF Export failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'Could not generate the PDF. Please try again or use the Print option.',
+            description: `Could not generate the PDF. ${error instanceof Error ? error.message : String(error)}`,
         });
     } finally {
-        node.classList.remove('export-mode');
         setIsExporting(false);
     }
   };
 
   const handleDownloadImage = async () => {
-    const node = previewRef.current;
+    const node = exportRef.current;
     if (!node) {
-        toast({ variant: 'destructive', title: 'Error', description: 'Preview element not found.' });
+        toast({ variant: 'destructive', title: 'Error', description: 'Export element not found.' });
         return;
     }
 
     setIsExporting(true);
     toast({ title: 'Generating Image...', description: 'Please wait a moment.' });
 
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    node.classList.add('export-mode');
-
     try {
-        const domtoimage = (await import('dom-to-image-more')).default;
-        const scale = 2;
-
         await document.fonts.ready;
 
-        const dataUrl = await domtoimage.toPng(node, {
-            bgcolor: '#ffffff',
-            width: node.clientWidth * scale,
-            height: node.clientHeight * scale,
-            style: {
-                transform: `scale(${scale})`,
-                transformOrigin: 'top left',
-            }
+        const canvas = await html2canvas(node, {
+            scale: 2, // Capture at 2x resolution
+            useCORS: true,
+            backgroundColor: '#ffffff'
         });
+
+        const dataUrl = canvas.toDataURL('image/png');
 
         if (!dataUrl || dataUrl.length < 100) {
             throw new Error("Generated image data is empty or too small.");
         }
 
         const link = document.createElement("a");
-        link.download = `${watchedData.personalInfo.name.replace(' ', '_')}_Resume.png`;
+        link.download = `${watchedData.personalInfo.name.replace(/\s/g, '_')}_Resume.png`;
         link.href = dataUrl;
         link.click();
         
         toast({ title: 'Download Successful!', description: 'Your PNG image has been saved.' });
-
     } catch (error) {
         console.error("Image Export failed:", error);
         toast({
             variant: 'destructive',
             title: 'Download Failed',
-            description: 'Could not generate the image. Please try again.',
+            description: `Could not generate the image. ${error instanceof Error ? error.message : String(error)}`,
         });
     } finally {
-        node.classList.remove('export-mode');
         setIsExporting(false);
     }
-  };
-
-  const handlePrintPDF = () => {
-    toast({ title: 'Opening Print Dialog...', description: 'Please select "Save as PDF" as the destination.' });
-    window.print();
   };
 
   const handleRephrase = async (experienceIndex: number) => {
@@ -799,7 +768,6 @@ export function ResumeEditor({ template }: { template: Template }) {
         {/* Preview Panel */}
         <div className="w-full bg-background p-4 md:p-8 lg:overflow-y-auto lg:max-h-[calc(100vh-56px)] flex flex-col items-center">
             <div className="w-full bg-background/80 backdrop-blur-sm py-4 mb-4 flex flex-wrap gap-2 md:gap-4 justify-center">
-                <Button onClick={handlePrintPDF} variant="outline" disabled={isExporting}><Printer className="mr-2 h-4 w-4" /> Print to PDF (Recommended)</Button>
                 <Button onClick={handleDownloadPDF} disabled={isExporting}>
                     {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Download className="mr-2 h-4 w-4" />} 
                     Download PDF
@@ -813,21 +781,31 @@ export function ResumeEditor({ template }: { template: Template }) {
                 <div
                     className={cn(
                         "origin-top transform transition-transform duration-300",
-                        isExporting
-                            ? 'scale-100'
-                            : 'scale-[0.4] sm:scale-[0.6] md:scale-[0.85] lg:scale-[0.5] xl:scale-[0.6] 2xl:scale-[0.75]'
+                        'scale-[0.4] sm:scale-[0.6] md:scale-[0.85] lg:scale-[0.5] xl:scale-[0.6] 2xl:scale-[0.75]'
                     )}
                 >
                     <ResumePreview 
                         data={watchedData} 
                         template={template} 
-                        ref={previewRef}
                         accentColor={accentColor}
                         accentColorBg={accentColorBg}
                         fontFamily={fontFamily}
                      />
                 </div>
             </div>
+        </div>
+      </div>
+
+      {/* Hidden container for the full-scale export clone */}
+      <div className="fixed top-0 left-[-9999px] opacity-0 pointer-events-none" aria-hidden="true">
+        <div ref={exportRef}>
+             <ResumePreview 
+                data={watchedData} 
+                template={template}
+                accentColor={accentColor}
+                accentColorBg={accentColorBg}
+                fontFamily={fontFamily}
+            />
         </div>
       </div>
     </FormProvider>
